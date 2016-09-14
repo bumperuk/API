@@ -16,4 +16,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/single', 'API\V1\NewsController@getById' );
     });
 
+    Route::group(['prefix' => 'notifications'], function() {
+        Route::get('/', 'API\V1\NotificationController@all');
+        Route::put('/mark-read', 'API\V1\NotificationController@markAllRead');
+        Route::put('/{id}/mark-read', 'API\V1\NotificationController@markRead');
+    });
 });
