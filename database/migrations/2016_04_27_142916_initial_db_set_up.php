@@ -18,7 +18,7 @@ class InitialDbSetUp extends Migration
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('phone')->unique();
-            $table->boolean('phone_verified');
+            $table->boolean('phone_verified')->default(0);
             $table->string('password', 60);
             $table->rememberToken();
             $table->timestamps();

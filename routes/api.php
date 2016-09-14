@@ -11,6 +11,11 @@
 
 Route::group(['prefix' => 'v1'], function () {
 
+    Route::group(['prefix' => 'auth', 'middleware' => 'throttle:10'], function() {
+        Route::post('/register', 'API\V1\AuthController@register');
+        Route::post('/login', 'API\V1\AuthController@login');
+    });
+
     Route::group(['prefix' => 'news'], function () {
         Route::get('/', 'API\V1\NewsController@getAll' );
         Route::get('/single', 'API\V1\NewsController@getById' );
