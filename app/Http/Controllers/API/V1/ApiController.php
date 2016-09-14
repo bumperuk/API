@@ -8,10 +8,17 @@ namespace App\Http\Controllers\API\V1;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
 
 class ApiController extends Controller
 {
+    protected $page_limit;
+
+    function __construct(){
+        $this->page_limit = Config::get('pagination.default');
+    }
+
     /**
      * API response function to be used by all endpoints
      * @param array $body
@@ -36,4 +43,5 @@ class ApiController extends Controller
         ];
         return Response::json($payload, $status);
     }
+
 }
