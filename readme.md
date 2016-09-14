@@ -1,3 +1,16 @@
+# Template API
+
+Before release please ensure the following have been completed:
+
+- Remove IP lock middleware
+- Remove any console logs or var dumps
+- Generate App secret
+- Generate JWT secret
+- Check env variables
+- Check all TODO comments
+
+----------------------------------
+
 # Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
