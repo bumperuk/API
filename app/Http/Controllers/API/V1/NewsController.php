@@ -15,16 +15,17 @@ use Illuminate\Support\Facades\Input;
 class NewsController extends ApiController
 {
     function getAll(){
-        return parent::api_response(News::paginate(10), 'Return paginated news posts');
+        return parent::api_response(News::paginate($this->page_limit), 'Return paginated news posts');
     }
 
     function getById(){
-        if($news = News::find(Input::get('id'))){
-            return parent::api_response($news, 'Return paginated news posts');
-       }else{
-            return parent::api_response($news, 'No post found with that id', false, 404);
-        }
+        return parent::api_response(News::findOrFail(Input::get('id')), 'Return selected news post');
+    }
 
+    function search(){
+        $term = Input::get('term');
+        $news = News::search($term)->paginate($this->page_limit);
+        return parent::api_response($news, 'Return news search for '.$term);
     }
 
 }

@@ -2,9 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
-class News extends Model
+class News extends BaseModel
 {
-    //
+    use Eloquence;
+
+    //Set fields to use for searching and their priority
+    protected $searchableColumns = [
+        'title' => 10,
+        'slug' => 10,
+        'content' => 2
+    ];
 }
