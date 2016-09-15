@@ -28,8 +28,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    //Has all passwords before saving to DB
+    /**
+     * Hash all passwords before saving to DB
+     */
     function setPasswordAttribute($raw){
-        $this->$this->attributes['password'] = Hash::make($raw);
+        $this->attributes['password'] = Hash::make($raw);
     }
 }

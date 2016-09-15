@@ -11,7 +11,7 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     return [
         'name' => 'Test User',
         'phone' => '07777777777',
@@ -20,7 +20,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\News::class, function ($faker) {
+$factory->define(App\Models\News::class, function ($faker) {
     return [
         'title' => $faker->sentence(mt_rand(3, 10)),
         'teaser' => $faker->sentence(mt_rand(3, 10)),

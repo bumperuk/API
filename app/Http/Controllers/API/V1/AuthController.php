@@ -27,7 +27,7 @@ class AuthController extends ApiController
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,255',
             'username' => 'required|string|max:255|unique:users',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'phone' => 'required|string|unique:users',
             'password' => 'required'
         ]);
@@ -57,10 +57,11 @@ class AuthController extends ApiController
     {
         $credentials = $request->only('username', 'password');
 
+        //TODO: make this work
         //Limit the amount of times users can login
-        if ($this->hasTooManyLoginAttempts($request)) {
-            return parent::api_response([], 'too many authentication attempts', false, 401);
-        }
+        //if ($this->hasTooManyLoginAttempts($request)) {
+        //    return parent::api_response([], 'too many authentication attempts', false, 401);
+        //}
 
         $token = JWTAuth::attempt($credentials);
 
