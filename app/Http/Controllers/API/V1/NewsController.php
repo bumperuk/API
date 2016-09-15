@@ -23,9 +23,23 @@ class NewsController extends ApiController
     }
 
     function search(){
-        $term = Input::get('term');
-        $news = News::search($term)->paginate($this->page_limit);
-        return parent::api_response($news, 'Return news search for '.$term);
+        if($term = Input::get('term')){
+            $news = News::published()->search($term);
+        }else{
+            $news = News::published();
+        }
+
+        if($sort = Input::get('sort')){
+            switch ($sort){
+                case 'newest_oldest':
+                    $news = $news->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest_newest':
+                    $news = $news->orderBy('created_at', 'asc');
+                    break;
+            }
+        }
+        return parent::api_response($news->paginate($this->page_limit), 'Return news search for '.$term);
     }
 
 }

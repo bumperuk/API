@@ -54,7 +54,7 @@ class InitialDbSetUp extends Migration
             $table->integer('author')->unsigned();;
             $table->foreign('author')->references('id')->on('users');
             $table->timestamps();
-            $table->timestamp('published_at')->useCurrent()->index();
+            $table->dateTime('published_at')->nullable();
         });
         Schema::create('reviews', function (Blueprint $table) {
             $table->increments('id');

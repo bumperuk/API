@@ -14,4 +14,8 @@ class News extends BaseModel
         'slug' => 10,
         'content' => 2
     ];
+
+    public function scopePublished($q){
+        return $q->where('published_at','!=', NULL);
+    }
 }
