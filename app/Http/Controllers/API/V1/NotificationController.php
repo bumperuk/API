@@ -23,11 +23,11 @@ class NotificationController extends ApiController
     public function viewAll(Request $request)
     {
         $user = Auth::user();
-
+        
         if ($request->has('unread')) {
-            $notifications = $user->notifications->paginate(10);
+            $notifications = $user->notifications()->paginate(10);
         } else {
-            $notifications = $user->unreadNotifications->paginate(10);
+            $notifications = $user->unreadNotifications()->paginate(10);
         }
 
         return $this->api_response($notifications);
