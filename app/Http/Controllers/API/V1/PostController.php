@@ -24,10 +24,10 @@ class PostController extends ApiController
 
     function search(){
         if($term = Input::get('term')){
-            $posts = Post::published()->search($term);
+            $posts = Post::search($term);
         }else{
             $term = null;
-            $posts = Post::published();
+            $posts = Post::query();
         }
 
         if($sort = Input::get('sort')){
