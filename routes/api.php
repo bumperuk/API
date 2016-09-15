@@ -22,9 +22,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/search', 'API\V1\NewsController@search' );
     });
 
-    Route::group(['prefix' => 'notifications'], function() {
-        Route::get('/', 'API\V1\NotificationController@all');
-        Route::put('/mark-read', 'API\V1\NotificationController@markAllRead');
-        Route::put('/{id}/mark-read', 'API\V1\NotificationController@markRead');
+    Route::group(['middleware' => 'jwt'], function () {
+
+        Route::group(['prefix' => 'notifications'], function () {
+            Route::get('/', 'API\V1\NotificationController@all');
+            Route::put('/mark-read', 'API\V1\NotificationController@markAllRead');
+            Route::put('/{id}/mark-read', 'API\V1\NotificationController@markRead');
+        });
+
     });
+
 });
