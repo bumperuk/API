@@ -17,13 +17,29 @@ class PostController extends ApiController
     function getAll(){
         return parent::api_response(Post::paginate(10), 'Return paginated posts');
     }
-
+    
     function getById(){
-        if($posts = Post::find(Input::get('id'))){
-            return parent::api_response($posts, 'Return paginated posts');
+        return parent::api_response(Post::findOrFail(Input::get('id')), 'Return selected post');
+    }
+
+    function search(){
+        if($term = Input::get('term')){
+            $posts = Post::published()->search($term);
         }else{
-            return parent::api_response($posts, 'No post found with that id', false, 404);
+            $term = null;
+            $posts = Post::published();
         }
 
+        if($sort = Input::get('sort')){
+            switch ($sort){
+                case 'newest_oldest':
+                    $posts = $posts->orderSearch('created_at', 'desc', $term );
+                    break;
+                case 'oldest_newest':
+                    $posts = $posts->orderSearch('created_at', 'asc', $term);
+                    break;
+            }
+        }
+        return parent::api_response($posts->paginate($this->page_limit), 'Return posts search for '.$term);
     }
 }
