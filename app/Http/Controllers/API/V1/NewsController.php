@@ -26,16 +26,17 @@ class NewsController extends ApiController
         if($term = Input::get('term')){
             $news = News::published()->search($term);
         }else{
+            $term = null;
             $news = News::published();
         }
 
         if($sort = Input::get('sort')){
             switch ($sort){
                 case 'newest_oldest':
-                    $news = $news->orderBy('created_at', 'desc');
+                    $news = $news->orderSearch('created_at', 'desc', $term );
                     break;
                 case 'oldest_newest':
-                    $news = $news->orderBy('created_at', 'asc');
+                    $news = $news->orderSearch('created_at', 'asc', $term);
                     break;
             }
         }

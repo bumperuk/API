@@ -1,5 +1,8 @@
 # Template API
 
+
+## Release Notes
+
 Before release please ensure the following have been completed:
 
 - Remove IP lock middleware
@@ -8,6 +11,24 @@ Before release please ensure the following have been completed:
 - Generate JWT secret
 - Check env variables
 - Check all TODO comments
+
+## Custom functions
+
+### Base Model
+
+#####Order Search
+This function can be used to override the oderBy relevance clause of searches made using the searchable trait
+
+`Model::orderSearch($q, $col, $direction, $term )`
+
+### News Model
+
+#####Published
+Find only published news posts
+
+`News::published()`
+
+
 
 ----------------------------------
 
