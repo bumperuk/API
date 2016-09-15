@@ -16,14 +16,14 @@ Before release please ensure the following have been completed:
 
 ### Base Model
 
-#####Order Search
+##### Order Search
 This function can be used to override the oderBy relevance clause of searches made using the searchable trait
 
 `Model::orderSearch($q, $col, $direction, $term )`
 
 ### News Model
 
-#####Published
+##### Published
 Find only published news posts
 
 `News::published()`
