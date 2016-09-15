@@ -30,6 +30,15 @@ class User extends Authenticatable
     ];
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'phone_verified' => 'boolean',
+    ];
+
+    /**
      * Hash all passwords before saving to DB
      */
     function setPasswordAttribute($raw){

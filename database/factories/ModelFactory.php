@@ -14,9 +14,11 @@
 $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     return [
         'name' => 'Test User',
-        'phone' => '07777777777',
-        'email' => 'user@dreamr.uk',
+        'phone' => $faker->phoneNumber,
+        'email' => $faker->email,
+        'username' => $faker->userName,
         'password' => bcrypt('password'),
+        'phone_verified' => $faker->boolean(),
     ];
 });
 

@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\Validator;
 
 class AccountController extends ApiController
 {
+    public function view()
+    {
+        $user = Auth::user();
+
+        return parent::api_response(['account' => $user]);
+    }
+
     /**
      * Request a verification code
      *

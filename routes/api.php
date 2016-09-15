@@ -56,6 +56,7 @@ Route::group(['prefix' => 'v1'], function () {
          * Account routes
          */
         Route::group(['prefix' => 'account'], function () {
+            Route::get('/', 'API\V1\AccountController@view');
             Route::post('/push-token', 'API\V1\AccountController@savePushToken');
             Route::post('/phone/request-code', 'API\V1\AccountController@requestPhoneCode');
             Route::post('/phone/verify-code', 'API\V1\AccountController@verifyPhoneCode');
