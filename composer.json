@@ -9,7 +9,6 @@
         "laravel/framework": "5.3.*",
         "tymon/jwt-auth": "0.5.*",
         "sofa/eloquence": "~5.1@dev",
-        "guzzlehttp/guzzle": "6.*",
         "intervention/image": "2.*",
         "intervention/imagecache": "2.*",
         "stripe/stripe-php": "3.*",

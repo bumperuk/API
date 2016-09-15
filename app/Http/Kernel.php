@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\JWT;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -53,7 +54,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'jwt' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+        'jwt' => JWT::class,
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
         'ip-lock' => \App\Http\Middleware\IPLock::class,
     ];
