@@ -7,6 +7,11 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Exceptions\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait ApiExceptionHandlerTrait
 {
@@ -27,11 +32,15 @@ trait ApiExceptionHandlerTrait
             case $this->isQueryException($e):
                 $return = $this->queryError(['error' => $e->getMessage()]);
                 break;
+            case $this->isMethodException($e):
+                $return = $this->methodError();
+                break;
+            case $this->isBadRouteException($e):
+                $return = $this->routeError();
+                break;
             default:
                 $return = $this->badRequest($e->getMessage());
-                dd($e);
         }
-
         return $return;
     }
 
@@ -48,7 +57,7 @@ trait ApiExceptionHandlerTrait
             $message = 'Sorry, We could not find what you requested';
             $statusCode = 404;
         }
-        return $this->jsonResponse($message, $statusCode);
+        return $this->jsonResponse($message, $statusCode?: 500);
     }
 
     /**
@@ -71,6 +80,23 @@ trait ApiExceptionHandlerTrait
     protected function queryError($payload)
     {
         return $this->jsonResponse('Woops, something went wrong', 500, $payload);
+    }
+    /**
+     * Returns json response for Eloquent Query exception.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function methodError()
+    {
+        return $this->jsonResponse('Method Not allowed', 405);
+    }
+
+    /**
+     * Returns json response for Eloquent Query exception.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function routeError()
+    {
+        return $this->jsonResponse('Not a valid endpoint', 404);
     }
 
     /**
@@ -99,6 +125,16 @@ trait ApiExceptionHandlerTrait
     protected function isQueryException(Exception $e)
     {
         return $e instanceof QueryException;
+    }
+
+    protected function isMethodException(Exception $e)
+    {
+        return $e instanceof MethodNotAllowedHttpException;
+    }
+
+    protected function isBadRouteException(Exception $e)
+    {
+        return $e instanceof NotFoundHttpException;
     }
 
 }
