@@ -14,7 +14,14 @@ class IPLock
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($request->server('REMOTE_ADDR') !== '86.8.115.102' && $request->server('REMOTE_ADDR') !== '192.168.10.1' && $request->server('REMOTE_ADDR') !== '192.168.10.10') {
+        $allowed = [
+            '86.8.115.102', //Dreamr Office
+            '192.168.10.1', //Homestead IP
+            '192.168.10.10', //Homestead IP
+
+        ];
+
+        if (!in_array($request->server('REMOTE_ADDR'), $allowed) && env('IPLOCK') == true ) {
             return response('Unauthorized.', 401);
         }
         return $next($request);

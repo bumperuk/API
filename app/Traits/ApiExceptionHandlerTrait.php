@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Http\Controllers\API\V1\ApiController;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Exceptions\ModelNotFoundException;
 
@@ -22,6 +23,9 @@ trait ApiExceptionHandlerTrait
         switch(true) {
             case $this->isModelNotFoundException($e):
                 $return = $this->modelNotFound();
+                break;
+            case $this->isQueryException($e):
+                $return = $this->queryError(['error' => $e->getMessage()]);
                 break;
             default:
                 $return = $this->badRequest($e->getMessage());
@@ -59,14 +63,25 @@ trait ApiExceptionHandlerTrait
     }
 
     /**
+     * Returns json response for Eloquent Query exception.
+     * @param array $payload
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function queryError($payload)
+    {
+        return $this->jsonResponse('Woops, something went wrong', 500, $payload);
+    }
+
+    /**
      * @param null $message
      * @param int $statusCode
+     * @param array $payload
      * @return \App\Http\Controllers\API\V1\json
      */
-    protected function jsonResponse ($message=null, $statusCode=500)
+    protected function jsonResponse ($message=null, $statusCode=500, $payload=[])
     {
         $api = new ApiController();
-        return $api->api_response([], $message, false,  $statusCode);
+        return $api->api_response($payload, $message, false,  $statusCode);
     }
 
     /**
@@ -78,6 +93,11 @@ trait ApiExceptionHandlerTrait
     protected function isModelNotFoundException(Exception $e)
     {
         return $e instanceof ModelNotFoundException;
+    }
+
+    protected function isQueryException(Exception $e)
+    {
+        return $e instanceof QueryException;
     }
 
 }

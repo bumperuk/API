@@ -38,6 +38,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/search', 'API\V1\PostController@search' );
     });
 
+
+
     /**
      * Auth routes using JWT tokens
      */
@@ -50,6 +52,15 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', 'API\V1\NotificationController@viewAll');
             Route::put('/mark-read', 'API\V1\NotificationController@markAllRead');
             Route::put('/{id}/mark-read', 'API\V1\NotificationController@markRead');
+        });
+
+        /**
+         * Post routes
+         */
+        Route::group(['prefix' => 'posts'], function () {
+            Route::get('/likes', 'API\V1\PostLikeController@getAll' );
+            Route::get('/likes/single', 'API\V1\PostLikeController@getById' );
+            Route::post('/like', 'API\V1\PostLikeController@like' );
         });
 
     });

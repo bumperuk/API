@@ -14,14 +14,26 @@ use Illuminate\Support\Facades\Input;
 
 class PostController extends ApiController
 {
+    /**
+     * Get all
+     * @return json
+     */
     function getAll(){
         return parent::api_response(Post::paginate(10), 'Return paginated posts');
     }
-    
+
+    /**
+     * Get by ID
+     * @return json
+     */
     function getById(){
         return parent::api_response(Post::findOrFail(Input::get('id')), 'Return selected post');
     }
 
+    /**
+     * Search and sort
+     * @return json
+     */
     function search(){
         if($term = Input::get('term')){
             $posts = Post::search($term);
