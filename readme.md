@@ -11,8 +11,17 @@ Before release please ensure the following have been completed:
 - Generate JWT secret
 - Check env variables
 - Check all TODO comments
+- Check all env variables are set
 
 ## Custom functions
+
+### Artisan Commands
+
+##### Make API Controller
+This is a modified version of the make:controller command that adds a controller into the API folder with basic functions included
+ 
+`make:api-controller`
+
 
 ### Base Model
 

@@ -14,14 +14,26 @@ use Illuminate\Support\Facades\Input;
 
 class NewsController extends ApiController
 {
+    /**
+     * Get all
+     * @return json
+     */
     function getAll(){
         return parent::api_response(News::paginate($this->page_limit), 'Return paginated news posts');
     }
 
+    /**
+     * Get by ID
+     * @return json
+     */
     function getById(){
         return parent::api_response(News::findOrFail(Input::get('id')), 'Return selected news post');
     }
 
+    /**
+     * Search and sort
+     * @return json
+     */
     function search(){
         if($term = Input::get('term')){
             $news = News::published()->search($term);

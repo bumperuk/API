@@ -7,32 +7,45 @@ use Illuminate\Support\Facades\Input;
 
 class DummyClass extends ApiController
 {
+
+    /**
+     * Get All
+     * @return json
+     */
     function getAll(){
             return parent::api_response(DummyModel::paginate(10), 'Return paginated posts');
+    }
+
+    /**
+     * Get by ID
+     * @return json
+     */
+    function getById(){
+        return parent::api_response(DummyModel::findOrFail(Input::get('id')), 'Return selected post');
+    }
+
+    /**
+     * Search and sort
+     * @return json
+     */
+    function search(){
+        if($term = Input::get('term')){
+            $posts = DummyModel::search($term);
+        }else{
+            $term = null;
+            $posts = DummyModel::query();
         }
 
-        function getById(){
-            return parent::api_response(DummyModel::findOrFail(Input::get('id')), 'Return selected post');
-        }
-
-        function search(){
-            if($term = Input::get('term')){
-                $posts = DummyModel::search($term);
-            }else{
-                $term = null;
-                $posts = DummyModel::query();
+        if($sort = Input::get('sort')){
+            switch ($sort){
+                case 'newest_oldest':
+                    $posts = $posts->orderSearch('created_at', 'desc', $term );
+                    break;
+                case 'oldest_newest':
+                    $posts = $posts->orderSearch('created_at', 'asc', $term);
+                    break;
             }
-
-            if($sort = Input::get('sort')){
-                switch ($sort){
-                    case 'newest_oldest':
-                        $posts = $posts->orderSearch('created_at', 'desc', $term );
-                        break;
-                    case 'oldest_newest':
-                        $posts = $posts->orderSearch('created_at', 'asc', $term);
-                        break;
-                }
-            }
-            return parent::api_response($posts->paginate($this->page_limit), 'Return posts search for '.$term);
         }
+        return parent::api_response($posts->paginate($this->page_limit), 'Return posts search for '.$term);
+    }
 }
