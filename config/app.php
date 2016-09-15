@@ -167,8 +167,6 @@ return [
          * Package Service Providers...
          */
 
-        //
-
         /*
          * Application Service Providers...
          */
@@ -179,8 +177,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Sofa\Eloquence\ServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
-
+        Intervention\Image\ImageServiceProvider::class,
+        NotificationChannels\Twilio\TwilioProvider::class
     ],
 
     /*

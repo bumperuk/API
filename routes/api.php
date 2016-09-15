@@ -52,6 +52,15 @@ Route::group(['prefix' => 'v1'], function () {
             Route::put('/{id}/mark-read', 'API\V1\NotificationController@markRead');
         });
 
+        /**
+         * Account routes
+         */
+        Route::group(['prefix' => 'account'], function () {
+            Route::post('/push-token', 'API\V1\AccountController@savePushToken');
+            Route::post('/phone/request-code', 'API\V1\AccountController@requestPhoneCode');
+            Route::post('/phone/verify-code', 'API\V1\AccountController@verifyPhoneCode');
+        });
+
     });
 
 });
