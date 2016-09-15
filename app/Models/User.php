@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyPhone;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +27,15 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'email', 'phone',  'password', 'remember_token',
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'phone_verified' => 'boolean',
     ];
 
     /**
@@ -74,11 +84,73 @@ class User extends Authenticatable
         if (!$reset) {
             return false;
         }
-        
+
         $reset->used = true;
         $reset->save();
         $this->password = $password;
 
         return true;
+    }
+
+    /**
+     * Create a verification code for the users phone.
+     *
+     * @return VerificationCode
+     */
+    public function createVerificationCode()
+    {
+        //Only allow one verification code at a time
+        VerificationCode::where('user_id', $this->id)->delete();
+
+        $verification = new VerificationCode();
+        $verification->user_id = $this->id;
+        $verification->code = mt_rand(10000, 99999);
+        $verification->save();
+
+        return $verification;
+    }
+
+    /**
+     * Attempt to verify the users phone using a verification code
+     *
+     * @param string $code The code
+     * @return bool True if the phone was verified
+     */
+    public function useVerificationCode($code)
+    {
+        $code = VerificationCode::where('user_id', $this->id)->where('code', $code)->first();
+
+        if (!$code) {
+            return false;
+        }
+
+        $code->delete();
+        $this->phone_verified = true;
+
+        return true;
+    }
+
+    /**
+     * Route email notifications to the user
+     */
+    public function routeNotificationForEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Route SMS notifications to the user
+     */
+    public function routeNotificationForTwilio()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Route OneSignal notifications to the user
+     */
+    public function routeNotificationForPush()
+    {
+        return $this->push_token;
     }
 }
