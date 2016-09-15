@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class VerificationCode extends Model
+class VerificationCode extends BaseModel
 {
     //
 }
