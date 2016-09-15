@@ -29,6 +29,7 @@ trait ApiExceptionHandlerTrait
                 break;
             default:
                 $return = $this->badRequest($e->getMessage());
+                dd($e);
         }
 
         return $return;
@@ -41,7 +42,7 @@ trait ApiExceptionHandlerTrait
      * @param int $statusCode
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function badRequest($message='Bad request', $statusCode=400)
+    protected function badRequest($message='Bad request', $statusCode=500)
     {
         if(str_contains($message, 'No query results')){
             $message = 'Sorry, We could not find what you requested';

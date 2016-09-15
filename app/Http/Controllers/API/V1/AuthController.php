@@ -56,7 +56,7 @@ class AuthController extends ApiController
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('username', 'password');
+        $credentials = $request->only('email', 'password');
 
         //TODO: make this work
         //Limit the amount of times users can login
@@ -68,15 +68,15 @@ class AuthController extends ApiController
 
         //If the login attempt failed
         if (!$token) {
-            $this->incrementLoginAttempts($request);
+            //$this->incrementLoginAttempts($request);
             return parent::api_response([], 'invalid credentials', 401);
         }
 
         $user = User::findOrFail(Auth::user()->id);
 
         return parent::api_response([
-            'user' => $user,
-            'token' => $token
+            'token' => $token,
+            'user' => $user
         ]);
     }
 
