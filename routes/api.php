@@ -11,7 +11,7 @@
 
 Route::group(['prefix' => 'v1'], function () {
 
-    Route::group(['prefix' => 'auth', 'middleware' => 'throttle:10'], function() {
+    Route::group(['prefix' => 'auth'], function() {
         Route::post('/register', 'API\V1\AuthController@register');
         Route::post('/login', 'API\V1\AuthController@login');
     });
