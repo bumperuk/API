@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
+use App\Notifications\ResetPassword;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,5 +78,28 @@ class AuthController extends ApiController
             'user' => $user,
             'token' => $token
         ]);
+    }
+
+    /**
+     * Request a password reset email
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function requestPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return parent::api_response([], $validator->errors()->first(), false, 400);
+        }
+
+        $user = User::where('email', $request->input('email'))->firstOrFail();
+        $reset = $user->createPasswordReset($request->ip());
+        $user->notify(new ResetPassword($reset));
+
+        return parent::api_response([]);
     }
 }

@@ -33,7 +33,9 @@ class InitialDbSetUp extends Migration
         Schema::create('password_resets', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token')->index();
-            $table->timestamp('created_at');
+            $table->string('ip');
+            $table->boolean('used')->default(0);
+            $table->timestamps();
         });
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');

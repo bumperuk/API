@@ -17,6 +17,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'auth'], function() {
         Route::post('/register', 'API\V1\AuthController@register');
         Route::post('/login', 'API\V1\AuthController@login');
+        Route::post('/password/request', 'API\V1\AuthController@requestPassword');
     });
 
     /**

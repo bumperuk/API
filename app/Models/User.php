@@ -34,4 +34,51 @@ class User extends Authenticatable
     function setPasswordAttribute($raw){
         $this->attributes['password'] = Hash::make($raw);
     }
+
+    /**
+     * Create a password reset request for the user.
+     *
+     * @param string $ip The IP of the user making the request
+     * @return PasswordReset
+     */
+    function createPasswordReset($ip)
+    {
+        //Only allow one password reset request to be active at a time
+        PasswordReset::where('email', $this->email)->update(['used' => true]);
+
+        //Create a new password reset request
+        $reset = new PasswordReset();
+        $reset->email = $this->email;
+        $reset->token = str_random(255);
+        $reset->ip = $ip;
+        $reset->save();
+
+        return $reset;
+    }
+
+    /**
+     * Reset a users password from the token.
+     *
+     * @param $token
+     * @param $password
+     * @return bool True if the password was reset
+     */
+    function usePasswordReset($token, $password)
+    {
+        $reset = PasswordReset
+            ::where('token', $token)
+            ->where('email', $this->email)
+            ->where('used', false)
+            ->first();
+
+        if (!$reset) {
+            return false;
+        }
+        
+        $reset->used = true;
+        $reset->save();
+        $this->password = $password;
+
+        return true;
+    }
 }
