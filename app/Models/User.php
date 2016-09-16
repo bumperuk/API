@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Notifications\VerifyPhone;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +9,15 @@ use Illuminate\Support\Facades\Hash;
 class User extends Authenticatable
 {
     use Notifiable;
+
+    /**
+     * Relations to be loaded by default.
+     *
+     * @var array
+     */
+    protected $with = [
+        'stripe'
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -39,10 +47,39 @@ class User extends Authenticatable
     ];
 
     /**
+     * The attributes appended to the toJSON, toArray and toDatabase methods
+     *
+     * @var array
+     */
+    protected $appends = [
+        'has_stripe'
+    ];
+
+    /**
      * Hash all passwords before saving to DB
      */
     function setPasswordAttribute($raw){
         $this->attributes['password'] = Hash::make($raw);
+    }
+
+    /**
+     * Determines if the user has a stripe account connected
+     *
+     * @return bool
+     */
+    function getHasStripeAttribute()
+    {
+        return $this->stripe !== null;
+    }
+
+    /**
+     * The stripe account associated with the users account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    function stripe()
+    {
+        return $this->hasOne('App\Models\StripeUser');
     }
 
     /**
@@ -149,7 +186,7 @@ class User extends Authenticatable
     /**
      * Route OneSignal notifications to the user
      */
-    public function routeNotificationForPush()
+    public function routeNotificationForOneSignal()
     {
         return $this->push_token;
     }

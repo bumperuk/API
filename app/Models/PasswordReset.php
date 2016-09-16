@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class PasswordReset extends Model
+class PasswordReset extends BaseModel
 {
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'used' => 'boolean'
+    ];
+
     /**
      * The user that the password reset request is for
      *
