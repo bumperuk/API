@@ -72,6 +72,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/push-token', 'API\V1\AccountController@savePushToken');
             Route::post('/phone/request-code', 'API\V1\AccountController@requestPhoneCode');
             Route::post('/phone/verify-code', 'API\V1\AccountController@verifyPhoneCode');
+            Route::post('/bank', 'API\V1\BankController@updateAccount');
+            Route::get('/bank', 'API\V1\BankController@getAccount');
         });
 
 
