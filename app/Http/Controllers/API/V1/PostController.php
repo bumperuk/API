@@ -19,7 +19,7 @@ class PostController extends ApiController
      * @return json
      */
     function getAll(){
-        return parent::api_response(Post::paginaeete(10), 'Return paginated posts');
+        return parent::api_response(Post::paginate(10), 'Return paginated posts');
     }
 
     /**
