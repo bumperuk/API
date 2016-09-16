@@ -62,7 +62,8 @@ class StripeUser extends BaseModel
         $stripeUser->balance = 0;
         $stripeUser->save();
 
-        $user->stripeAccount = $stripeUser;
+        $user->stripe()->associate($stripeUser);
+        $user->save();
 
         return $stripeUser;
     }
@@ -152,5 +153,45 @@ class StripeUser extends BaseModel
         $account->legal_entity->last_name = $lastName;
 
         $account->save();
+    }
+
+    /**
+     * Convert the stripe account object into an array
+     *
+     * @return array
+     */
+    public function accountToArray()
+    {
+        $account = $this->account;
+
+        $legalEntity = $account->legal_entity;
+
+        $data = [
+            'address_line_one' => $legalEntity->address->line1,
+            'address_line_two' => $legalEntity->address->line2,
+            'address_city' => $legalEntity->address->city,
+            'address_county' => $legalEntity->address->state,
+            'address_country' => $legalEntity->address->country,
+            'address_postal_code' => $legalEntity->address->postal_code,
+            'date_of_birth' => $legalEntity->dob->day . '/' . $legalEntity->dob->month . '/' . $legalEntity->dob->year,
+            'first_name' => $legalEntity->first_name,
+            'last_name' => $legalEntity->last_name
+        ];
+
+        if (isset($account->external_accounts->data[0])) {
+            $externalAccount = $account->external_accounts->data[0];
+
+            $data['sort_code'] = $externalAccount->routing_number;
+            $data['account_number'] = '••••' . $externalAccount->last4;
+            $data['account_number_last_4'] = $externalAccount->last4;
+            $data['account_holder'] = $externalAccount->account_holder_name;
+        } else {
+            $data['sort_code'] = '';
+            $data['account_number'] = '';
+            $data['account_number_last_4'] = '';
+            $data['account_holder'] = '';
+        }
+
+        return $data;
     }
 }

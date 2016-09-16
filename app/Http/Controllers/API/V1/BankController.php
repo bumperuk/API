@@ -13,15 +13,34 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Mockery\CountValidator\Exception;
 
 class BankController extends ApiController
 {
+    /**
+     * Get the bank account associated with the authenticated user
+     *
+     * @return json
+     */
     public function getAccount()
     {
-        return 'true';
+        $user = Auth::user();
+        $data['has_stripe'] = $user->has_stripe;
+
+        if ($user->has_stripe) {
+            $data['account'] = $user->stripe->accountToArray();
+        } else {
+            $data['account'] = null;
+        }
+
+        return $this->api_response($data, 'bank account');
     }
 
+    /**
+     * Set the bank account details that are associated with the currently authenciated user
+     *
+     * @param Request $request The HTTP request
+     * @return json
+     */
     public function updateAccount(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -45,12 +64,11 @@ class BankController extends ApiController
 
         $user = Auth::user();
         $firstSetup = !$user->has_stripe;
+        $account = $user->stripe;
 
         try {
 
-            if ($user->has_stripe) {
-                $account = $user->stripe;
-            } else {
+            if (!$account) {
                 $account = StripeUser::setup(
                     $user,
                     $request->ip(),
@@ -85,6 +103,7 @@ class BankController extends ApiController
             //fails delete the account and start again
             if ($firstSetup) {
                 $account->delete();
+                $user->save();
             }
 
             return parent::api_response([], $e->getMessage(), false, 500);
