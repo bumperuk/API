@@ -16,7 +16,7 @@ class Post extends BaseModel
     ];
 
     protected $casts = [
-        'phone_verified' => 'boolean'
+
     ];
 
     protected $appends = [

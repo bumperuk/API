@@ -91,6 +91,7 @@ Route::group(['prefix' => 'v1'], function () {
          */
         Route::group(['prefix' => 'users'], function () {
             Route::get('/current', 'API\V1\UserController@current');
+            Route::post('/report', 'API\V1\UserController@report');
         });
 
 
