@@ -11,9 +11,22 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
+
+    <?php
+        $colours = [
+                '#e0535c',
+                '#5bceda',
+                '#68ca8b',
+                '#e09864',
+                '#b080ce',
+        ];
+
+        $bg = $colours[mt_rand(0, 4)];
+    ?>
+
     <style>
         html, body {
-            background-color: #e0535c;
+            background-color: {{$bg}};
             color: #fff;
             font-family: 'Raleway', sans-serif;
             font-weight: 100;

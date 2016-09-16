@@ -22,6 +22,7 @@ class InitialDbSetUp extends Migration
             $table->string('password', 60);
             $table->string('push_token')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
         Schema::create('verification_codes', function (Blueprint $table) {
