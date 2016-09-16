@@ -21,6 +21,12 @@ class Post extends BaseModel
 
     protected $appends = [
         'image_sizes',
+        'like_count',
+        'comment_count'
+    ];
+
+    protected $with =[
+
     ];
 
     /**
@@ -37,5 +43,43 @@ class Post extends BaseModel
         }else{
             return $this->image;
         }
+    }
+
+    /**
+     * Eager load likes
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    function likes(){
+        return $this->hasMany('App\Models\PostLike');
+    }
+
+    /**
+     * Get comment count
+     * @return mixed
+     */
+    function getLikeCountAttribute(){
+        return $this->likes()->count();
+    }
+
+    /**
+     * Eager load comments
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    function comments(){
+        return $this->hasMany('App\Models\PostComment');
+    }
+
+    /**
+     * Get comment count
+     * @return mixed
+     */
+    function getCommentCountAttribute(){
+        return $this->comments()->count();
+    }
+
+    public function setSlugAttribute($slug)
+    {
+        $count = Post::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+        $this->attributes['slug'] =  $count ? "{$slug}-{$count}" : $slug;
     }
 }

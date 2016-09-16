@@ -38,6 +38,16 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/search', 'API\V1\PostController@search');
     });
 
+    /**
+     * User routes
+     */
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', 'API\V1\UserController@getAll');
+        Route::get('/single', 'API\V1\UserController@getById');
+        Route::get('/search', 'API\V1\UserController@search');
+    });
+
+
 
     /**
      * Auth routes using JWT tokens
@@ -60,6 +70,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/likes', 'API\V1\PostLikeController@getAll');
             Route::get('/likes/single', 'API\V1\PostLikeController@getById');
             Route::post('/like', 'API\V1\PostLikeController@like');
+            Route::post('/comment', 'API\V1\PostCommentController@comment');
 
         });
 
@@ -76,6 +87,15 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/bank/payout', 'API\V1\BankController@payout');
             Route::get('/bank/transactions', 'API\V1\BankController@transactions');
         });
+
+        /**
+         * User routes
+         */
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('/current', 'API\V1\UserController@current');
+        });
+
+
 
 
     });

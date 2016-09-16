@@ -1,11 +1,13 @@
 <?php
 
-namespace DummyNamespace;
+namespace App\Http\Controllers\API\V1;
 
-use DummyRootNamespaceHttp\Requests;
+use App\Http\Requests;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
-class DummyClass extends ApiController
+class UserController extends ApiController
 {
 
     /**
@@ -13,7 +15,7 @@ class DummyClass extends ApiController
      * @return json
      */
     function getAll(){
-            return parent::api_response(DummyModel::paginate($this->page_limit), 'Return paginated posts');
+            return parent::api_response(User::paginate($this->page_limit), 'Return paginated users');
     }
 
     /**
@@ -21,7 +23,7 @@ class DummyClass extends ApiController
      * @return json
      */
     function getById(){
-        return parent::api_response(DummyModel::findOrFail(Input::get('id')), 'Return selected post');
+        return parent::api_response(User::findOrFail(Input::get('id')), 'Return selected user');
     }
 
     /**
@@ -30,10 +32,10 @@ class DummyClass extends ApiController
      */
     function search(){
         if($term = Input::get('term')){
-            $posts = DummyModel::search($term);
+            $posts = User::search($term);
         }else{
             $term = null;
-            $posts = DummyModel::query();
+            $posts = User::query();
         }
 
         if($sort = Input::get('sort')){
@@ -47,5 +49,13 @@ class DummyClass extends ApiController
             }
         }
         return parent::api_response($posts->paginate($this->page_limit), 'Return posts search for '.$term);
+    }
+
+    /**
+     * Get current user
+     * @return json
+     */
+    function current(){
+        return parent::api_response(User::findOrFail(Auth::user()->id), 'Return current user');
     }
 }
