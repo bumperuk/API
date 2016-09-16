@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\User;
 use App\Notifications\ResetPassword;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -59,7 +58,6 @@ class AuthController extends ApiController
     {
         $credentials = $request->only('email', 'password');
 
-        //TODO: make this work
         //Limit the amount of times users can login
         if ($this->hasTooManyLoginAttempts($request)) {
             return parent::api_response([], 'too many authentication attempts, try again in '.$this->lockoutTime.' seconds', false, 401);

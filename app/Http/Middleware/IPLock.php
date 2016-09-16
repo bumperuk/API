@@ -21,8 +21,8 @@ class IPLock
 
         ];
 
-        if (!in_array($request->server('REMOTE_ADDR'), $allowed) && env('IPLOCK') == true ) {
-            return response('Unauthorized.', 401);
+        if (!in_array($request->server('REMOTE_ADDR'), $allowed) && env('IPLOCK') == true && $request->route()->uri() != 'no-access' ) {
+            return redirect('/no-access');
         }
         return $next($request);
     }

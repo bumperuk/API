@@ -34,4 +34,3 @@ $factory->define(App\Models\News::class, function ($faker) {
     ];
 });
 
-

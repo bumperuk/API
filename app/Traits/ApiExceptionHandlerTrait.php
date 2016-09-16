@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Exceptions\ModelNotFoundException;
+use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -39,7 +40,7 @@ trait ApiExceptionHandlerTrait
                 $return = $this->routeError();
                 break;
             default:
-                $return = $this->badRequest($e->getMessage());
+                $return = $this->badRequest($e);
         }
         return $return;
     }
@@ -47,17 +48,28 @@ trait ApiExceptionHandlerTrait
     /**
      * Returns json response for generic bad request.
      *
-     * @param string $message
-     * @param int $statusCode
+     * @param array $e
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function badRequest($message='Bad request', $statusCode=500)
+    protected function badRequest($e)
     {
+        $message = $e->getMessage();
         if(str_contains($message, 'No query results')){
             $message = 'Sorry, We could not find what you requested';
             $statusCode = 404;
+        }else{
+            $statusCode = 500;
         }
-        return $this->jsonResponse($message, $statusCode?: 500);
+        if(Config::get('app.debug')){
+            $payload = [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTrace()
+            ];
+        }else{
+            $payload = [];
+        }
+        return $this->jsonResponse($message, $statusCode?: 500, $payload);
     }
 
     /**

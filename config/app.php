@@ -178,7 +178,7 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Sofa\Eloquence\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-        NotificationChannels\Twilio\TwilioProvider::class
+        NotificationChannels\Twilio\TwilioProvider::class,
     ],
 
     /*

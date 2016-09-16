@@ -34,4 +34,5 @@ class BaseModel extends Model
             return $q->orderBy($col, $direction);
         }
     }
+
 }

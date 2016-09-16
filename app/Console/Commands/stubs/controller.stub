@@ -13,7 +13,7 @@ class DummyClass extends ApiController
      * @return json
      */
     function getAll(){
-            return parent::api_response(DummyModel::paginate(10), 'Return paginated posts');
+            return parent::api_response(DummyModel::paginate($this->page_limit), 'Return paginated posts');
     }
 
     /**

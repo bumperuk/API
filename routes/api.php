@@ -60,6 +60,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/likes', 'API\V1\PostLikeController@getAll');
             Route::get('/likes/single', 'API\V1\PostLikeController@getById');
             Route::post('/like', 'API\V1\PostLikeController@like');
+            Route::post('/comment', 'API\V1\PostCommentController@comment');
 
         });
 

@@ -18,4 +18,10 @@ class News extends BaseModel
     public function scopePublished($q){
         return $q->where('published_at','!=', NULL);
     }
+
+    public function setSlugAttribute($slug)
+    {
+        $count = News::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+        $this->attributes['slug'] =  $count ? "{$slug}-{$count}" : $slug;
+    }
 }

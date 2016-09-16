@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Coming Soon</title>
+    <title>Access Denied - Dreamr</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -47,7 +47,7 @@
         }
 
         .title {
-            font-size: 80px;
+            font-size: 40px;
         }
 
         .links > a {
@@ -65,7 +65,6 @@
         }
         .sub {
             float: right;
-            width: auto;
         }
     </style>
 </head>
@@ -74,7 +73,7 @@
 
     <div class="content">
         <div class="title m-b-md">
-           Coming Soon
+            Sorry, you do not have permission to access this site
         </div>
         <div class="sub">
             Developed by Dreamr
