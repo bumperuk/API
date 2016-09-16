@@ -44,7 +44,7 @@ class PushNotification extends Notification
      */
     public function toOneSignal($notifiable)
     {
-        $notification =  OneSignalMessage::create()->body($this->text);
+        $notification = OneSignalMessage::create()->body($this->text);
 
         foreach ($this->data as $key => $value) {
             $notification->setData($key, $value);
@@ -62,7 +62,7 @@ class PushNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'text' => $this->text
         ];
     }
 }
