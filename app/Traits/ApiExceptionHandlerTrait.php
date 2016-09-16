@@ -41,6 +41,7 @@ trait ApiExceptionHandlerTrait
             default:
                 $return = $this->badRequest($e->getMessage());
         }
+        dd($e);
         return $return;
     }
 
