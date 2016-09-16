@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Models\StripeTransfer;
 use App\Models\StripeUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -112,14 +113,27 @@ class BankController extends ApiController
         return $this->getAccount();
     }
 
+    public function listTransfers()
+    {
+        $user = Auth::user();
+        $balance = $user->has_stripe ? $user->stripe->balance : 0;
+        $transfers = StripeTransfer::where('user_id', $user->id);
+
+        return parent::api_response([
+            'balance' => $balance,
+            'transfers' => $transfers,
+        ]);
+    }
+
     /**
      * Pay the money the user has into their bank account
      */
     public function payout()
     {
         $user = Auth::user();
+        $user->stripe->payout();
 
-        
+        return $this->listTransfers();
     }
 
 }

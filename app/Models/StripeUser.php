@@ -3,7 +3,13 @@
 namespace App\Models;
 
 use DateTime;
+use Illuminate\Support\Facades\Auth;
+use Mockery\CountValidator\Exception;
 use Stripe\Account;
+use Stripe\Balance;
+use Stripe\Charge;
+use Stripe\Stripe;
+use Stripe\Transfer;
 
 class StripeUser extends BaseModel
 {
@@ -205,10 +211,41 @@ class StripeUser extends BaseModel
         ]);
 
         $transaction = new StripeTransaction;
+        $transaction->user_id = Auth::user()->id;
         $transaction->charge_id = $charge->id;
         $transaction->data = json_encode($charge);
         $transaction->save();
 
         return $transaction;
+    }
+
+    function payout()
+    {
+        Stripe::setApiKey($this->secret_key);
+        $balance = Balance::retrieve();
+        $balance = $balance->available[0]->amount;
+
+        if ($balance == 0) {
+            return true;
+        }
+
+        $transfer = Transfer::create([
+            "amount" => $balance ,
+            "currency" => 'gbp',
+            "destination" => 'default_for_currency',
+            "description" => config('app.name') . ' payout.'
+        ]);
+
+        if ($transfer->failure_code !== null) {
+            throw new Exception('Error');
+        }
+
+        $transaction = new StripeTransfer();
+        $transaction->user_id = $this->user_id;
+        $transaction->stripe_id = $transfer->id;
+        $transaction->amount = $balance;
+        $transaction->save();
+
+        return true;
     }
 }

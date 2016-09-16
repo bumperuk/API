@@ -85,7 +85,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/bank', 'API\V1\BankController@updateAccount');
             Route::get('/bank', 'API\V1\BankController@getAccount');
             Route::post('/bank/payout', 'API\V1\BankController@payout');
-            Route::get('/bank/transactions', 'API\V1\BankController@transactions');
+            Route::get('/bank/transfers', 'API\V1\BankController@listTransfers');
         });
 
         /**
