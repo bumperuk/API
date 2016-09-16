@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
 use App\Notifications\ResetPassword;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends ApiController
 {
-    use ThrottlesLogins;
+    use AuthenticatesUsers;
 
     protected $maxLoginAttempts = 5;
     protected $lockoutTime = 600;
@@ -60,15 +61,15 @@ class AuthController extends ApiController
 
         //TODO: make this work
         //Limit the amount of times users can login
-        //if ($this->hasTooManyLoginAttempts($request)) {
-        //    return parent::api_response([], 'too many authentication attempts', false, 401);
-        //}
+        if ($this->hasTooManyLoginAttempts($request)) {
+            return parent::api_response([], 'too many authentication attempts, try again in '.$this->lockoutTime.' seconds', false, 401);
+        }
 
         $token = JWTAuth::attempt($credentials);
 
         //If the login attempt failed
         if (!$token) {
-            //$this->incrementLoginAttempts($request);
+            $this->incrementLoginAttempts($request);
             return parent::api_response([], 'invalid credentials', 401);
         }
 
