@@ -111,4 +111,15 @@ class BankController extends ApiController
 
         return $this->getAccount();
     }
+
+    /**
+     * Pay the money the user has into their bank account
+     */
+    public function payout()
+    {
+        $user = Auth::user();
+
+        
+    }
+
 }

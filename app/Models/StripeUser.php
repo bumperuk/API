@@ -194,4 +194,21 @@ class StripeUser extends BaseModel
 
         return $data;
     }
+
+    function pay($token, $amount)
+    {
+        $charge = Charge::create([
+            'amount' => round($amount * 100),
+            'currency' => 'gbp',
+            'source' => $token,
+            'destination' => $this->account_id,
+        ]);
+
+        $transaction = new StripeTransaction;
+        $transaction->charge_id = $charge->id;
+        $transaction->data = json_encode($charge);
+        $transaction->save();
+
+        return $transaction;
+    }
 }

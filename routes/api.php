@@ -73,6 +73,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/phone/verify-code', 'API\V1\AccountController@verifyPhoneCode');
             Route::post('/bank', 'API\V1\BankController@updateAccount');
             Route::get('/bank', 'API\V1\BankController@getAccount');
+            Route::post('/bank/payout', 'API\V1\BankController@payout');
+            Route::get('/bank/transactions', 'API\V1\BankController@transactions');
         });
 
 
