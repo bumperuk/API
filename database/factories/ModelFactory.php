@@ -22,15 +22,40 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Models\News::class, function ($faker) {
+$factory->define(App\Models\News::class, function (Faker\Generator $faker) {
     return [
-        'title' => $faker->sentence(mt_rand(3, 10)),
-        'teaser' => $faker->sentence(mt_rand(3, 10)),
+        'title' =>  $faker->sentence(mt_rand(3, 10)),
         'slug' => md5($faker->text(mt_rand(70, 90))).mt_rand(7, 10),
-        'content' => $faker->paragraphs(mt_rand(3, 6)),
-        'published_at' => $faker->dateTimeBetween('-1 month', '+3 days'),
+        'content' => $faker->paragraph(mt_rand(3, 6)),
+        'published_at' => $faker->dateTime(),
         'image' => 'http://placehold.it/800/'.$faker->hexcolor(),
         'author' => 1,
     ];
 });
 
+
+$factory->define(App\Models\Post::class, function (Faker\Generator $faker) {
+    return [
+        'title' => $faker->sentence(mt_rand(3, 10)),
+        'slug' => md5($faker->text(mt_rand(70, 90))).mt_rand(7, 10),
+        'content' => $faker->paragraph(mt_rand(3, 6)),
+        'image' => 'http://placehold.it/800/'.$faker->hexcolor(),
+    ];
+});
+
+
+
+$factory->define(App\Models\PostComment::class, function (Faker\Generator $faker) {
+    return [
+        'comment' => $faker->sentence(mt_rand(3, 10)),
+        'user_id' => mt_rand(1, 10),
+        'post_id' => mt_rand(1, 30)
+    ];
+});
+
+$factory->define(App\Models\PostLike::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => mt_rand(1, 10),
+        'post_id' => mt_rand(1, 30)
+    ];
+});

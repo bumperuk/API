@@ -15,6 +15,7 @@ class News extends BaseModel
         'content' => 2
     ];
 
+
     public function scopePublished($q){
         return $q->where('published_at','!=', NULL);
     }
