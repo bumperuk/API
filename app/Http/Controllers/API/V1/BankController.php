@@ -131,7 +131,10 @@ class BankController extends ApiController
     public function payout()
     {
         $user = Auth::user();
-        $user->stripe->payout();
+
+        if ($user->has_stripe) {
+            $user->stripe->payout();
+        }
 
         return $this->listTransfers();
     }
