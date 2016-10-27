@@ -41,7 +41,11 @@ class Post extends BaseModel
                 'large' => str_replace('original', 'large', $this->image),
             ];
         }else{
-            return $this->image;
+            return [
+                'small' => $this->image,
+                'medium' =>  $this->image,
+                'large' => $this->image
+            ];
         }
     }
 
