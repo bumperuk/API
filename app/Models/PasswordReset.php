@@ -20,6 +20,6 @@ class PasswordReset extends BaseModel
      */
     public function user()
     {
-        return $this->belongsTo('App\Modles\User', 'email');
+        return $this->belongsTo(User::class, 'email');
     }
 }
