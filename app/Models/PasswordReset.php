@@ -4,6 +4,9 @@ namespace App\Models;
 
 class PasswordReset extends BaseModel
 {
+    public $incrementing = false;
+    protected $primaryKey = 'token';
+
     /**
      * The attributes that should be casted to native types.
      *
@@ -20,6 +23,6 @@ class PasswordReset extends BaseModel
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'email');
+        return $this->belongsTo(User::class, 'email', 'email');
     }
 }
