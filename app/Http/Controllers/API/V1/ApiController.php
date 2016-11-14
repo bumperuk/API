@@ -28,6 +28,9 @@ class ApiController extends Controller
      * @return json response
      */
     public function api_response($body, $message = null, $success = true, $status = 200){
+        if(is_object($body)){
+            $body = $body->toArray();
+        }
         if(isset($body['data'])){
             $count = count($body['data']);
         }else{
