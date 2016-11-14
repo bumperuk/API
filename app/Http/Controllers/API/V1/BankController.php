@@ -74,7 +74,7 @@ class BankController extends ApiController
                     $user,
                     $request->ip(),
                     $request->input('first_name'),
-                    $request->input('last_ame')
+                    $request->input('last_name')
                 );
             }
 
