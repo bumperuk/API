@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\ApiControllerCreatorCommand;
+use App\Console\Commands\StartSocketCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        ApiControllerCreatorCommand::class
+        ApiControllerCreatorCommand::class,
+        StartSocketCommand::class
     ];
 
     /**
@@ -25,8 +27,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $this->scheduleSocket($schedule);
+    }
+
+    private function scheduleSocket(Schedule $schedule)
+    {
+        if (config('app.socket.enabled')) {
+            $schedule
+                ->command('socket:start')
+                ->everyMinute()
+                ->withoutOverlapping();
+        }
     }
 
     /**
