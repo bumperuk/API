@@ -15,7 +15,7 @@ class IPLock
     public function handle($request, Closure $next, $guard = null)
     {
         $allowed = [
-            '86.8.115.102', //Dreamr Office
+            '148.252.198.202', //Dreamr Office
             '192.168.10.1', //Homestead IP
             '192.168.10.10', //Homestead IP
 
