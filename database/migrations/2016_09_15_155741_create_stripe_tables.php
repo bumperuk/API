@@ -18,7 +18,7 @@ class CreateStripeTables extends Migration
             $table->string('account_id');
             $table->string('secret_key');
             $table->string('publishable_key');
-            $table->float('balance');
+            $table->float('balance')->default(0.00);
             $table->timestamps();
 
             $table->primary('user_id');
