@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
+use App\Models\User;
 use Illuminate\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,9 +21,12 @@ class SendEmail extends Job implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param $subject
+     * @param $template
+     * @param User $user
+     * @param $data
      */
-    public function __construct($subject,$template,$user,$data)
+    public function __construct($subject, $template, User $user, $data)
     {
         $this->subject = $subject;
         $this->template = $template;

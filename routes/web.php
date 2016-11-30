@@ -16,3 +16,6 @@ Route::get('/', function () {
 });
 
 Route::get('no-access', 'Controller@noAccess');
+
+Route::get('reset/password', 'Web\PasswordResetController@view');
+Route::post('reset/password', 'Web\PasswordResetController@save');
