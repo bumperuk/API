@@ -11,20 +11,24 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\StripeTransfer;
 use App\Models\StripeUser;
 use Carbon\Carbon;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class BankController extends ApiController
 {
+    use ValidatesRequests;
+
     /**
      * Get the bank account associated with the authenticated user
      *
+     * @param Request $request
      * @return json
      */
-    public function getAccount()
+    public function getAccount(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         $data['has_stripe'] = $user->has_stripe;
 
         if ($user->has_stripe) {
@@ -44,7 +48,7 @@ class BankController extends ApiController
      */
     public function updateAccount(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request, [
             'first_name' => 'required',
             'last_name' => 'required',
             'address_line_one' => 'required',
@@ -59,11 +63,7 @@ class BankController extends ApiController
             'account_holder_name' => 'required_with:sort_code,account_number',
         ]);
 
-        if ($validator->fails()) {
-            return parent::api_response([], $validator->errors()->first(), false, 400);
-        }
-
-        $user = Auth::user();
+        $user = $request->user();
         $firstSetup = !$user->has_stripe;
         $account = $user->stripe;
 
@@ -110,12 +110,18 @@ class BankController extends ApiController
             return parent::api_response([], $e->getMessage(), false, 500);
         }
 
-        return $this->getAccount();
+        return $this->getAccount($request);
     }
 
-    public function listTransfers()
+    /**
+     * List transfers between stripe and the currently authenticated bank account.
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function listTransfers(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         $balance = $user->has_stripe ? $user->stripe->balance : 0;
         $transfers = StripeTransfer::where('user_id', $user->id);
 
@@ -127,16 +133,19 @@ class BankController extends ApiController
 
     /**
      * Pay the money the user has into their bank account
+     * 
+     * @param Request $request
+     * @return json
      */
-    public function payout()
+    public function payout(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
 
         if ($user->has_stripe) {
             $user->stripe->payout();
         }
 
-        return $this->listTransfers();
+        return $this->listTransfers($request);
     }
 
 }
