@@ -19,7 +19,8 @@ class InitialDbSetUp extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->boolean('phone_verified')->default(0);
-            $table->string('password', 60);
+            $table->string('password', 60)->nullable();
+            $table->string('facebook_id')->nullable();
             $table->string('push_token')->nullable();
             $table->rememberToken();
             $table->softDeletes();
