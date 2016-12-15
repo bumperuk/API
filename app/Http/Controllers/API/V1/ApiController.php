@@ -41,7 +41,8 @@ class ApiController extends Controller
             'result' => [
                 'success' => $success,
                 'message' => $message,
-                'count' => $count,],
+                'count' => $count,
+            ],
             'response_payload' => $body
         ];
         return Response::json($payload, $status);
