@@ -14,12 +14,7 @@ class IPLock
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $allowed = [
-            '148.252.198.202', //Dreamr Office
-            '192.168.10.1', //Homestead IP
-            '192.168.10.10', //Homestead IP
-
-        ];
+        $allowed = config('iplock.ips');
 
         if (!in_array($request->server('REMOTE_ADDR'), $allowed) && env('IPLOCK') == true && $request->route()->uri() != 'no-access' ) {
             return redirect('/no-access');

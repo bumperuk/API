@@ -96,9 +96,5 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/report', 'API\V1\UserController@report');
         });
 
-
-
-
-
     });
 });

@@ -8,6 +8,7 @@ namespace App\Http\Controllers\API\V1;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
 
@@ -25,7 +26,7 @@ class ApiController extends Controller
      * @param null $message
      * @param bool $success
      * @param int $status
-     * @return json response
+     * @return JsonResponse response
      */
     public function api_response($body, $message = null, $success = true, $status = 200){
         if(is_object($body)){

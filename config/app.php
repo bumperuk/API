@@ -81,6 +81,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Web Socket Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Turn on web sockets for the project and start it using schedule:run by
+    | setting enabled to true.
+    |
+    */
+
+    'socket' => [
+
+        'enabled' => false,
+        'port' => 8080,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Fallback Locale
     |--------------------------------------------------------------------------
     |
@@ -166,7 +183,8 @@ return [
         /*
          * Package Service Providers...
          */
-
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
+        
         /*
          * Application Service Providers...
          */

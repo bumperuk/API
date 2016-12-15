@@ -11,8 +11,13 @@
 |
 */
 
+require('debug.php');
+
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('no-access', 'Controller@noAccess');
+
+Route::get('reset/password', 'Web\PasswordResetController@view');
+Route::post('reset/password', 'Web\PasswordResetController@save');

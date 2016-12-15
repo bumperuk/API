@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
+use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,16 @@ use Illuminate\Foundation\Inspiring;
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->describe('Display an inspiring quote');
+Artisan::command('user:token {userId}', function ($userId) {
+
+    $user = User::find($userId);
+
+    if (!$user) {
+        $this->info('No user with that ID');
+    }
+
+    $token = JWTAuth::fromUser($user);
+    $this->info("Token for {$user->email}:");
+    $this->info($token);
+
+})->describe('Generate a token for a user.');

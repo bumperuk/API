@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\User;
 use App\Notifications\ResetPassword;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -12,6 +13,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends ApiController
 {
+    use ValidatesRequests;
     use AuthenticatesUsers;
 
     protected $maxLoginAttempts = 5;
@@ -25,17 +27,13 @@ class AuthController extends ApiController
      */
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request, [
             'name' => 'required|string|between:2,255',
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|email|unique:users',
             'phone' => 'required|string|unique:users',
             'password' => 'required'
         ]);
-
-        if ($validator->fails()) {
-            return parent::api_response([], $validator->errors()->first(), false, 400);
-        }
 
         $user = new User();
         $user->name = $request->input('name');
@@ -71,7 +69,7 @@ class AuthController extends ApiController
             return parent::api_response([], 'invalid credentials', 401);
         }
 
-        $user = User::findOrFail(Auth::user()->id);
+        $user = $request->user()->fresh();
 
         return parent::api_response([
             'token' => $token,
@@ -87,13 +85,9 @@ class AuthController extends ApiController
      */
     public function requestPassword(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request, [
             'email' => 'required|email',
         ]);
-
-        if ($validator->fails()) {
-            return parent::api_response([], $validator->errors()->first(), false, 400);
-        }
 
         $user = User::where('email', $request->input('email'))->firstOrFail();
         $reset = $user->createPasswordReset($request->ip());

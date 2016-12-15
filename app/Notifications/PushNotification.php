@@ -20,9 +20,10 @@ class PushNotification extends Notification
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param $text
+     * @param array $data
      */
-    public function __construct($text, $data)
+    public function __construct($text, array $data)
     {
         $this->text = $text;
         $this->data = $data;

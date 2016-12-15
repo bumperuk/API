@@ -4,15 +4,13 @@ namespace App\Traits;
 
 use App\Http\Controllers\API\V1\ApiController;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Exceptions\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait ApiExceptionHandlerTrait
 {
@@ -27,6 +25,9 @@ trait ApiExceptionHandlerTrait
     protected function getJsonResponseForException(Request $request, Exception $e)
     {
         switch(true) {
+            case $this->isValidationException($e):
+                $return = $this->validationError($e);
+                break;
             case $this->isModelNotFoundException($e):
                 $return = $this->modelNotFound();
                 break;
@@ -43,6 +44,17 @@ trait ApiExceptionHandlerTrait
                 $return = $this->badRequest($e);
         }
         return $return;
+    }
+
+    /**
+     * Handle a validation error
+     *
+     * @param ValidationException $e
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function validationError(ValidationException $e)
+    {
+        return $this->jsonResponse($e->validator->errors()->first(), 400, []);
     }
 
     /**
@@ -147,6 +159,11 @@ trait ApiExceptionHandlerTrait
     protected function isBadRouteException(Exception $e)
     {
         return $e instanceof NotFoundHttpException;
+    }
+
+    protected function isValidationException(Exception $e)
+    {
+        return $e instanceof ValidationException;
     }
 
 }

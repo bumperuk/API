@@ -9,15 +9,24 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Notifications\VerifyPhone;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends ApiController
 {
-    public function view()
+    use ValidatesRequests;
+
+    /**
+     * View profile for the currently signed in user
+     *
+     * @param Request $request
+     * @return json
+     */
+    public function view(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
 
         return parent::api_response(['account' => $user]);
     }
@@ -30,7 +39,7 @@ class AccountController extends ApiController
      */
     public function requestPhoneCode(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
 
         if ($user->phone_verified) {
             return parent::api_response([], 'phone already verified', false, 401);
@@ -50,15 +59,11 @@ class AccountController extends ApiController
      */
     public function verifyPhoneCode(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request, [
             'code' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return parent::api_response([], $validator->errors()->first(), false, 400);
-        }
-
-        $user = Auth::user();
+        $user = $request->user();
         
         if (!$user->useVerificationCode($request->input('code'))) {
             return parent::api_response([], 'invalid verification code', false, 400);
@@ -77,15 +82,11 @@ class AccountController extends ApiController
      */
     public function savePushToken(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request, [
             'token' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return parent::api_response([], $validator->errors()->first(), false, 400);
-        }
-
-        $user = Auth::user();
+        $user = $request->user();
         $user->push_token = $request->input('token');
         $user->save();
 
