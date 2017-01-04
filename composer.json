@@ -15,8 +15,7 @@
         "laravel-notification-channels/twilio": "^1.0",
         "laravel-notification-channels/onesignal": "^1.0",
         "paragonie/random_compat": "~1.4",
-        "cboden/ratchet": "*",
-        "rap2hpoutre/laravel-log-viewer": "*"
+        "cboden/ratchet": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
