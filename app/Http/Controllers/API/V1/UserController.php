@@ -18,7 +18,7 @@ class UserController extends ApiController
      * @return json
      */
     function getAll(){
-            return parent::api_response(User::paginate($this->page_limit), 'Return paginated users');
+        return parent::api_response(User::paginate($this->page_limit), 'Return paginated users');
     }
 
     /**
