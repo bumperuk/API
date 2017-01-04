@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use Closure;
 use GuzzleHttp\Client;
 
 /**
@@ -11,9 +12,8 @@ use GuzzleHttp\Client;
  */
 class Facebook
 {
-    private $profile;
+    private $facebook;
     private $request;
-    private $merged;
 
     /**
      * Facebook constructor.
@@ -25,7 +25,6 @@ class Facebook
     {
         $this->fetchFacebook($accessToken);
         $this->request = $request;
-        $this->merged = [];
     }
 
     /**
@@ -44,24 +43,54 @@ class Facebook
             throw new \Exception('Invalid access token');
         }
 
-        $this->profile = json_decode($response->getBody()->getContents(), 1);
+        $this->facebook = json_decode($response->getBody()->getContents(), 1);
     }
 
     /**
-     * @return bool
-     */
-    public function hasMissing(): bool
-    {
-        return isset(
-            $this->merged['first_name']
-        );
-    }
-
-    /**
+     * Check if an array of params are there.
      *
+     * @param array $params
+     * @return array
      */
-    public function missing(): array
+    public function has(array $params): array
     {
+        foreach ($params as $param) {
+            if (!isset($this->facebook[$param]) && !isset($this->request[$param])) {
+                return false;
+            }
+        }
 
+        return true;
     }
+
+
+    /**
+     * Get a param from either facebook or the request and optionally transform it
+     *
+     * @param string $key
+     * @param Closure|null $facebookTransform
+     * @param Closure|null $requestTransform
+     * @return mixed
+     */
+    public function param(string $key, Closure $facebookTransform = null, Closure $requestTransform = null)
+    {
+        if (isset($this->facebook[$key])) {
+            if ($facebookTransform) {
+                return $facebookTransform($this->facebook[$key]);
+            } else {
+                return $this->facebook[$key];
+            }
+        }
+
+        if (isset($this->request[$key])) {
+            if ($requestTransform) {
+                return $requestTransform($this->request[$key]);
+            } else {
+                return $this->request[$key];
+            }
+        }
+
+        return null;
+    }
+
 }

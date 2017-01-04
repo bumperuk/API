@@ -18,8 +18,6 @@ use Illuminate\Support\Facades\Validator;
 
 class BankController extends ApiController
 {
-    use ValidatesRequests;
-
     /**
      * Get the bank account associated with the authenticated user
      *

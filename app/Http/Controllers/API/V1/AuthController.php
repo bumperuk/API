@@ -13,7 +13,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends ApiController
 {
-    use ValidatesRequests;
     use AuthenticatesUsers;
 
     protected $maxLoginAttempts = 5;

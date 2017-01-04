@@ -10,15 +10,15 @@ namespace App\Http\Controllers\API\V1;
 
 
 use App\Facebook;
+use App\FacebookParamException;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class FacebookController extends ApiController
 {
-    use ValidatesRequests;
-
     /**
      * Attempt to either login or register a facebook user
      *
@@ -32,16 +32,17 @@ class FacebookController extends ApiController
         ]);
 
         $facebook = new Facebook($request->input('access_token'), $request->all());
+        $missing = $facebook->has(['name', 'username', 'email', 'phone']);
 
-        if ($facebook->hasMissing()) {
-            return parent::api_response(['missing' => $facebook->missing()]);
+        if (count($missing) > 0) {
+            $this->api_response(['missing' => $missing], 'Missing params from facebook and request', false, 400);
         }
 
         $user = new User();
-        $user->name = $facebook->param(['first_name', 'last_name'], 'name');
-        $user->username = $facebook->param(null, 'username');
-        $user->email = $facebook->param('email', 'email');
-        $user->phone = $facebook->param('phone', 'phone');
+        $user->name = $facebook->param('name');
+        $user->username = $facebook->param('username');
+        $user->email = $facebook->param('email');
+        $user->phone = $facebook->param('phone');
         $user->save();
 
         return parent::api_response([

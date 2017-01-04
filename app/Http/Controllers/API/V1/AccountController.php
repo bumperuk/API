@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AccountController extends ApiController
 {
-    use ValidatesRequests;
-
     /**
      * View profile for the currently signed in user
      *
