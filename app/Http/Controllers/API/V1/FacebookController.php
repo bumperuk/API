@@ -39,10 +39,10 @@ class FacebookController extends ApiController
         }
 
         $user = new User();
-        $user->name = $facebook->param('name');
-        $user->username = $facebook->param('username');
-        $user->email = $facebook->param('email');
-        $user->phone = $facebook->param('phone');
+        $user->name = $facebook->input('name');
+        $user->username = $facebook->input('username');
+        $user->email = $facebook->input('email');
+        $user->phone = $facebook->input('phone');
         $user->save();
 
         return parent::api_response([

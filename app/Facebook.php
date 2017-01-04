@@ -3,6 +3,8 @@
 namespace App;
 use Closure;
 use GuzzleHttp\Client;
+use Intervention\Image\Image;
+use Intervention\Image\Facades\Image as ImageFacade;
 
 /**
  * Created by PhpStorm.
@@ -12,6 +14,7 @@ use GuzzleHttp\Client;
  */
 class Facebook
 {
+    private $accessToken;
     private $facebook;
     private $request;
 
@@ -23,6 +26,7 @@ class Facebook
      */
     public function __construct(string $accessToken, array $request)
     {
+        $this->accessToken = $accessToken;
         $this->fetchFacebook($accessToken);
         $this->request = $request;
     }
@@ -54,13 +58,15 @@ class Facebook
      */
     public function has(array $params): array
     {
+        $missing = [];
+
         foreach ($params as $param) {
             if (!isset($this->facebook[$param]) && !isset($this->request[$param])) {
-                return false;
+                $missing[] = $param;
             }
         }
 
-        return true;
+        return $missing;
     }
 
 
@@ -72,7 +78,7 @@ class Facebook
      * @param Closure|null $requestTransform
      * @return mixed
      */
-    public function param(string $key, Closure $facebookTransform = null, Closure $requestTransform = null)
+    public function input(string $key, Closure $facebookTransform = null, Closure $requestTransform = null)
     {
         if (isset($this->facebook[$key])) {
             if ($facebookTransform) {
@@ -93,4 +99,17 @@ class Facebook
         return null;
     }
 
+    /**
+     * Fetch the profile image for the facebook user
+     *
+     * @return Image
+     */
+    public function photo(): Image
+    {
+        $url = 'https://graph.facebook.com/' . $this->facebook['id'] . '/picture' .
+            '?type=large&redirect=true&width=500&height=500' .
+            '&access_token=' . $this->accessToken;
+
+        return ImageFacade::make($url);
+    }
 }
