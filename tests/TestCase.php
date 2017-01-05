@@ -46,10 +46,6 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function withNewLogin(string $email = null)
     {
-        if (!$email) {
-            $email = str_random('10') . '@email.com';
-        }
-
         $user = factory(App\Models\User::class)->create(['email' => $email]);
         return $this->actingAs($user);
     }
@@ -67,10 +63,46 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         return $this->json($method, $url, $data, $headers)->seeJsonStructure([
             'result' => [
-                'status',
+                'success',
                 'count'
             ],
             'response_payload'
+        ]);
+    }
+
+    /**
+     * Wrapper for seeJsonStructure that checks the payload rather than the whole response.
+     *
+     * @param array $structure
+     * @return $this
+     */
+    public function seePayloadStructure(array $structure)
+    {
+        return $this->seeJsonStructure([
+            'response_payload' => [
+                $structure
+            ]
+        ]);
+    }
+
+    /**
+     * Wrapper for seeJsonStructure that checks the payload rather than the whole response.
+     *
+     * @param array $structure
+     * @return $this
+     */
+    public function seePaginationStructure(array $structure)
+    {
+        return $this->seeJsonStructure([
+            'response_payload' => [
+                'total',
+                'per_page',
+                'current_page',
+                'last_page',
+                'from',
+                'to',
+                'data' => $structure
+            ]
         ]);
     }
 }

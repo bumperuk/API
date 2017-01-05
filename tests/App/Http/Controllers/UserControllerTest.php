@@ -10,6 +10,13 @@ class UserControllerTest extends TestCase
 {
     public function testListUsers()
     {
-        $this->withNewLogin('test@test.com')->jsonValidate('GET', 'users');
+        $this
+            ->withNewLogin('test@test.com')
+            ->jsonValidate('GET', 'api/v1/users')
+            ->seePaginationStructure([
+                '*' => [
+                    'id', 'created_at', 'updated_at'
+                ]
+            ]);
     }
 }
