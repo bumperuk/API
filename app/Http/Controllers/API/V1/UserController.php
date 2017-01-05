@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Input;
 
 class UserController extends ApiController
 {
-
     /**
      * Get All
      * @return json

@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $with = [
-        'stripe'
+        
     ];
 
     /**
@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'email', 'password',
     ];
 
     /**
@@ -34,7 +34,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'email', 'phone',  'password', 'remember_token',
+        'email', 'password', 'remember_token',
     ];
 
     /**
@@ -43,7 +43,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'phone_verified' => 'boolean',
+
     ];
 
     /**
@@ -52,7 +52,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'has_stripe'
+
     ];
 
     /**
@@ -60,26 +60,6 @@ class User extends Authenticatable
      */
     function setPasswordAttribute($raw){
         $this->attributes['password'] = Hash::make($raw);
-    }
-
-    /**
-     * Determines if the user has a stripe account connected
-     *
-     * @return bool
-     */
-    function getHasStripeAttribute()
-    {
-        return $this->stripe !== null;
-    }
-
-    /**
-     * The stripe account associated with the users account
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    function stripe()
-    {
-        return $this->hasOne('App\Models\StripeUser');
     }
 
     /**
@@ -127,60 +107,6 @@ class User extends Authenticatable
         $this->password = $password;
 
         return true;
-    }
-
-    /**
-     * Create a verification code for the users phone.
-     *
-     * @return VerificationCode
-     */
-    public function createVerificationCode()
-    {
-        //Only allow one verification code at a time
-        VerificationCode::where('user_id', $this->id)->delete();
-
-        $verification = new VerificationCode();
-        $verification->user_id = $this->id;
-        $verification->code = mt_rand(10000, 99999);
-        $verification->save();
-
-        return $verification;
-    }
-
-    /**
-     * Attempt to verify the users phone using a verification code
-     *
-     * @param string $code The code
-     * @return bool True if the phone was verified
-     */
-    public function useVerificationCode($code)
-    {
-        $code = VerificationCode::where('user_id', $this->id)->where('code', $code)->first();
-
-        if (!$code) {
-            return false;
-        }
-
-        $code->delete();
-        $this->phone_verified = true;
-
-        return true;
-    }
-
-    /**
-     * Route email notifications to the user
-     */
-    public function routeNotificationForEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * Route SMS notifications to the user
-     */
-    public function routeNotificationForTwilio()
-    {
-        return $this->phone;
     }
 
     /**
