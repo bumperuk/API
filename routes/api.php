@@ -30,7 +30,8 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::get('categories', 'API\V1\CategoriesController@get');
-    
+    Route::get('adverts', 'API\V1\AdvertController@get');
+
     /**
      * Auth routes using JWT tokens
      */

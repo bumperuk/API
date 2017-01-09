@@ -62,7 +62,7 @@ class AppDataControllerTest extends TestCase
             'value' => 'UniqueBodyTypeValue'
         ]);
 
-        factory(\App\Models\Doors::class)->create([
+        factory(\App\Models\Door::class)->create([
             'value' => 'UniqueDoorValue'
         ]);
 

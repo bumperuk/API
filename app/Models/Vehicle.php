@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Doors extends BaseModel
+class Vehicle extends BaseModel
 {
     //
 }

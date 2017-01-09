@@ -14,7 +14,7 @@ use App\Models\Make;
 use App\Models\Model;
 use App\Models\Colour;
 use App\Models\Condition;
-use App\Models\Doors;
+use App\Models\Door;
 use App\Models\Engine;
 use App\Models\Fuel;
 use App\Models\Mileage;
@@ -36,7 +36,7 @@ class AppDataController extends ApiController
             'years' => Year::all(),
             'colours' => Colour::all(),
             'body_types' => BodyType::all(),
-            'doors' => Doors::all(),
+            'doors' => Door::all(),
             'sizes' => Size::all(),
             'mileages' => Mileage::all(),
             'fuels' => Fuel::all(),
