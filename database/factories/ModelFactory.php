@@ -38,6 +38,9 @@ $factory->define(App\Models\Model::class, function (Faker\Generator $faker) {
         'make_id' => function() {
             return factory(App\Models\Make::class)->create()->id;
         },
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
         'value' => $faker->firstName,
     ];
 });

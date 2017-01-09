@@ -28,7 +28,7 @@ class AddCategoryToModelsTable extends Migration
     {
         Schema::table('models', function (Blueprint $table) {
             $table->dropForeign('models_category_id_foreign');
-            $table->dropForeign('category_id');
+            $table->dropColumn('category_id');
         });
     }
 }
