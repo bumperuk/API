@@ -12,7 +12,7 @@ class UserControllerTest extends TestCase
     {
         $this
             ->withNewLogin('test@test.com')
-            ->jsonValidate('GET', 'api/v1/users')
+            ->apiCall('GET', 'api/v1/users')
             ->seePaginationStructure([
                 '*' => [
                     'id', 'created_at', 'updated_at'

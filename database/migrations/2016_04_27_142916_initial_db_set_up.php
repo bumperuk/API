@@ -38,8 +38,7 @@ class InitialDbSetUp extends Migration
      */
     public function down()
     {
-        Schema::drop('password_resets');
-        Schema::drop('verification_codes');
         Schema::drop('users');
+        Schema::drop('password_resets');
     }
 }

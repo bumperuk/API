@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
@@ -59,7 +60,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param array $headers
      * @return $this
      */
-    public function jsonValidate(string $method, string $url, $data = [], $headers = [])
+    public function apiCall(string $method, string $url, $data = [], $headers = [])
     {
         return $this->json($method, $url, $data, $headers)->seeJsonStructure([
             'result' => [
@@ -68,6 +69,32 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
             ],
             'response_payload'
         ]);
+    }
+
+
+    /**
+     * Wrapper to check if a response contains an error.
+     *
+     * @param int $status
+     * @return $this
+     */
+    public function seeError(int $status)
+    {
+        return $this->seeJson([
+            'success' => false
+        ])->assertResponseStatus($status);
+    }
+
+    /**
+     * Wrapper to check if a response was successful.
+     *
+     * @return $this
+     */
+    public function seeSuccess()
+    {
+        return $this->seeJson([
+            'success' => true
+        ])->assertResponseStatus(200);
     }
 
     /**
@@ -80,7 +107,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         return $this->seeJsonStructure([
             'response_payload' => [
-                $structure
+                'data' => $structure
             ]
         ]);
     }

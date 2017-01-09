@@ -27,18 +27,12 @@ class AuthController extends ApiController
     public function register(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|between:2,255',
-            'username' => 'required|string|max:255|unique:users',
             'email' => 'required|email|unique:users',
-            'phone' => 'required|string|unique:users',
             'password' => 'required'
         ]);
 
         $user = new User();
-        $user->name = $request->input('name');
-        $user->username = $request->input('username');
         $user->email = $request->input('email');
-        $user->phone = $request->input('phone');
         $user->password = $request->input('password');
         $user->save();
 
