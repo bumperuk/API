@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Created by PhpStorm.
@@ -26,12 +27,56 @@ class AuthControllerTest extends TestCase
             ->seeError(400);
     }
 
-    public function testValidResistration()
+    public function testValidRegistration()
     {
         $this
             ->apiCall('POST', 'api/v1/auth/register', [
                 'email' => 'test@email.com',
                 'password' => 'password',
+            ])
+            ->seeSuccess()
+            ->seePayloadStructure([
+                'token',
+                'user'
+            ]);
+    }
+
+    public function testInvalidLogin()
+    {
+        $this
+            ->apiCall('POST', 'api/v1/auth/login', [
+                'email' => 'test@email.com',
+                'password' => 'Password123'
+            ])
+            ->seeError(401);
+    }
+
+    public function testInvalidPasswordLogin()
+    {
+        factory(\App\Models\User::class)->create([
+            'email' => 'test@email.com',
+            'password' => Hash::make('Password123')
+        ]);
+
+        $this
+            ->apiCall('POST', 'api/v1/auth/login', [
+                'email' => 'test@email.com',
+                'password' => 'WrongPassword'
+            ])
+            ->seeError(401);
+    }
+
+    public function testValidLogin()
+    {
+        factory(\App\Models\User::class)->create([
+            'email' => 'test@email.com',
+            'password' => 'Password123',
+        ]);
+
+        $this
+            ->apiCall('POST', 'api/v1/auth/login', [
+                'email' => 'test@email.com',
+                'password' => 'Password123'
             ])
             ->seeSuccess()
             ->seePayloadStructure([

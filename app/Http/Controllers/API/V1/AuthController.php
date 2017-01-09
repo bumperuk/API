@@ -59,7 +59,7 @@ class AuthController extends ApiController
         //If the login attempt failed
         if (!$token) {
             $this->incrementLoginAttempts($request);
-            return parent::api_response([], 'invalid credentials', 401);
+            return parent::api_response([], 'invalid credentials', false, 401);
         }
 
         $user = $request->user()->fresh();
