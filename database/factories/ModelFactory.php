@@ -17,3 +17,92 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'password' => bcrypt('password'),
     ];
 });
+
+
+$factory->define(App\Models\CarMake::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->firstName,
+    ];
+});
+
+$factory->define(App\Models\CarModel::class, function (Faker\Generator $faker) {
+    return [
+        'car_make_id' => function() {
+            return factory(App\Models\CarMake::class)->create()->id;
+        },
+        'value' => $faker->firstName,
+    ];
+});
+
+$factory->define(App\Models\Condition::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomElements(['New', 'Used']),
+    ];
+});
+
+$factory->define(App\Models\PriceRange::class, function (Faker\Generator $faker) {
+    return [
+        'minimum' => $faker->randomNumber(4, true),
+        'maximum' => $faker->randomNumber(4, true)
+    ];
+});
+
+$factory->define(App\Models\Year::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->year,
+    ];
+});
+
+$factory->define(App\Models\Colour::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->colorName,
+    ];
+});
+
+$factory->define(App\Models\BodyType::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomAscii,
+    ];
+});
+
+$factory->define(App\Models\Doors::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomElements([1, 2, 3, 4, 5, 6]),
+    ];
+});
+
+$factory->define(App\Models\Size::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomElements(['small', 'medium', 'large']),
+    ];
+});
+
+$factory->define(App\Models\Mileage::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomNumber(5, true) . ' - ' . $faker->randomNumber(5, true),
+    ];
+});
+
+$factory->define(App\Models\Fuel::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomElements(['petrol', 'hybrid', 'electric'])
+    ];
+});
+
+$factory->define(App\Models\Transmission::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomLetter
+    ];
+});
+
+$factory->define(App\Models\Engine::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomLetter
+    ];
+});
+
+$factory->define(App\Models\TaxBand::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomElements(['a', 'b', 'c'])
+    ];
+});

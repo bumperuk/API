@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Support\Facades\Hash;
 
 /**
  * Created by PhpStorm.
@@ -55,7 +54,7 @@ class AuthControllerTest extends TestCase
     {
         factory(\App\Models\User::class)->create([
             'email' => 'test@email.com',
-            'password' => Hash::make('Password123')
+            'password' => 'Password123'
         ]);
 
         $this
