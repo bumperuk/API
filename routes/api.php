@@ -37,6 +37,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'jwt'], function () {
 
 
+        Route::post('auth/logout', 'API\V1\AuthController@logout');
+
         /**
          * Account routes
          */

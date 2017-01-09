@@ -11,7 +11,7 @@ class UserControllerTest extends TestCase
     public function testListUsers()
     {
         $this
-            ->withNewLogin('test@test.com')
+            ->withNewToken()
             ->apiCall('GET', 'api/v1/users')
             ->seePaginationStructure([
                 '*' => [

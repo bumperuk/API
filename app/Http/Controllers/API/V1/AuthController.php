@@ -74,7 +74,7 @@ class AuthController extends ApiController
      * Request a password reset email
      *
      * @param Request $request
-     * @return json
+     * @return \Illuminate\Http\JsonResponse
      */
     public function requestPassword(Request $request)
     {
@@ -87,5 +87,19 @@ class AuthController extends ApiController
         $user->notify(new ResetPassword($reset));
 
         return parent::api_response([]);
+    }
+
+    /**
+     * Log a user out
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+        $user->push_token = null;
+
+        return $this->api_response([]);
     }
 }

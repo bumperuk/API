@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
+    private $jwtToken = null;
+
     /**
      * The base URL to use while testing the application.
      *
@@ -29,6 +31,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
     public function setUp()
     {
+        $this->jwtToken = null;
         parent::setUp();
         Artisan::call('migrate');
     }
@@ -40,15 +43,17 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     }
 
     /**
-     * Create a user using the user model factory and 'act as' it.
+     * Create a new token to use in api call requests
      *
      * @param string $email
      * @return $this
      */
-    public function withNewLogin(string $email = null)
+    public function withNewToken(string $email = null)
     {
-        $user = factory(App\Models\User::class)->create(['email' => $email]);
-        return $this->actingAs($user);
+        $data = $email ? ['email' => $email] : [];
+        $user = factory(App\Models\User::class)->create($data);
+        $this->jwtToken = JWTAuth::fromUser($user);
+        return $this;
     }
 
     /**
@@ -62,6 +67,10 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function apiCall(string $method, string $url, $data = [], $headers = [])
     {
+        if ($this->jwtToken) {
+            $headers['Authorization'] = 'Bearer ' . $this->jwtToken;
+        }
+
         return $this->json($method, $url, $data, $headers)->seeJsonStructure([
             'result' => [
                 'success',

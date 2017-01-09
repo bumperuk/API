@@ -83,4 +83,19 @@ class AuthControllerTest extends TestCase
                 'user'
             ]);
     }
+
+    public function testInvalidLogout()
+    {
+        $this
+            ->apiCall('POST', 'api/v1/auth/logout')
+            ->seeError(400);
+    }
+
+    public function testValidLogout()
+    {
+        $this
+            ->withNewToken()
+            ->apiCall('POST', 'api/v1/auth/logout')
+            ->seeSuccess();
+    }
 }
