@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class PriceRange extends Model
+class PriceRange extends BaseModel
 {
     protected $appends = [
         'value'

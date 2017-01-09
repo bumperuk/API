@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddMakesToModels extends Migration
+class AddCategoryToModelsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddMakesToModels extends Migration
     public function up()
     {
         Schema::table('models', function (Blueprint $table) {
-            $table->integer('make_id')->unsigned()->after('id');
-            $table->foreign('make_id')->references('id')->on('makes');
+            $table->integer('category_id')->unsigned()->after('make_id');
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
@@ -27,8 +27,8 @@ class AddMakesToModels extends Migration
     public function down()
     {
         Schema::table('models', function (Blueprint $table) {
-            $table->dropForeign('models_make_id_foreign');
-            $table->dropColumn('make_id');
+            $table->dropForeign('models_category_id_foreign');
+            $table->dropForeign('category_id');
         });
     }
 }

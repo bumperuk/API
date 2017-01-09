@@ -10,8 +10,8 @@ namespace App\Http\Controllers\API\V1;
 
 
 use App\Models\BodyType;
-use App\Models\CarMake;
-use App\Models\CarModel;
+use App\Models\Make;
+use App\Models\Model;
 use App\Models\Colour;
 use App\Models\Condition;
 use App\Models\Doors;
@@ -29,8 +29,8 @@ class AppDataController extends ApiController
     public function get()
     {
         $data = [
-            'makes' => CarMake::all(),
-            'models' => CarModel::all(),
+            'makes' => Make::all(),
+            'models' => Model::all(),
             'conditions' => Condition::all(),
             'price_ranges' => PriceRange::all(),
             'years' => Year::all(),

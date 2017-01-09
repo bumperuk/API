@@ -29,8 +29,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/', 'API\V1\UserController@getAll');
     });
 
-
-
+    Route::get('categories', 'API\V1\CategoriesController@get');
+    
     /**
      * Auth routes using JWT tokens
      */

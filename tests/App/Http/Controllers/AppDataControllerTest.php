@@ -33,11 +33,11 @@ class AppDataControllerTest extends TestCase
 
     public function testIfValuesArePopulates()
     {
-        factory(\App\Models\CarMake::class)->create([
+        factory(\App\Models\Make::class)->create([
             'value' => 'UniqueMakeValue'
         ]);
 
-        factory(\App\Models\CarModel::class)->create([
+        factory(\App\Models\Model::class)->create([
             'value' => 'UniqueModelValue'
         ]);
 

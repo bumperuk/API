@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Doors extends Model
+class Doors extends BaseModel
 {
     //
 }

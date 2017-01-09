@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Fuel extends Model
+class Fuel extends BaseModel
 {
     //
 }

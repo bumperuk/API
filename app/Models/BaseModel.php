@@ -10,9 +10,9 @@ namespace App\Models;
 
 
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class BaseModel extends Model
+class BaseModel extends Eloquent
 {
     /**
      * Custom search order function to be used in conjunction with the searchable trait.

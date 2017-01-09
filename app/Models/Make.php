@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class ReportedUser extends BaseModel
+class Make extends BaseModel
 {
     //
 }

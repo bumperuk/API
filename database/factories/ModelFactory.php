@@ -14,21 +14,29 @@
 $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     return [
         'email' => $faker->email,
-        'password' => bcrypt('password'),
+        'password' => 'password',
     ];
 });
 
+$factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->firstName,
+        'image_1x' => $faker->imageUrl(),
+        'image_2x' => $faker->imageUrl(),
+        'image_3x' => $faker->imageUrl()
+    ];
+});
 
-$factory->define(App\Models\CarMake::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Make::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->firstName,
     ];
 });
 
-$factory->define(App\Models\CarModel::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Model::class, function (Faker\Generator $faker) {
     return [
-        'car_make_id' => function() {
-            return factory(App\Models\CarMake::class)->create()->id;
+        'make_id' => function() {
+            return factory(App\Models\Make::class)->create()->id;
         },
         'value' => $faker->firstName,
     ];
