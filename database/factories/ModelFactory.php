@@ -174,3 +174,14 @@ $factory->define(App\Models\VehiclePhoto::class, function (Faker\Generator $fake
         'url' => $faker->imageUrl()
     ];
 });
+
+$factory->define(App\Models\Favourite::class, function (Faker\Generator $faker) {
+    return [
+        'vehicle_id' => function() {
+            return factory(\App\Models\Vehicle::class)->create()->id;
+        },
+        'user_id' => function() {
+            return factory(\App\Models\User::class)->create()->id;
+        },
+    ];
+});

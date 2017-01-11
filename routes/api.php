@@ -22,13 +22,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/password/request', 'API\V1\AuthController@requestPassword');
     });
 
-    /**
-     * User routes
-     */
-    Route::group(['prefix' => 'users'], function () {
-        Route::get('/', 'API\V1\UserController@getAll');
-    });
-
     Route::get('categories', 'API\V1\CategoriesController@get');
     Route::get('adverts', 'API\V1\AdvertController@get');
 
@@ -39,6 +32,11 @@ Route::group(['prefix' => 'v1'], function () {
 
 
         Route::post('auth/logout', 'API\V1\AuthController@logout');
+
+        Route::group(['prefix' => 'favourites'], function () {
+            Route::put('/', 'API\V1\FavouriteController@save');
+            Route::get('/', 'API\V1\FavouriteController@view');
+        });
 
         /**
          * Account routes
@@ -52,7 +50,6 @@ Route::group(['prefix' => 'v1'], function () {
          * User routes
          */
         Route::group(['prefix' => 'users'], function () {
-            Route::get('/current', 'API\V1\UserController@current');
             Route::post('/report', 'API\V1\UserController@report');
         });
 
