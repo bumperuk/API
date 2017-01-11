@@ -47,7 +47,8 @@ class AdvertControllerTest extends TestCase
             ->seeJson(['id' => $paidOneTime->id])
             ->seeJson(['id' => $paidSubscription->id])
             ->dontSeeJson(['id' => $notRenewed->id])
-            ->dontSeeJson(['id' => $notPaid->id]);
+            ->dontSeeJson(['id' => $notPaid->id])
+            ->seePaginationCount(2);
     }
 
     public function testOrder()
@@ -69,5 +70,60 @@ class AdvertControllerTest extends TestCase
         $this
             ->apiCall('GET', 'api/v1/adverts?order=desc')
             ->seePaginationItemsInOrder([$highest, $mid, $lowest]);
+    }
+
+    public function testBasicFilters()
+    {
+        $valid = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+        $invalid = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?condition=' . $valid->condition_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?year=' . $valid->year_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?body_type=' . $valid->body_type_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?door=' . $valid->door_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?mileage=' . $valid->mileage_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?fuel=' . $valid->fuel_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?transmission=' . $valid->transmission_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?engine=' . $valid->engine_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?tax_band=' . $valid->tax_band_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
     }
 }

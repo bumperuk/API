@@ -159,4 +159,18 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         return $this;
     }
+
+    /**
+     * Check items in paginated response.
+     *
+     * @param integer $count
+     * @return $this
+     */
+    public function seePaginationCount(int $count)
+    {
+        $data = $this->decodeResponseJson();
+        $this->assertEquals($count, $data['response_payload']['total']);
+
+        return $this;
+    }
 }

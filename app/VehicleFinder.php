@@ -16,6 +16,7 @@ class VehicleFinder
     private $lat;
     private $lon;
     private $order;
+    private $filters = [];
 
     public function setOrder(string $order = null)
     {
@@ -28,6 +29,15 @@ class VehicleFinder
     {
         $this->lat = $lat;
         $this->lon = $lon;
+    }
+
+    public function setFilters(array $filters)
+    {
+        foreach ($filters as $filter => $value) {
+            if ($value != null) {
+                $this->filters[$filter] = $value;
+            }
+        }
     }
 
     public function paginate(int $perPage)
@@ -49,8 +59,18 @@ class VehicleFinder
         }
 
         $vehicles = $this->doOrder($vehicles);
+        $vehicles = $this->doFilter($vehicles);
 
         return $vehicles->paginate($perPage);
+    }
+
+    private function doFilter(Builder $builder): Builder
+    {
+        foreach ($this->filters as $filter => $value) {
+            $builder = $builder->where($filter . '_id', $value);
+        }
+
+        return $builder;
     }
 
     private function doOrder(Builder $builder): Builder
