@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Vehicle extends BaseModel
 {
+    protected $with = [
+        'photos'
+    ];
+
     /**
      * Determine if the listing has been paid for.
      *
@@ -25,11 +29,19 @@ class Vehicle extends BaseModel
     public function scopeActive(Builder $builder)
     {
         $builder
-            //Where the listing still has time remaining
-            ->where('deactivated_at', '>', Carbon::now())
-            //Or its been paid for using a subscription
-            ->orWhere(function(Builder $builder) {
-                $builder->whereNull('deactivated_at')->whereNull('paid_at');
+            ->whereNotNull('paid_at')
+            ->where(function(Builder $builder) {
+                $builder->whereNull('deactivated_at')->orWhere('deactivated_at', '>', Carbon::now());
             });
+    }
+
+    /**
+     * Photos of the vehicle.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function photos()
+    {
+        return $this->hasMany(VehiclePhoto::class);
     }
 }

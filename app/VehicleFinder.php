@@ -35,7 +35,17 @@ class VehicleFinder
         $vehicles = Vehicle::active();
 
         if ($this->order == 'distance') {
-            //TODO: select computed latlon here
+            $vehicles = $vehicles->selectRaw('
+                *,
+                (
+                    6371 * acos(cos(radians(' . $this->lat . ')) 
+                     * cos(radians(vehicles.lat)) 
+                     * cos(radians(vehicles.lon) 
+                     - radians(' . $this->lon . ')) 
+                     + sin(radians(' . $this->lat . ')) 
+                     * sin(radians(vehicles.lat)))
+                ) AS distance
+            ');
         }
 
         $vehicles = $this->doOrder($vehicles);
@@ -45,6 +55,11 @@ class VehicleFinder
 
     private function doOrder(Builder $builder): Builder
     {
-        return $builder;
+        switch ($this->order) {
+            case 'asc': return $builder->orderBy('price', 'asc');
+            case 'desc': return $builder->orderBy('price', 'desc');
+            case 'distance': return $builder->orderBy('distance', 'asc');
+            default: return $builder->orderBy('paid_at', 'desc');
+        }
     }
 }

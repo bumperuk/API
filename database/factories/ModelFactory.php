@@ -124,9 +124,6 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'condition_id' => function() {
             return factory(\App\Models\Condition::class)->create()->id;
         },
-        'price_range_id' => function() {
-            return factory(\App\Models\PriceRange::class)->create()->id;
-        },
         'year_id' => function() {
             return factory(\App\Models\Year::class)->create()->id;
         },
@@ -157,6 +154,7 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'tax_band_id' => function() {
             return factory(\App\Models\TaxBand::class)->create()->id;
         },
+        'price' => $faker->randomNumber(4, true),
         'lat' => $faker->latitude,
         'lon' => $faker->longitude,
         'description' => $faker->sentence(3),

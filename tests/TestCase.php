@@ -141,4 +141,22 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
             ]
         ]);
     }
+
+    /**
+     * Method to check order of objects in pagination response.
+     *
+     * @param array $items
+     * @param string $columnName
+     * @return $this
+     */
+    public function seePaginationItemsInOrder(array $items, string $columnName = 'id')
+    {
+        $data = $this->decodeResponseJson();
+
+        foreach ($items as $i => $item) {
+            $this->assertEquals($item->$columnName, $data['response_payload']['data'][$i][$columnName]);
+        }
+
+        return $this;
+    }
 }
