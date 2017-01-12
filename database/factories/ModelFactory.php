@@ -48,76 +48,120 @@ $factory->define(App\Models\Model::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Condition::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomElement(['New', 'Used']),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\PriceRange::class, function (Faker\Generator $faker) {
     return [
         'minimum' => $faker->randomNumber(4, true),
-        'maximum' => $faker->randomNumber(4, true)
+        'maximum' => $faker->randomNumber(4, true),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Year::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->year,
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Colour::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->colorName,
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\BodyType::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomAscii,
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Door::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomElement([1, 2, 3, 4, 5, 6]),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Size::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomElement(['small', 'medium', 'large']),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Mileage::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomNumber(5, true) . ' - ' . $faker->randomNumber(5, true),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Fuel::class, function (Faker\Generator $faker) {
     return [
-        'value' => $faker->randomElement(['petrol', 'hybrid', 'electric'])
+        'value' => $faker->randomElement(['petrol', 'hybrid', 'electric']),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Transmission::class, function (Faker\Generator $faker) {
     return [
-        'value' => $faker->randomLetter
+        'value' => $faker->randomLetter,
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\Engine::class, function (Faker\Generator $faker) {
     return [
-        'value' => $faker->randomLetter
+        'value' => $faker->randomLetter,
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
 $factory->define(App\Models\TaxBand::class, function (Faker\Generator $faker) {
     return [
-        'value' => $faker->randomElement(['a', 'b', 'c'])
+        'value' => $faker->randomElement(['A', 'B', 'C', 'D', 'E']),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
+$factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomElement(['Private', 'Trade']),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
+    ];
+});
 
 $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
     return [
