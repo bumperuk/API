@@ -61,7 +61,11 @@ class FavouriteController extends ApiController
     public function view(Request $request)
     {
         $user = $request->user();
-        $favourites = Favourite::where('user_id', $user->id)->paginate(16);
+        $favourites = Favourite
+            ::activeVehicles()
+            ->where('user_id', $user->id)
+            ->orderBy('id', 'desc')
+            ->paginate(16);
 
         return $this->api_response($favourites);
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -52,6 +53,19 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         $data = $email ? ['email' => $email] : [];
         $user = factory(App\Models\User::class)->create($data);
+        $this->jwtToken = JWTAuth::fromUser($user);
+        return $this;
+    }
+
+
+    /**
+     * Create a token for an existing user and uses it for subsequent requests
+     *
+     * @param User $user
+     * @return $this
+     */
+    public function withToken(User $user)
+    {
         $this->jwtToken = JWTAuth::fromUser($user);
         return $this;
     }

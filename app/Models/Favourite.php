@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class Favourite extends BaseModel
 {
     protected $with = [
@@ -27,4 +29,18 @@ class Favourite extends BaseModel
     {
         return $this->belongsTo(Vehicle::class);
     }
+
+    /**
+     * Select favourites where the vehicles are active
+     *
+     * @param Builder $builder
+     * @return Builder
+     */
+    public function scopeActiveVehicles(Builder $builder)
+    {
+        return $builder->whereHas('vehicle', function ($vehicle) {
+            return $vehicle->active();
+        });
+    }
+
 }
