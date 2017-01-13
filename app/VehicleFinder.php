@@ -13,10 +13,16 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class VehicleFinder
 {
+    private $category;
     private $lat;
     private $lon;
     private $order;
     private $filters = [];
+
+    public function __construct(int $category)
+    {
+        $this->category = $category;
+    }
 
     public function setOrder(string $order = null)
     {

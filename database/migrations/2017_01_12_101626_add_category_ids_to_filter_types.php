@@ -149,9 +149,6 @@ class AddCategoryIdsToFilterTypes extends Migration
             $table->dropColumn('category_id');
         });
 
-        Schema::table('sellers', function (Blueprint $table) {
-            $table->dropForeign('sellers_category_id_foreign');
-            $table->dropColumn('category_id');
-        });
+        Schema::dropIfExists('sellers');
     }
 }

@@ -16,7 +16,8 @@
         "laravel-notification-channels/onesignal": "^1.0",
         "paragonie/random_compat": "~1.4",
         "cboden/ratchet": "*",
-        "doctrine/dbal": "*"
+        "doctrine/dbal": "*",
+        "aporat/store-receipt-validator": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

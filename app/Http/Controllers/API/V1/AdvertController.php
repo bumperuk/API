@@ -17,15 +17,16 @@ class AdvertController extends ApiController
     public function get(Request $request)
     {
         $this->validate($request, [
-            'condition' => 'exists:conditions,id'
+            'condition' => 'exists:conditions,id',
+            'category' => 'exists:categories,id'
         ]);
 
-        $finder = new VehicleFinder();
+        $finder = new VehicleFinder($request->input('category'));
 
         $finder->setLatLon($request->input('lat'), $request->input('lon'));
         $finder->setOrder($request->input('order'));
         $finder->setFilters($request->only([
-            'condition', 'year', 'body_type', 'door', 'mileage', 'fuel', 'transmission', 'engine', 'tax_band'
+            'condition', 'year', 'body_type', 'door', 'mileage', 'fuel', 'transmission', 'engine', 'tax_band', 'seller'
         ]));
 
         return $this->api_response($finder->paginate(16));
