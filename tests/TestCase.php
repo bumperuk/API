@@ -129,6 +129,9 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function seePaginationStructure(array $structure)
     {
+        $data = $this->decodeResponseJson();
+        $this->assertGreaterThanOrEqual(1, $data['response_payload']['total'], 'No items in pagination.');
+
         return $this->seeJsonStructure([
             'response_payload' => [
                 'total',
@@ -137,7 +140,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
                 'last_page',
                 'from',
                 'to',
-                'data' => $structure
+                'data' => ['*' => $structure]
             ]
         ]);
     }
@@ -154,8 +157,11 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $data = $this->decodeResponseJson();
 
         foreach ($items as $i => $item) {
-            $this->assertArrayHasKey($i, $data['response_payload']['data']);
-            $this->assertEquals($item->$columnName, $data['response_payload']['data'][$i][$columnName]);
+            $this->assertArrayHasKey($i, $data['response_payload']['data'],
+                'Ran out of array keys to compare at index ' . $i);
+            $this->assertEquals($item->$columnName, $data['response_payload']['data'][$i][$columnName],
+                'Wrong order at index ' . $i . '. ' . $item->$columnName . ' does not equal ' .
+                $data['response_payload']['data'][$i][$columnName]);
         }
 
         return $this;
@@ -170,7 +176,8 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function seePaginationCount(int $count)
     {
         $data = $this->decodeResponseJson();
-        $this->assertEquals($count, $data['response_payload']['total']);
+        $this->assertEquals($count, $data['response_payload']['total'],
+            'Total does not match. Expected ' . $count . ' got ' . $data['response_payload']['total']);
 
         return $this;
     }

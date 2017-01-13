@@ -9,50 +9,57 @@ use Carbon\Carbon;
  */
 class AdvertControllerTest extends TestCase
 {
-    private function advertWithCategory($id)
-    {
-        factory(\App\Models\Model::class)->create([
-            'category_id' => $id,
-        ]);
-    }
-
     public function testValidResponse()
     {
-        factory(\App\Models\Vehicle::class)->create([
+        $category = factory(\App\Models\Category::class)->create();
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
         ]);
+        $vehicle->model->category()->associate($category);
+        $vehicle->model->save();
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id)
             ->seeSuccess()
             ->seePaginationStructure([
-                '*' => [
-                    'id',
-                    'description',
-                    'call_number',
-                    'sms_number',
-                    'email'
-                ]
+                'id',
+                'description',
+                'call_number',
+                'sms_number',
+                'email'
             ]);
     }
 
     public function testHidden()
     {
+        $category = factory(\App\Models\Category::class)->create();
+
         $notPaid = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => null, 'deactivated_at' => null
         ]);
+        $notPaid->model->category()->associate($category);
+        $notPaid->model->save();
+
         $notRenewed = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->subDay()
         ]);
+        $notRenewed->model->category()->associate($category);
+        $notRenewed->model->save();
+
         $paidSubscription = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => null
         ]);
+        $paidSubscription->model->category()->associate($category);
+        $paidSubscription->model->save();
+
         $paidOneTime = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
+        $paidOneTime->model->category()->associate($category);
+        $paidOneTime->model->save();
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id)
             ->seeJson(['id' => $paidOneTime->id])
             ->seeJson(['id' => $paidSubscription->id])
             ->dontSeeJson(['id' => $notRenewed->id])
@@ -62,76 +69,98 @@ class AdvertControllerTest extends TestCase
 
     public function testOrder()
     {
+        $category = factory(\App\Models\Category::class)->create();
+
         $mid = factory(\App\Models\Vehicle::class)->create([
             'price' => 500, 'paid_at' => Carbon::now(), 'deactivated_at' => null
         ]);
+        $mid->model->category()->associate($category);
+        $mid->model->save();
+
         $lowest = factory(\App\Models\Vehicle::class)->create([
             'price' => 100, 'paid_at' => Carbon::now(), 'deactivated_at' => null
         ]);
+        $lowest->model->category()->associate($category);
+        $lowest->model->save();
+
         $highest = factory(\App\Models\Vehicle::class)->create([
             'price' => 1000, 'paid_at' => Carbon::now(), 'deactivated_at' => null
         ]);
+        $highest->model->category()->associate($category);
+        $highest->model->save();
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&order=asc')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=asc')
             ->seePaginationItemsInOrder([$lowest, $mid, $highest]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&order=desc')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=desc')
             ->seePaginationItemsInOrder([$highest, $mid, $lowest]);
     }
 
     public function testBasicFilters()
     {
+        $category = factory(\App\Models\Category::class)->create();
+
         $valid = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
+        $valid->model->category()->associate($category);
+        $valid->model->save();
+
         $invalid = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
+        $invalid->model->category()->associate($category);
+        $invalid->model->save();
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&condition=' . $valid->condition_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&condition=' . $valid->condition_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&year=' . $valid->year_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&year=' . $valid->year_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&body_type=' . $valid->body_type_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&body_type=' . $valid->body_type_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&door=' . $valid->door_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&door=' . $valid->door_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&mileage=' . $valid->mileage_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&mileage=' . $valid->mileage_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&fuel=' . $valid->fuel_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&fuel=' . $valid->fuel_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&transmission=' . $valid->transmission_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&transmission=' . $valid->transmission_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&engine=' . $valid->engine_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&engine=' . $valid->engine_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=1&tax_band=' . $valid->tax_band_id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&tax_band=' . $valid->tax_band_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&seller=' . $valid->seller_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
     }

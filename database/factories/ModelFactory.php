@@ -201,6 +201,9 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'tax_band_id' => function() {
             return factory(\App\Models\TaxBand::class)->create()->id;
         },
+        'seller_id' => function() {
+            return factory(\App\Models\Seller::class)->create()->id;
+        },
         'price' => $faker->randomNumber(4, true),
         'lat' => $faker->latitude,
         'lon' => $faker->longitude,
