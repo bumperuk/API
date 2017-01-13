@@ -30,6 +30,22 @@ class AdvertControllerTest extends TestCase
             ]);
     }
 
+    public function testCategories()
+    {
+        $show = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
+        ]);
+        $hide = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $show->model->category->id)
+            ->seeSuccess()
+            ->seeJson(['id' => $show->model->category->id])
+            ->dontSeeJson(['id' => $hide->model->category->id]);
+    }
+
     public function testHidden()
     {
         $category = factory(\App\Models\Category::class)->create();
