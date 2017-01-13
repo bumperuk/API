@@ -154,6 +154,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $data = $this->decodeResponseJson();
 
         foreach ($items as $i => $item) {
+            $this->assertArrayHasKey($i, $data['response_payload']['data']);
             $this->assertEquals($item->$columnName, $data['response_payload']['data'][$i][$columnName]);
         }
 

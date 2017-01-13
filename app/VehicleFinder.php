@@ -48,12 +48,17 @@ class VehicleFinder
 
     public function paginate(int $perPage)
     {
-        $vehicles = Vehicle::active();
+        $category = $this->category;
+
+        $vehicles = Vehicle
+            ::active()
+            ->whereHas('model', function($model) use ($category) {
+                $model->where('category_id', $category);
+            });
 
         if ($this->order == 'distance') {
             $vehicles = $vehicles->selectRaw('
-                *,
-                (
+                *, (
                     6371 * acos(cos(radians(' . $this->lat . ')) 
                      * cos(radians(vehicles.lat)) 
                      * cos(radians(vehicles.lon) 

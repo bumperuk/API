@@ -12,6 +12,16 @@ class Vehicle extends BaseModel
     ];
 
     /**
+     * The model of the vehicle
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function model()
+    {
+        return $this->belongsTo(Model::class);
+    }
+
+    /**
      * Determine if the listing has been paid for.
      *
      * @return bool

@@ -17,8 +17,7 @@ class AdvertController extends ApiController
     public function get(Request $request)
     {
         $this->validate($request, [
-            'condition' => 'exists:conditions,id',
-            'category' => 'exists:categories,id'
+            'category' => 'required|exists:categories,id'
         ]);
 
         $finder = new VehicleFinder($request->input('category'));

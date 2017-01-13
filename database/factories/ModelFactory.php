@@ -165,6 +165,9 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
     return [
+        'model_id' => function() {
+            return factory(\App\Models\Model::class)->create()->id;
+        },
         'condition_id' => function() {
             return factory(\App\Models\Condition::class)->create()->id;
         },
