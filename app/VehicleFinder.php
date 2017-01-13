@@ -17,7 +17,9 @@ class VehicleFinder
     private $lat;
     private $lon;
     private $order;
+
     private $filters = [];
+    private $distanceFilter;
 
     public function __construct(int $category)
     {
@@ -46,6 +48,13 @@ class VehicleFinder
         }
     }
 
+    public function setDistanceFilter($distance)
+    {
+        if ($distance != null) {
+            $this->distanceFilter = $distance;
+        }
+    }
+
     public function paginate(int $perPage)
     {
         $category = $this->category;
@@ -59,18 +68,16 @@ class VehicleFinder
         if ($this->order == 'distance') {
             $vehicles = $vehicles->selectRaw('
                 *, (
-                    6371 * acos(cos(radians(' . $this->lat . ')) 
-                     * cos(radians(vehicles.lat)) 
-                     * cos(radians(vehicles.lon) 
-                     - radians(' . $this->lon . ')) 
-                     + sin(radians(' . $this->lat . ')) 
-                     * sin(radians(vehicles.lat)))
+                     3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
+                     cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
+                     sin(radians(vehicles.lat)))
                 ) AS distance
             ');
         }
 
-        $vehicles = $this->doOrder($vehicles);
         $vehicles = $this->doFilter($vehicles);
+        $vehicles = $this->doDistanceFilter($vehicles);
+        $vehicles = $this->doOrder($vehicles);
 
         return $vehicles->paginate($perPage);
     }
@@ -79,6 +86,18 @@ class VehicleFinder
     {
         foreach ($this->filters as $filter => $value) {
             $builder = $builder->where($filter . '_id', $value);
+        }
+
+        return $builder;
+    }
+
+    private function doDistanceFilter(Builder $builder): Builder
+    {
+        if ($this->distanceFilter) {
+            $builder = $builder->whereRaw('
+                (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
+                 cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
+                 sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter);
         }
 
         return $builder;

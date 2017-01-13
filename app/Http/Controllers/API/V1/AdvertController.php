@@ -27,6 +27,7 @@ class AdvertController extends ApiController
         $finder->setFilters($request->only([
             'condition', 'year', 'body_type', 'door', 'mileage', 'fuel', 'transmission', 'engine', 'tax_band', 'seller'
         ]));
+        $finder->setDistanceFilter($request->input('distance'));
 
         return $this->api_response($finder->paginate(16));
     }
