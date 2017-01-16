@@ -28,6 +28,7 @@ class AdvertController extends ApiController
             'model', 'condition', 'year', 'body_type', 'door', 'mileage',
             'fuel', 'transmission', 'engine', 'tax_band', 'seller'
         ]));
+        $finder->setPriceRangeFilter($request->input('price_range'));
         $finder->setDistanceFilter($request->input('distance'));
 
         return $this->api_response($finder->paginate(16));

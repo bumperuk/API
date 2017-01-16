@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Models\PriceRange;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,6 +21,7 @@ class VehicleFinder
 
     private $filters = [];
     private $distanceFilter;
+    private $priceRangeFilter;
 
     public function __construct(int $category)
     {
@@ -50,9 +52,12 @@ class VehicleFinder
 
     public function setDistanceFilter($distance)
     {
-        if ($distance != null) {
-            $this->distanceFilter = $distance;
-        }
+        $this->distanceFilter = $distance;
+    }
+
+    public function setPriceRangeFilter($priceRange)
+    {
+        $this->priceRangeFilter = $priceRange;
     }
 
     public function paginate(int $perPage)
@@ -77,6 +82,7 @@ class VehicleFinder
 
         $vehicles = $this->doFilter($vehicles);
         $vehicles = $this->doDistanceFilter($vehicles);
+        $vehicles = $this->doPriceRangeFilter($vehicles);
         $vehicles = $this->doOrder($vehicles);
 
         return $vehicles->paginate($perPage);
@@ -98,6 +104,17 @@ class VehicleFinder
                 (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
                  cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
                  sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter);
+        }
+
+        return $builder;
+    }
+
+    private function doPriceRangeFilter(Builder $builder): Builder
+    {
+        if ($this->priceRangeFilter && $priceRange = PriceRange::find($this->priceRangeFilter)) {
+            $builder = $builder
+                ->where('price', '>=', $priceRange->minimum)
+                ->where('price', '<=', $priceRange->maximum);
         }
 
         return $builder;

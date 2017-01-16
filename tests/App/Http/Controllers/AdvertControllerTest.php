@@ -206,4 +206,39 @@ class AdvertControllerTest extends TestCase
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
     }
+
+    public function testPriceRangeFilter()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+        $vehicle->model->category()->associate($category);
+        $vehicle->model->save();
+        $range = factory(\App\Models\PriceRange::class)->create(['minimum' => 100, 'maximum' => 500]);
+
+        $vehicle->price = 101;
+        $vehicle->save();
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->seeJson(['id' => $vehicle->id]);
+
+        $vehicle->price = 499;
+        $vehicle->save();
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->seeJson(['id' => $vehicle->id]);
+
+        $vehicle->price = 99;
+        $vehicle->save();
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->dontSeeJson(['id' => $vehicle->id]);
+
+        $vehicle->price = 501;
+        $vehicle->save();
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->dontSeeJson(['id' => $vehicle->id]);
+    }
 }
