@@ -73,7 +73,7 @@ $factory->define(App\Models\Year::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Models\Colour::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Color::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->colorName,
         'category_id' => function() {
@@ -174,8 +174,8 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'year_id' => function() {
             return factory(\App\Models\Year::class)->create()->id;
         },
-        'colour_id' => function() {
-            return factory(\App\Models\Colour::class)->create()->id;
+        'color_id' => function() {
+            return factory(\App\Models\Color::class)->create()->id;
         },
         'body_type_id' => function() {
             return factory(\App\Models\BodyType::class)->create()->id;

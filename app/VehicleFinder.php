@@ -22,6 +22,7 @@ class VehicleFinder
     private $filters = [];
     private $distanceFilter;
     private $priceRangeFilter;
+    private $colorFilter;
 
     public function __construct(int $category)
     {
@@ -60,6 +61,13 @@ class VehicleFinder
         $this->priceRangeFilter = $priceRange;
     }
 
+    public function setColorFilter($colours)
+    {
+        if (is_array($colours)) {
+            $this->colorFilter = $colours;
+        }
+    }
+
     public function paginate(int $perPage)
     {
         $category = $this->category;
@@ -83,6 +91,7 @@ class VehicleFinder
         $vehicles = $this->doFilter($vehicles);
         $vehicles = $this->doDistanceFilter($vehicles);
         $vehicles = $this->doPriceRangeFilter($vehicles);
+        $vehicles = $this->doColorFilter($vehicles);
         $vehicles = $this->doOrder($vehicles);
 
         return $vehicles->paginate($perPage);
@@ -115,6 +124,16 @@ class VehicleFinder
             $builder = $builder
                 ->where('price', '>=', $priceRange->minimum)
                 ->where('price', '<=', $priceRange->maximum);
+        }
+
+        return $builder;
+    }
+
+    private function doColorFilter(Builder $builder): Builder
+    {
+        if ($this->colorFilter) {
+            $builder = $builder
+                ->whereIn('color_id', $this->colorFilter);
         }
 
         return $builder;

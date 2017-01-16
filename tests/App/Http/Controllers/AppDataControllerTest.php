@@ -54,7 +54,7 @@ class AppDataControllerTest extends TestCase
             'value' => 1234
         ]);
 
-        factory(\App\Models\Colour::class)->create([
+        factory(\App\Models\Color::class)->create([
             'value' => 'UniqueColourValue'
         ]);
 

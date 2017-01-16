@@ -241,4 +241,43 @@ class AdvertControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
             ->dontSeeJson(['id' => $vehicle->id]);
     }
+
+    public function testColorFilter()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+
+        $vehicle1 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+        $vehicle1->model->category()->associate($category);
+        $vehicle1->model->save();
+
+        $vehicle2 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+        $vehicle2->model->category()->associate($category);
+        $vehicle2->model->save();
+
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&colors=[' . $vehicle1->color_id . ']')
+            ->seeJson(['id' => $vehicle1->id])
+            ->dontSeeJson(['id' => $vehicle2->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&colors=[99,' . $vehicle1->color_id . ']')
+            ->seeJson(['id' => $vehicle1->id])
+            ->dontSeeJson(['id' => $vehicle2->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id .
+                '&colors=[43,' . $vehicle2->color_id . ',' . $vehicle1->color_id . ']')
+            ->seeJson(['id' => $vehicle1->id])
+            ->seeJson(['id' => $vehicle2->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&colors=[99,54,34]')
+            ->dontSeeJson(['id' => $vehicle1->id])
+            ->dontSeeJson(['id' => $vehicle2->id]);
+    }
 }

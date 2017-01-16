@@ -31,6 +31,11 @@ class AdvertController extends ApiController
         $finder->setPriceRangeFilter($request->input('price_range'));
         $finder->setDistanceFilter($request->input('distance'));
 
+        if ($request->has('colors')) {
+            $colors = json_decode($request->input('colors'), true);
+            $finder->setColorFilter($colors);
+        }
+
         return $this->api_response($finder->paginate(16));
     }
 }

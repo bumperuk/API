@@ -12,7 +12,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\BodyType;
 use App\Models\Make;
 use App\Models\Model;
-use App\Models\Colour;
+use App\Models\Color;
 use App\Models\Condition;
 use App\Models\Door;
 use App\Models\Engine;
@@ -34,7 +34,7 @@ class AppDataController extends ApiController
             'conditions' => Condition::all(),
             'price_ranges' => PriceRange::all(),
             'years' => Year::all(),
-            'colours' => Colour::all(),
+            'colours' => Color::all(),
             'body_types' => BodyType::all(),
             'doors' => Door::all(),
             'sizes' => Size::all(),
