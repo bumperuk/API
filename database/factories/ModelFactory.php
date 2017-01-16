@@ -165,6 +165,9 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
     return [
+        'user_id' => function () {
+            return factory(\App\Models\User::class)->create()->id;
+        },
         'model_id' => function() {
             return factory(\App\Models\Model::class)->create()->id;
         },
@@ -229,6 +232,20 @@ $factory->define(App\Models\Favourite::class, function (Faker\Generator $faker) 
     return [
         'vehicle_id' => function() {
             return factory(\App\Models\Vehicle::class)->create()->id;
+        },
+        'user_id' => function() {
+            return factory(\App\Models\User::class)->create()->id;
+        },
+    ];
+});
+
+$factory->define(App\Models\Report::class, function (Faker\Generator $faker) {
+    return [
+        'vehicle_id' => function() {
+            return factory(\App\Models\Vehicle::class)->create()->id;
+        },
+        'reporter_id' => function() {
+            return factory(\App\Models\User::class)->create()->id;
         },
         'user_id' => function() {
             return factory(\App\Models\User::class)->create()->id;

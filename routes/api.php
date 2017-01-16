@@ -38,6 +38,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', 'API\V1\FavouriteController@view');
         });
 
+        Route::group(['prefix' => 'reports'], function () {
+            Route::post('/', 'API\V1\ReportController@create');
+        });
+
         /**
          * Account routes
          */
