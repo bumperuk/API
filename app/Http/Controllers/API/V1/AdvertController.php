@@ -25,7 +25,8 @@ class AdvertController extends ApiController
         $finder->setLatLon($request->input('lat'), $request->input('lon'));
         $finder->setOrder($request->input('order'));
         $finder->setFilters($request->only([
-            'condition', 'year', 'body_type', 'door', 'mileage', 'fuel', 'transmission', 'engine', 'tax_band', 'seller'
+            'model', 'condition', 'year', 'body_type', 'door', 'mileage',
+            'fuel', 'transmission', 'engine', 'tax_band', 'seller'
         ]));
         $finder->setDistanceFilter($request->input('distance'));
 

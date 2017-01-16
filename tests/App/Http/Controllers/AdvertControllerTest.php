@@ -152,6 +152,11 @@ class AdvertControllerTest extends TestCase
         $invalid->model->save();
 
         $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&model=' . $valid->model_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&condition=' . $valid->condition_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
