@@ -28,7 +28,10 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'optional-jwt'], function () {
 
         Route::get('categories', 'API\V1\CategoriesController@get');
-        Route::get('adverts', 'API\V1\AdvertController@get');
+        Route::group(['prefix' => 'adverts'], function () {
+            Route::get('/', 'API\V1\AdvertController@get');
+            Route::get('/user', 'API\V1\AdvertController@getForUser');
+        });
 
     });
 

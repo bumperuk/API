@@ -331,4 +331,52 @@ class AdvertControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id)
             ->seeJson(['has_reported' => true]);
     }
+
+    public function testUserAdvertsStructure()
+    {
+        $user = factory(\App\Models\Vehicle::class)->create();
+        factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts/user?id=' . $user->id)
+            ->seePaginationStructure([
+                'id', 'has_reported', 'has_favourited'
+            ]);
+    }
+
+    public function testUserAdvertsOrder()
+    {
+        $user = factory(\App\Models\Vehicle::class)->create();
+        $mid = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
+        $lowest = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
+        $highest = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts/user?id=' . $user->id)
+            ->seePaginationItemsInOrder([$highest, $mid, $lowest]);
+    }
+
+    public function testOnlyOneUserAdverts()
+    {
+        $user = factory(\App\Models\Vehicle::class)->create();
+        $show = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
+        $hide = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => null
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts/user?id=' . $user->id)
+            ->seeJson(['id' => $show->id])
+            ->dontSeeJson(['id' => $hide->id]);
+    }
 }

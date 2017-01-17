@@ -9,9 +9,9 @@
 namespace App\Http\Controllers\API\V1;
 
 
+use App\Models\Vehicle;
 use App\VehicleFinder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AdvertController extends ApiController
 {
@@ -38,5 +38,20 @@ class AdvertController extends ApiController
         }
 
         return $this->api_response($finder->paginate(16));
+    }
+
+    public function getForUser(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|exists:users,id'
+        ]);
+
+        $vehicles = Vehicle
+            ::active()
+            ->where('user_id', $request->input('id'))
+            ->orderBy('paid_at', 'desc')
+            ->paginate(16);
+
+        return $this->api_response($vehicles);
     }
 }
