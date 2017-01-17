@@ -12,6 +12,7 @@
 Route::group(['prefix' => 'v1'], function () {
 
     Route::get('/app-data', 'API\V1\AppDataController@get');
+    Route::get('/force-update', 'API\V1\AppDataController@update');
 
     Route::group(['prefix' => 'auth'], function () {
         Route::post('/register', 'API\V1\AuthController@register');

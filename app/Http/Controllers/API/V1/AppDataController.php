@@ -23,9 +23,26 @@ use App\Models\Size;
 use App\Models\TaxBand;
 use App\Models\Transmission;
 use App\Models\Year;
+use Illuminate\Http\Request;
 
 class AppDataController extends ApiController
 {
+    public function update(Request $request)
+    {
+        $this->validate($request, [
+            'platform' => 'required|in:ios,android',
+            'version' => 'required'
+        ]);
+
+        $required = config('forceupdate.' . $request->input('platform'));
+        $current = $request->input('version');
+        $requiresUpdate = version_compare($current, $required, '<');
+
+        return $this->api_response([
+            'requires_update' => $requiresUpdate
+        ]);
+    }
+
     public function get()
     {
         $data = [

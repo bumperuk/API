@@ -8,6 +8,34 @@
  */
 class AppDataControllerTest extends TestCase
 {
+    public function testForceUpdateMissingParam()
+    {
+        $this
+            ->apiCall('GET', 'api/v1/force-update?platform=&version=')
+            ->seeError(400);
+
+        $this
+            ->apiCall('GET', 'api/v1/force-update?platform=wrongplatform&version=1.0')
+            ->seeError(400);
+    }
+
+    public function testForceUpdate()
+    {
+        $this
+            ->apiCall('GET', 'api/v1/force-update?platform=ios&version=1.0')
+            ->seeSuccess()
+            ->seePayloadStructure([
+                'requires_update'
+            ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/force-update?platform=android&version=1.0')
+            ->seeSuccess()
+            ->seePayloadStructure([
+                'requires_update'
+            ]);
+    }
+
     public function testValidStructure()
     {
         $this
