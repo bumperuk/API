@@ -4,11 +4,26 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Vehicle extends BaseModel
 {
+    use VehicleAttributes;
+
     protected $with = [
-        'photos'
+        'photos', 'model', 'model.category', 'model.make', 'condition', 'year', 'color', 'bodyType',
+        'door', 'size', 'mileage', 'fuel', 'transmission', 'engine', 'taxBand', 'seller',
+        'userFavourite'
+    ];
+
+    protected $hidden = [
+        'condition', 'year', 'color', 'bodyType', 'door', 'size', 'mileage',
+        'fuel', 'transmission', 'engine', 'taxBand', 'seller',
+        'userReport', 'userFavourite'
+    ];
+
+    protected $appends = [
+        'details', 'has_reported', 'has_favourited'
     ];
 
     /**
@@ -30,7 +45,6 @@ class Vehicle extends BaseModel
     {
         return $this->belongsTo(User::class);
     }
-
 
     /**
      * Determine if the listing has been paid for.
@@ -64,5 +78,27 @@ class Vehicle extends BaseModel
     public function photos()
     {
         return $this->hasMany(VehiclePhoto::class);
+    }
+
+    public function userFavourite()
+    {
+        $userId = Auth::user() ? Auth::user()->id : null;
+        return $this->hasOne(Favourite::class)->where('user_id', $userId);
+    }
+
+    public function userReport()
+    {
+        $userId = Auth::user() ? Auth::user()->id : null;
+        return $this->hasOne(Report::class)->where('reporter_id', $userId);
+    }
+
+    public function getHasFavouritedAttribute()
+    {
+        return $this->userFavourite !== null;
+    }
+
+    public function getHasReportedAttribute()
+    {
+        return $this->userReport !== null;
     }
 }

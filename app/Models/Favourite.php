@@ -6,10 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Favourite extends BaseModel
 {
-    protected $with = [
-        'vehicle'
-    ];
-
     /**
      * The user that created the favourite
      *

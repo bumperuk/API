@@ -83,6 +83,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         if ($this->jwtToken) {
             $headers['Authorization'] = 'Bearer ' . $this->jwtToken;
+            var_dump($url . ' ' . $this->jwtToken);
         }
 
         return $this->json($method, $url, $data, $headers)->seeJsonStructure([

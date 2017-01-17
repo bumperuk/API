@@ -37,7 +37,6 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
-//            'ip-lock'
         ],
     ];
 
@@ -58,5 +57,6 @@ class Kernel extends HttpKernel
         'jwt' => JWT::class,
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
         'ip-lock' => \App\Http\Middleware\IPLock::class,
+        'optional-jwt' => \App\Http\Middleware\OptionalJWT::class,
     ];
 }

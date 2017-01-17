@@ -11,6 +11,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\VehicleFinder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdvertController extends ApiController
 {

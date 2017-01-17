@@ -58,11 +58,11 @@ class ReportControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category_id)
             ->seeJson(['id' => $vehicle->id]);
 
-//        $this
-//            ->withNewToken()
-//            ->apiCall('POST', 'api/v1/reports', ['vehicle_id' => $vehicle->id])
-//            ->seeSuccess()
-//            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category_id)
-//            ->dontSeeJson(['id' => $vehicle->id]);
+        $this
+            ->withNewToken()
+            ->apiCall('POST', 'api/v1/reports', ['vehicle_id' => $vehicle->id])
+            ->seeSuccess()
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category_id)
+            ->dontSeeJson(['id' => $vehicle->id]);
     }
 }

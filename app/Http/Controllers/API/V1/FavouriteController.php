@@ -62,7 +62,8 @@ class FavouriteController extends ApiController
     {
         $user = $request->user();
         $favourites = Favourite
-            ::activeVehicles()
+            ::with('vehicles')
+            ->activeVehicles()
             ->where('user_id', $user->id)
             ->orderBy('id', 'desc')
             ->paginate(16);
