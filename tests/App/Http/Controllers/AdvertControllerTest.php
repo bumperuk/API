@@ -280,4 +280,55 @@ class AdvertControllerTest extends TestCase
             ->dontSeeJson(['id' => $vehicle1->id])
             ->dontSeeJson(['id' => $vehicle2->id]);
     }
+
+    public function testFavouriteBoolean()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+        $vehicle->model->category()->associate($category);
+        $vehicle->model->save();
+
+        $user = factory(\App\Models\User::class)->create();
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id)
+            ->seeJson(['has_favourited' => false]);
+
+        factory(\App\Models\Favourite::class)->create(['vehicle_id' => $vehicle->id, 'user_id' => $user->id]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id)
+            ->seeJson(['has_favourited' => true]);
+    }
+
+    public function testReportedBoolean()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+        $vehicle->model->category()->associate($category);
+        $vehicle->model->save();
+
+        $user = factory(\App\Models\User::class)->create();
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id)
+            ->seeJson(['has_reported' => false]);
+
+        factory(\App\Models\Report::class)->create([
+            'vehicle_id' => $vehicle->id, 'reporter_id' => $user->id, 'user_id' => $vehicle->user->id]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id)
+            ->seeJson(['has_reported' => true]);
+    }
 }

@@ -3,10 +3,23 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWTAuth;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class OptionalJWT
 {
+    /**
+     * OptionalJWT constructor.
+     * 
+     * @param Dispatcher $events
+     * @param JWTAuth $auth
+     */
+    public function __construct(Dispatcher $events, JWTAuth $auth)
+    {
+        $this->events = $events;
+        $this->auth = $auth;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -17,7 +30,9 @@ class OptionalJWT
     public function handle($request, Closure $next)
     {
         try {
-            JWTAuth::parseToken()->authenticate();
+            $token = $this->auth->setRequest($request)->getToken();
+            $user = $this->auth->authenticate($token);
+            $this->events->fire('tymon.jwt.valid', $user);
         } catch (\Exception $e) {
 
         }
