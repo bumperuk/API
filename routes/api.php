@@ -20,6 +20,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/password/request', 'API\V1\AuthController@requestPassword');
     });
 
+    Route::get('/faqs', 'API\V1\FaqController@view');
+
     /*
      * Optionally auth routes using JWT tokens
      */

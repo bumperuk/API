@@ -39,26 +39,23 @@ class FavouriteControllerTest extends TestCase
         $vehicle1 = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
-        $favourite1 = new Favourite();
-        $favourite1->user()->associate($user);
-        $favourite1->vehicle()->associate($vehicle1);
-        $favourite1->save();
+        $favourite1 = factory(\App\Models\Favourite::class)->create([
+            'user_id' => $user->id, 'vehicle_id' => $vehicle1->id
+        ]);
 
         $vehicle2 = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
-        $favourite2 = new Favourite();
-        $favourite2->user()->associate($user);
-        $favourite2->vehicle()->associate($vehicle2);
-        $favourite2->save();
+        $favourite2 = factory(\App\Models\Favourite::class)->create([
+            'user_id' => $user->id, 'vehicle_id' => $vehicle2->id
+        ]);
 
         $vehicle3 = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
-        $favourite3 = new Favourite();
-        $favourite3->user()->associate($user);
-        $favourite3->vehicle()->associate($vehicle3);
-        $favourite3->save();
+        $favourite3 = factory(\App\Models\Favourite::class)->create([
+            'user_id' => $user->id, 'vehicle_id' => $vehicle3->id
+        ]);
 
         $this
             ->withToken($user)

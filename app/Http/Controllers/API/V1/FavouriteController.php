@@ -62,7 +62,7 @@ class FavouriteController extends ApiController
     {
         $user = $request->user();
         $favourites = Favourite
-            ::with('vehicles')
+            ::with('vehicle')
             ->activeVehicles()
             ->where('user_id', $user->id)
             ->orderBy('id', 'desc')

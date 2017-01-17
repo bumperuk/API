@@ -83,7 +83,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         if ($this->jwtToken) {
             $headers['Authorization'] = 'Bearer ' . $this->jwtToken;
-            var_dump($url . ' ' . $this->jwtToken);
+            //var_dump($url . ' ' . $this->jwtToken);
         }
 
         return $this->json($method, $url, $data, $headers)->seeJsonStructure([
@@ -173,7 +173,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         foreach ($items as $i => $item) {
             $this->assertArrayHasKey($i, $data['response_payload']['data'],
-                'Ran out of array keys to compare at index ' . $i);
+                "Ran out of array keys to compare at index " . $i . ".\n" . json_encode($data));
             $this->assertEquals($item->$columnName, $data['response_payload']['data'][$i][$columnName],
                 'Wrong order at index ' . $i . '. ' . $item->$columnName . ' does not equal ' .
                 $data['response_payload']['data'][$i][$columnName]);

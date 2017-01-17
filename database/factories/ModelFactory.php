@@ -252,3 +252,11 @@ $factory->define(App\Models\Report::class, function (Faker\Generator $faker) {
         },
     ];
 });
+
+$factory->define(App\Models\Faq::class, function (Faker\Generator $faker) {
+    return [
+        'grouping' => $faker->randomElement(['group1', 'group2', 'group3']),
+        'question' => $faker->sentence . '?',
+        'answer' => $faker->sentence
+    ];
+});
