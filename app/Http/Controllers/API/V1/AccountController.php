@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Models\Vehicle;
 use App\Notifications\VerifyPhone;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -89,5 +90,22 @@ class AccountController extends ApiController
         $user->save();
 
         return parent::api_response([], 'token saved');
+    }
+
+    /**
+     * Check if a user is able to upload another vehicle.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function canUpload(Request $request)
+    {
+        $user = $request->user();
+
+        $canUpload =
+            $user->user_type == 'dealer' ||
+            $user->vehicles()->active()->count() == 0;
+
+        return $this->api_response(['can_upload' => $canUpload]);
     }
 }

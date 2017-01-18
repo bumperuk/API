@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 /**
  * Created by PhpStorm.
@@ -26,5 +27,52 @@ class AccountControllerTest extends TestCase
             ])
             ->seeJson(['email' => 'test@test.com'])
             ->seeJson(['phone' => '08787878787']);
+    }
+
+    public function testCanUploadDealer()
+    {
+        $user = factory(\App\Models\User::class)->create(['user_type' => 'dealer']);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => true]);
+
+        factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => true]);
+    }
+
+    public function testCanUploadPrivate()
+    {
+        $user = factory(\App\Models\User::class)->create(['user_type' => 'private']);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => true]);
+
+        factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now()->subDays(8), 'deactivated_at' => Carbon::now()->subDays(1), 'user_id' => $user->id
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => true]);
+
+        factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addDays(7), 'user_id' => $user->id
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => false]);
     }
 }

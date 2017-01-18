@@ -116,4 +116,14 @@ class User extends Authenticatable
     {
         return $this->push_token;
     }
+
+    /**
+     * Vehicles uploaded by the user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class);
+    }
 }
