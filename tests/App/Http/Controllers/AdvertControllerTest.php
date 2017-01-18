@@ -348,12 +348,12 @@ class AdvertControllerTest extends TestCase
 
     public function testUserAdvertsOrder()
     {
-        $user = factory(\App\Models\Vehicle::class)->create();
-        $mid = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
-        ]);
+        $user = factory(\App\Models\User::class)->create();
         $lowest = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
+        $mid = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
         ]);
         $highest = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => null, 'user_id' => $user->id
@@ -376,6 +376,7 @@ class AdvertControllerTest extends TestCase
 
         $this
             ->apiCall('GET', 'api/v1/adverts/user?id=' . $user->id)
+            ->seePaginationCount(1)
             ->seeJson(['id' => $show->id])
             ->dontSeeJson(['id' => $hide->id]);
     }
