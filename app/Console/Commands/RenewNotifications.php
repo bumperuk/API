@@ -6,7 +6,6 @@ use App\Models\Vehicle;
 use App\Notifications\ExpiredVehicle;
 use App\Notifications\ExpiringVehicle;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Console\Command;
 
 class RenewNotifications extends Command
