@@ -10,6 +10,7 @@ namespace App\Http\Controllers\API\V1;
 
 
 use App\Models\BodyType;
+use App\Models\Category;
 use App\Models\Make;
 use App\Models\Model;
 use App\Models\Color;
@@ -45,23 +46,49 @@ class AppDataController extends ApiController
 
     public function get()
     {
-        $data = [
-            'makes' => Make::all(),
-            'models' => Model::all(),
-            'conditions' => Condition::all(),
-            'price_ranges' => PriceRange::all(),
-            'years' => Year::all(),
-            'colours' => Color::all(),
-            'body_types' => BodyType::all(),
-            'doors' => Door::all(),
-            'sizes' => Size::all(),
-            'mileages' => Mileage::all(),
-            'fuels' => Fuel::all(),
-            'transmissions' => Transmission::all(),
-            'engines' => Engine::all(),
-            'tax_bands' => TaxBand::all()
-        ];
+        $categories = Category::all()->toArray();
 
-        return $this->api_response($data);
+        foreach ($categories as $key => $category) {
+            $categories[$key]['data'] = [
+                'makes' => $this->getMakes($category['id']),
+                'conditions' => Condition::where('category_id', $category['id'])->get()->toArray(),
+                'price_ranges' => PriceRange::where('category_id', $category['id'])->get()->toArray(),
+                'years' => Year::where('category_id', $category['id'])->get()->toArray(),
+                'colors' => Color::where('category_id', $category['id'])->get()->toArray(),
+                'body_types' => BodyType::where('category_id', $category['id'])->get()->toArray(),
+                'doors' => Door::where('category_id', $category['id'])->get()->toArray(),
+                'sizes' => Size::where('category_id', $category['id'])->get()->toArray(),
+                'mileages' => Mileage::where('category_id', $category['id'])->get()->toArray(),
+                'fuels' => Fuel::where('category_id', $category['id'])->get()->toArray(),
+                'transmissions' => Transmission::where('category_id', $category['id'])->get()->toArray(),
+                'engines' => Engine::where('category_id', $category['id'])->get()->toArray(),
+                'tax_bands' => TaxBand::where('category_id', $category['id'])->get()->toArray(),
+            ];
+        }
+
+        return $this->api_response($categories);
+    }
+
+    /**
+     * Group models by their makes.
+     *
+     * @param $categoryId
+     * @return mixed
+     */
+    private function getMakes($categoryId)
+    {
+        $models = Model::where('category_id', $categoryId)->get();
+        $makes = Make::whereIn('id', $models->pluck('make_id'))->get()->toArray();
+        $models = $models->groupBy('make_id')->toArray();
+
+        foreach ($makes as $key => $make) {
+            if (isset($models[$make['id']])) {
+                $makes[$key]['models'] = $models[$make['id']];
+            } else {
+                $makes[$key]['models'] = [];
+            }
+        }
+
+        return $makes;
     }
 }
