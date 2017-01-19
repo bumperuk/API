@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Price extends Model
+class Price extends BaseModel
 {
-    //
+    protected $casts = [
+        'value' => 'float'
+    ];
 }

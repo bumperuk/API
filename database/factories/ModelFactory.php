@@ -155,6 +155,12 @@ $factory->define(App\Models\TaxBand::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Models\Price::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->numberBetween(1000, 50000),
+    ];
+});
+
 $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
     return [
         'user_id' => function () {

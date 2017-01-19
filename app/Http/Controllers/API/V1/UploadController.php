@@ -31,10 +31,10 @@ class UploadController extends ApiController
             'model' => 'required|exists:models,id',
             'photos' => 'required|array|min:1',
             'photos.*' => 'image',
-            'lat' => 'required',
-            'lon' => 'required',
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+            'price' => 'required|exists:prices,id',
             'condition' => 'exists:conditions,id',
-            'price' => 'exists:prices,id',
             'year' => 'exists:years,id',
             'color' => 'exists:colors,id',
             'body_type' => 'exists:body_types,id',
@@ -46,13 +46,18 @@ class UploadController extends ApiController
             'engine' => 'exists:engines,id',
             'tax_band' => 'exists:tax_bands,id',
             'description' => 'required',
-            'call_number' => 'required_without:sms_number,email',
-            'sms_number' => 'required_without:email,call_number',
-            'email' => 'required_without:sms_number,call_number',
+            'call_number' => 'required_without_all:sms_number,email',
+            'sms_number' => 'required_without_all:email,call_number',
+            'email' => 'required_without_all:sms_number,call_number',
         ]);
 
         $user = $request->user();
         $model = Model::findOrFail($request->input('model'));
+
+        if ($user->user_type == 'private' && $user->vehicles()->active()->count() != 0) {
+            return $this->api_response([],
+                'You already have an active vehicle. Become a dealer to upload more.', false, 403);
+        }
 
         $vehicle = new Vehicle();
         $vehicle->user()->associate($user);
@@ -97,6 +102,7 @@ class UploadController extends ApiController
         $vehicle->save();
 
         return $this->api_response([
+            'is_live' => $user->user_type == 'dealer',
             'vehicle' => $vehicle->fresh()
         ]);
     }

@@ -1,11 +1,12 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\Artisan;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
+    use \Illuminate\Foundation\Testing\DatabaseMigrations;
+
     private $jwtToken = null;
 
     /**
@@ -34,13 +35,22 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         $this->jwtToken = null;
         parent::setUp();
-        Artisan::call('migrate');
     }
 
     public function tearDown()
     {
-        Artisan::call('migrate:reset');
         parent::tearDown();
+    }
+
+    public function createFile($type)
+    {
+        $files = require 'files/files.php';
+
+        if (!isset($files[$type])) {
+            throw new Exception('Invalid file type ' . $type . '.');
+        }
+
+        return $files[$type]();
     }
 
     /**
@@ -79,20 +89,33 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param array $headers
      * @return $this
      */
-    public function apiCall(string $method, string $url, $data = [], $headers = [])
+    public function apiCall(string $method, string $url, $data = [], $headers = [], $files = [])
     {
         if ($this->jwtToken) {
             $headers['Authorization'] = 'Bearer ' . $this->jwtToken;
             //var_dump($url . ' ' . $this->jwtToken);
         }
 
-        return $this->json($method, $url, $data, $headers)->seeJsonStructure([
-            'result' => [
-                'success',
-                'count'
-            ],
-            'response_payload'
-        ]);
+        $content = json_encode($data);
+
+        $headers = array_merge([
+            'CONTENT_LENGTH' => mb_strlen($content, '8bit'),
+            'CONTENT_TYPE' => 'application/json',
+            'Accept' => 'application/json',
+        ], $headers);
+
+        $this->call(
+            $method, $url, [], [], $files, $this->transformHeadersToServerVars($headers), $content
+        );
+
+        return $this
+            ->seeJsonStructure([
+                'result' => [
+                    'success',
+                    'count'
+                ],
+                'response_payload'
+            ]);
     }
 
 
