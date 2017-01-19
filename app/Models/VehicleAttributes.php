@@ -126,23 +126,13 @@ trait VehicleAttributes
     }
 
     /**
-     * Seller (Eg. Private, trade)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function seller()
-    {
-        return $this->belongsTo(Seller::class);
-    }
-
-    /**
      * Put all vehicle attributes in a single array.
      */
     public function getDetailsAttribute()
     {
         $details = [];
-        $keys = ['condition', 'year', 'color', 'bodyType', 'door', 'size', 'mileage',
-                 'fuel', 'transmission', 'engine', 'taxBand', 'seller'];
+        $keys = ['condition', 'year', 'color', 'bodyType', 'door', 'size',
+                 'mileage', 'fuel', 'transmission', 'engine', 'taxBand'];
 
         foreach ($keys as $key) {
             if ($this->$key) {

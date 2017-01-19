@@ -72,25 +72,25 @@ class AdvertControllerTest extends TestCase
         $category = factory(\App\Models\Category::class)->create();
 
         $notPaid = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => null, 'deactivated_at' => null
+            'id' => 1234, 'paid_at' => null, 'deactivated_at' => null
         ]);
         $notPaid->model->category()->associate($category);
         $notPaid->model->save();
 
         $notRenewed = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->subDay()
+            'id' => 1235, 'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->subDay()
         ]);
         $notRenewed->model->category()->associate($category);
         $notRenewed->model->save();
 
         $paidSubscription = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now(), 'deactivated_at' => null
+            'id' => 1236, 'paid_at' => Carbon::now(), 'deactivated_at' => null
         ]);
         $paidSubscription->model->category()->associate($category);
         $paidSubscription->model->save();
 
         $paidOneTime = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+            'id' => 1237, 'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
         $paidOneTime->model->category()->associate($category);
         $paidOneTime->model->save();
@@ -198,11 +198,6 @@ class AdvertControllerTest extends TestCase
 
         $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&tax_band=' . $valid->tax_band_id)
-            ->seeJson(['id' => $valid->id])
-            ->dontSeeJson(['id' => $invalid->id]);
-
-        $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&seller=' . $valid->seller_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
     }

@@ -18,7 +18,7 @@ class AdvertController extends ApiController
     public function get(Request $request)
     {
         $this->validate($request, [
-            'category' => 'required|exists:categories,id'
+            'category' => 'required|exists:categories,id',
         ]);
 
         $finder = new VehicleFinder($request->input('category'));
@@ -27,10 +27,11 @@ class AdvertController extends ApiController
         $finder->setOrder($request->input('order'));
         $finder->setFilters($request->only([
             'model', 'condition', 'year', 'body_type', 'door', 'mileage',
-            'fuel', 'transmission', 'engine', 'tax_band', 'seller'
+            'fuel', 'transmission', 'engine', 'tax_band'
         ]));
         $finder->setPriceRangeFilter($request->input('price_range'));
         $finder->setDistanceFilter($request->input('distance'));
+        $finder->setSellerFilter($request->input('seller'));
 
         if ($request->has('colors')) {
             $colors = json_decode($request->input('colors'), true);

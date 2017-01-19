@@ -11,19 +11,30 @@ class Vehicle extends BaseModel
     use VehicleAttributes;
 
     protected $with = [
-        'photos', 'model', 'model.category', 'model.make', 'condition', 'year', 'color', 'bodyType',
-        'door', 'size', 'mileage', 'fuel', 'transmission', 'engine', 'taxBand', 'seller',
-        'userFavourite'
+        'photos', 'model', 'model.category', 'model.make', 'condition', 'year', 'color',
+        'bodyType', 'door', 'size', 'mileage', 'fuel', 'transmission', 'engine', 'taxBand',
+        'userReport', 'userFavourite'
     ];
 
     protected $hidden = [
         'condition', 'year', 'color', 'bodyType', 'door', 'size', 'mileage',
-        'fuel', 'transmission', 'engine', 'taxBand', 'seller',
+        'fuel', 'transmission', 'engine', 'taxBand',
         'userReport', 'userFavourite'
     ];
 
     protected $appends = [
         'details', 'has_reported', 'has_favourited'
+    ];
+
+    protected $casts = [
+        'lat' => 'float',
+        'lon' => 'float',
+        'price' => 'float'
+    ];
+
+    protected $dates = [
+        'paid_at',
+        'deactivated_at'
     ];
 
     /**
@@ -80,12 +91,22 @@ class Vehicle extends BaseModel
         return $this->hasMany(VehiclePhoto::class);
     }
 
+    /**
+     * Has the current user favourited the vehicle
+     *
+     * @return mixed
+     */
     public function userFavourite()
     {
         $userId = Auth::user() ? Auth::user()->id : null;
         return $this->hasOne(Favourite::class)->where('user_id', $userId);
     }
 
+    /**
+     * Has the current user reported the vehicle
+     *
+     * @return mixed
+     */
     public function userReport()
     {
         $userId = Auth::user() ? Auth::user()->id : null;

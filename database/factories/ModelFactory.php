@@ -155,15 +155,6 @@ $factory->define(App\Models\TaxBand::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
-    return [
-        'value' => $faker->randomElement(['Private', 'Trade']),
-        'category_id' => function() {
-            return factory(App\Models\Category::class)->create()->id;
-        },
-    ];
-});
-
 $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
     return [
         'user_id' => function () {
@@ -204,9 +195,6 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         },
         'tax_band_id' => function() {
             return factory(\App\Models\TaxBand::class)->create()->id;
-        },
-        'seller_id' => function() {
-            return factory(\App\Models\Seller::class)->create()->id;
         },
         'price' => $faker->randomNumber(4, true),
         'lat' => $faker->latitude,

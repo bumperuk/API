@@ -42,6 +42,10 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('auth/logout', 'API\V1\AuthController@logout');
 
+        Route::group(['prefix' => 'upload'], function () {
+            Route::post('/', 'API\V1\UploadController@upload');
+        });
+
         Route::group(['prefix' => 'favourites'], function () {
             Route::put('/', 'API\V1\FavouriteController@save');
             Route::get('/', 'API\V1\FavouriteController@view');
