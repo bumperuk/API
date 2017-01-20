@@ -4,6 +4,10 @@ namespace App\Models;
 
 class PriceRange extends BaseModel
 {
+    protected $hidden = [
+        'created_at', 'updated_at'
+    ];
+
     protected $appends = [
         'value'
     ];
