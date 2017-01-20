@@ -23,7 +23,7 @@ class Vehicle extends BaseModel
     ];
 
     protected $appends = [
-        'details', 'has_reported', 'has_favourited'
+        'details', 'has_reported', 'has_favourited', 'active'
     ];
 
     protected $casts = [
@@ -79,6 +79,18 @@ class Vehicle extends BaseModel
             ->where(function(Builder $builder) {
                 $builder->whereNull('deactivated_at')->orWhere('deactivated_at', '>', Carbon::now());
             });
+    }
+
+    /**
+     * Boolean to determine if the vehicle is viewable at the moment
+     *
+     * @return bool
+     */
+    public function getActiveAttribute(): bool
+    {
+        return $this->paid_at != null && (
+            $this->deactivated_at == null || $this->deactivated_at->gte(Carbon::now())
+        );
     }
 
     /**
