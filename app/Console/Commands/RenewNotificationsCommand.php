@@ -8,7 +8,7 @@ use App\Notifications\ExpiringVehicle;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class RenewNotifications extends Command
+class RenewNotificationsCommand extends Command
 {
     /**
      * The name and signature of the console command.

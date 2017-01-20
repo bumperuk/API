@@ -3,8 +3,9 @@
 namespace App\Console;
 
 use App\Console\Commands\ApiControllerCreatorCommand;
-use App\Console\Commands\RenewNotifications;
+use App\Console\Commands\RenewNotificationsCommand;
 use App\Console\Commands\StartSocketCommand;
+use App\Console\Commands\VehicleImportCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,8 +18,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         ApiControllerCreatorCommand::class,
-        StartSocketCommand::class,
-        RenewNotifications::class
+        RenewNotificationsCommand::class,
+        VehicleImportCommand::class
     ];
 
     /**
@@ -30,17 +31,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('notifications:renew')->hourly();
-        $this->scheduleSocket($schedule);
-    }
-
-    private function scheduleSocket(Schedule $schedule)
-    {
-        if (config('app.socket.enabled')) {
-            $schedule
-                ->command('socket:start')
-                ->everyMinute()
-                ->withoutOverlapping();
-        }
     }
 
     /**
