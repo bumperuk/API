@@ -66,7 +66,7 @@ class AppDataController extends ApiController
             ];
         }
 
-        return $this->api_response($categories);
+        return $this->api_response(['categories' => $categories]);
     }
 
     /**

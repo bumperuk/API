@@ -38,24 +38,44 @@ class AppDataControllerTest extends TestCase
 
     public function testValidStructure()
     {
+        factory(\App\Models\Vehicle::class, 10)->create();
+
         $this
             ->apiCall('GET', 'api/v1/app-data')
             ->seeSuccess()
             ->seePayloadStructure([
-                'makes',
-                'models',
-                'conditions',
-                'price_ranges',
-                'years',
-                'colours',
-                'body_types',
-                'doors',
-                'sizes',
-                'mileages',
-                'fuels',
-                'transmissions',
-                'engines',
-                'tax_bands'
+                'categories' => [
+                    '*' => [
+                        'name',
+                        'image_1x',
+                        'image_2x',
+                        'image_3x',
+                        'data' => [
+                            'makes' => [
+                                '*' => [
+                                    'value',
+                                    'models' => [
+                                        '*' => [
+                                            'value'
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            'conditions',
+                            'price_ranges',
+                            'years',
+                            'colors',
+                            'body_types',
+                            'doors',
+                            'sizes',
+                            'mileages',
+                            'fuels',
+                            'transmissions',
+                            'engines',
+                            'tax_bands'
+                        ]
+                    ]
+                ]
             ]);
     }
 

@@ -123,4 +123,50 @@ class UploadControllerTest extends TestCase
             ])
             ->seeSuccess();
     }
+
+    public function testDeleteVehicleInvalidId()
+    {
+        factory(\App\Models\Vehicle::class)->create();
+
+        $this
+            ->withNewToken()
+            ->apiCall('DELETE', 'api/v1/adverts', [
+                'id' => 232323
+            ])
+            ->seeError(400);
+    }
+
+    public function testDeleteOtherUsersVehicle()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create();
+
+        $this
+            ->withNewToken()
+            ->apiCall('DELETE', 'api/v1/adverts', [
+                'id' => $vehicle->id
+            ])
+            ->seeError(401);
+    }
+
+    public function testDeleteValidVehicle()
+    {
+        $user = factory(\App\Models\User::class)->create();
+        $vehicle = factory(\App\Models\Vehicle::class)->create();
+        $vehicle->user()->associate($user);
+        $vehicle->save();
+
+        $this
+            ->withToken($user)
+            ->apiCall('DELETE', 'api/v1/adverts', [
+                'id' => $vehicle->id
+            ])
+            ->seeSuccess();
+
+        $this
+            ->withToken($user)
+            ->apiCall('DELETE', 'api/v1/adverts', [
+                'id' => $vehicle->id
+            ])
+            ->seeError(400);
+    }
 }

@@ -42,6 +42,10 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('auth/logout', 'API\V1\AuthController@logout');
 
+        Route::group(['prefix' => 'adverts'], function () {
+            Route::delete('/', 'API\V1\UploadController@delete');
+        });
+
         Route::group(['prefix' => 'upload'], function () {
             Route::post('/', 'API\V1\UploadController@upload');
         });

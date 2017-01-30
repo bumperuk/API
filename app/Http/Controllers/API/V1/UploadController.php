@@ -106,4 +106,21 @@ class UploadController extends ApiController
             'vehicle' => $vehicle->fresh()
         ]);
     }
+
+    public function delete(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|exists:vehicles,id'
+        ]);
+
+        $vehicle = Vehicle::findOrFail($request->input('id'));
+
+        if ($vehicle->user->id != $request->user()->id) {
+            return $this->api_response([], 'You cannot delete this advert.', false, 401);
+        }
+
+        $vehicle->delete();
+
+        return $this->api_response([]);
+    }
 }
