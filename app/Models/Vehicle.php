@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Vehicle extends BaseModel
 {
+    use SoftDeletes;
     use VehicleAttributes;
 
     protected $with = [

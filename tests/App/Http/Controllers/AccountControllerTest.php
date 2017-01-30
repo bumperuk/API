@@ -75,4 +75,58 @@ class AccountControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/account/can-upload')
             ->seeJson(['can_upload' => false]);
     }
+
+    public function testUserAdvertStructure()
+    {
+        $user = factory(\App\Models\User::class)->create();
+        factory(\App\Models\Vehicle::class, 7)->create([
+            'user_id' => $user->id, 'paid_at' => Carbon::now()->subWeek(), 'deactivated_at' => Carbon::now()->subDay()
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/adverts')
+            ->seePaginationCount(7)
+            ->seePaginationStructure([
+                'price', 'lat', 'lon', 'description', 'model' => [
+                    'make', 'category'
+                ]
+            ]);
+    }
+
+    public function testUsersAdvertsExpired()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'id' => 123, 'paid_at' => Carbon::now()->subWeek(), 'deactivated_at' => Carbon::now()->subDay()
+        ]);
+
+        $this
+            ->withToken($vehicle->user)
+            ->apiCall('GET', 'api/v1/account/adverts')
+            ->seeJson(['id' => 123]);
+    }
+
+    public function testUserAdvertsActive()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'id' => 232, 'paid_at' => Carbon::now()->subWeek(), 'deactivated_at' => Carbon::now()->addDay()
+        ]);
+
+        $this
+            ->withToken($vehicle->user)
+            ->apiCall('GET', 'api/v1/account/adverts')
+            ->seeJson(['id' => 232]);
+    }
+
+    public function testUserAdvertsOtherUser()
+    {
+        factory(\App\Models\Vehicle::class)->create([
+            'id' => 232, 'paid_at' => Carbon::now()->subWeek(), 'deactivated_at' => Carbon::now()->addDay()
+        ]);
+
+        $this
+            ->withNewToken()
+            ->apiCall('GET', 'api/v1/account/adverts')
+            ->dontSeeJson(['id' => 232]);
+    }
 }

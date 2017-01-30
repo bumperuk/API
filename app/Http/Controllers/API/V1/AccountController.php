@@ -82,11 +82,11 @@ class AccountController extends ApiController
     public function savePushToken(Request $request)
     {
         $this->validate($request, [
-            'token' => 'required'
+            'push_token' => 'required'
         ]);
 
         $user = $request->user();
-        $user->push_token = $request->input('token');
+        $user->push_token = $request->input('push_token');
         $user->save();
 
         return parent::api_response([], 'token saved');
@@ -107,5 +107,17 @@ class AccountController extends ApiController
             $user->vehicles()->active()->count() == 0;
 
         return $this->api_response(['can_upload' => $canUpload]);
+    }
+
+    public function getAdverts(Request $request)
+    {
+        $user = $request->user();
+
+        $vehicles = Vehicle
+            ::where('user_id', $user->id)
+            ->orderBy('paid_at', 'desc')
+            ->paginate(16);
+
+        return $this->api_response($vehicles);
     }
 }
