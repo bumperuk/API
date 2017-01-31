@@ -169,4 +169,91 @@ class UploadControllerTest extends TestCase
             ])
             ->seeError(400);
     }
+
+    public function testEditVehicleWithOtherUser()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create();
+        $mileage = factory(\App\Models\Mileage::class)->create();
+
+        $this
+            ->withNewToken()
+            ->apiCall('POST', 'api/v1/upload/edit', [
+                'id' => $vehicle->id,
+                'mileage' => $mileage->id
+            ])
+            ->seeError(404);
+    }
+
+    public function testEditVehicleWithInvalidId()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create();
+        $mileage = factory(\App\Models\Mileage::class)->create();
+
+        $this
+            ->withToken($vehicle->user)
+            ->apiCall('POST', 'api/v1/upload/edit', [
+                'id' => 332323,
+                'mileage' => $mileage->id
+            ])
+            ->seeError(400);
+    }
+
+    public function testEditVehicleAttributes()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create();
+        $price = factory(\App\Models\Price::class)->create();
+        $newAttributes = factory(\App\Models\Vehicle::class)->create();
+
+        $this
+            ->withToken($vehicle->user)
+            ->apiCall('POST', 'api/v1/upload/edit', [
+                'id' => $vehicle->id,
+                'lat' => 999.99,
+                'lon' => 999.99,
+                'price' => $price->id,
+                'description' => 'New description',
+                'condition' => $newAttributes->condition_id,
+                'year' => $newAttributes->year_id,
+                'color' => $newAttributes->color_id,
+                'body_type' => $newAttributes->body_type_id,
+                'door' => $newAttributes->door_id,
+                'size' => $newAttributes->size_id,
+                'mileage' => $newAttributes->mileage_id,
+                'fuel' => $newAttributes->fuel_id,
+                'transmission' => $newAttributes->transmission_id,
+                'engine' => $newAttributes->engine_id,
+                'tax_band' => $newAttributes->tax_band_id,
+                'sms_number' => '0987654321',
+                'call_number' => '0123456789',
+                'email' => 'email@email.com'
+            ], [],[
+                'photos' => [$this->createFile('png'), $this->createFile('png')]
+            ])
+            ->seeSuccess()
+            ->seeJson([
+                'lat' => 999.99,
+                'lon' => 999.99,
+                'price' => $price->value,
+                'description' => 'New description',
+                'details' => [
+                    'condition' => $newAttributes->condition->value,
+                    'year' => $newAttributes->year->value,
+                    'color' => $newAttributes->color->value,
+                    'body_type' => $newAttributes->bodyType->value,
+                    'door' => $newAttributes->door->value,
+                    'size' => $newAttributes->size->value,
+                    'mileage' => $newAttributes->mileage->value,
+                    'fuel' => $newAttributes->fuel->value,
+                    'transmission' => $newAttributes->transmission->value,
+                    'engine' => $newAttributes->engine->value,
+                    'tax_band' => $newAttributes->taxBand->value
+                ],
+                'sms_number' => '0987654321',
+                'call_number' => '0123456789',
+                'email' => 'email@email.com',
+                'photos' => [
+                    '*' => ['id', 'url']
+                ]
+            ]);
+    }
 }

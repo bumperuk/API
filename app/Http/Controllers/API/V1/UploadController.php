@@ -102,7 +102,105 @@ class UploadController extends ApiController
         $vehicle->save();
 
         return $this->api_response([
-            'is_live' => $user->user_type == 'dealer',
+            'vehicle' => $vehicle->fresh()
+        ]);
+    }
+
+    public function edit(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|exists:vehicles,id',
+            'model' => 'exists:models,id',
+            'photos' => 'array|min:1',
+            'lat' => 'numeric',
+            'lon' => 'numeric',
+            'price' => 'exists:prices,id',
+            'condition' => 'exists:conditions,id',
+            'year' => 'exists:years,id',
+            'color' => 'exists:colors,id',
+            'body_type' => 'exists:body_types,id',
+            'doors' => 'exists:doors,id',
+            'size' => 'exists:sizes,id',
+            'mileage' => 'exists:mileages,id',
+            'fuel' => 'exists:fuels,id',
+            'transmission' => 'exists:transmissions,id',
+            'engine' => 'exists:engines,id',
+            'tax_band' => 'exists:tax_bands,id',
+            'description' => '',
+            'call_number' => '',
+            'sms_number' => '',
+            'email' => '',
+        ]);
+        
+        $user = $request->user();
+        $vehicle = Vehicle
+            ::where('user_id', $user->id)
+            ->findOrFail($request->input('id'));
+
+        $model = Model::findOrFail($request->input('model', $vehicle->model_id));
+        $vehicle->model()->associate($model);
+
+        $vehicle->lat = $request->input('lat', $vehicle->lat);
+        $vehicle->lon = $request->input('lon', $vehicle->lon);
+        $vehicle->price = Price::findOrFail($request->input('price'))->value;
+        $vehicle->description = $request->input('description', $vehicle->description);
+
+        $vehicle->condition_id = $request->input('condition', $vehicle->condition_id);
+        $vehicle->year_id = $request->input('year', $vehicle->year_id);
+        $vehicle->color_id = $request->input('color', $vehicle->color_id);
+        $vehicle->body_type_id = $request->input('body_type', $vehicle->body_type_id);
+        $vehicle->door_id = $request->input('doors', $vehicle->door_id);
+        $vehicle->size_id = $request->input('size', $vehicle->size_id);
+        $vehicle->mileage_id = $request->input('mileage', $vehicle->mileage_id);
+        $vehicle->fuel_id = $request->input('fuel', $vehicle->fuel_id);
+        $vehicle->transmission_id = $request->input('transmission', $vehicle->transmission_id);
+        $vehicle->engine_id = $request->input('engine', $vehicle->engine_id);
+        $vehicle->tax_band_id = $request->input('tax_band', $vehicle->tax_band_id);
+
+        $vehicle->sms_number = $request->input('sms_number', $vehicle->sms_number);
+        $vehicle->call_number = $request->input('call_number', $vehicle->call_number);
+        $vehicle->email = $request->input('email', $vehicle->email);
+
+        if ($vehicle->sms_number == null && $vehicle->call_number == null && $vehicle->email == null) {
+            return $this->api_response([], 'You must provide either a email, phone number or sms number.', false, 400);
+        }
+
+        $existingPhotos = VehiclePhoto::where('vehicle_id', $vehicle->id)->get()->pluck('id');
+
+        if ($request->has('photos')) {
+            foreach ($request->input('photos') as $photoId) {
+
+                $photo = new VehiclePhoto();
+                $existingPhoto = VehiclePhoto::find($photoId);
+
+                if (!$existingPhoto) {
+                    return $this->api_response([], 'Invalid image (id ' . $photoId . ')', false, 400);
+                }
+
+                $photo->url = $existingPhoto->name;
+                $vehicle->photos()->save($photo);
+            }
+        }
+
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photoFile) {
+                $photo = new VehiclePhoto();
+                $file = Image::make($photoFile);
+                $photo->upload($file);
+
+                $vehicle->photos()->save($photo);
+            }
+        }
+
+        VehiclePhoto::whereIn('id', $existingPhotos)->delete();
+
+        if ($user->user_type == 'dealer') {
+            $vehicle->paid_at = Carbon::now();
+        }
+
+        $vehicle->save();
+
+        return $this->api_response([
             'vehicle' => $vehicle->fresh()
         ]);
     }

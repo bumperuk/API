@@ -135,10 +135,11 @@ trait VehicleAttributes
                  'mileage', 'fuel', 'transmission', 'engine', 'taxBand'];
 
         foreach ($keys as $key) {
+            $newKey = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $key));
             if ($this->$key) {
-                $details[$key] = $this->$key->value;
+                $details[$newKey] = $this->$key->value;
             } else {
-                $details[$key] = null;
+                $details[$newKey] = null;
             }
         }
 
