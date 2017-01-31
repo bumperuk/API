@@ -28,7 +28,7 @@ class UploadControllerTest extends TestCase
                 'photos' => [$this->createFile('png')]
             ])
             ->seeSuccess()
-            ->seeJson(['is_live' => false])
+            ->seeJson(['active' => false])
             ->seeJson(['user_id' => $user->id])
             ->seeJson(['price' => 123.45]);
     }
@@ -76,7 +76,7 @@ class UploadControllerTest extends TestCase
                 'photos' => [$this->createFile('png')]
             ])
             ->seeSuccess()
-            ->seeJson(['is_live' => true])
+            ->seeJson(['active' => true])
             ->seeJson(['user_id' => $user->id]);
     }
 
@@ -167,7 +167,7 @@ class UploadControllerTest extends TestCase
             ->apiCall('DELETE', 'api/v1/adverts', [
                 'id' => $vehicle->id
             ])
-            ->seeError(400);
+            ->seeError(404);
     }
 
     public function testEditVehicleWithOtherUser()

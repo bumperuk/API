@@ -79,13 +79,14 @@ class AppDataControllerTest extends TestCase
             ]);
     }
 
-    public function testIfValuesArePopulates()
+    public function testIfValuesArePopulated()
     {
-        factory(\App\Models\Make::class)->create([
+        $make = factory(\App\Models\Make::class)->create([
             'value' => 'UniqueMakeValue'
         ]);
 
         factory(\App\Models\Model::class)->create([
+            'make_id' => $make->id,
             'value' => 'UniqueModelValue'
         ]);
 
@@ -124,8 +125,7 @@ class AppDataControllerTest extends TestCase
             ->seeJson(['value' => 'UniqueMakeValue'])
             ->seeJson(['value' => 'UniqueModelValue'])
             ->seeJson(['value' => 'UniqueConditionValue'])
-            ->seeJson(['minimum' => 555])
-            ->seeJson(['maximum' => 999])
+            ->seeJson(['minimum' => 555, 'maximum' => 999])
             ->seeJson(['value' => 1234])
             ->seeJson(['value' => 'UniqueColourValue'])
             ->seeJson(['value' => 'UniqueBodyTypeValue'])

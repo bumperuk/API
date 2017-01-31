@@ -366,7 +366,7 @@ class AdvertControllerTest extends TestCase
             'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
         ]);
         $hide = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => null
+            'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => Carbon::now()->subSeconds(1)
         ]);
 
         $this
