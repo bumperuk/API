@@ -98,4 +98,24 @@ class AuthControllerTest extends TestCase
             ->apiCall('POST', 'api/v1/auth/logout')
             ->seeSuccess();
     }
+
+    public function testRequestPasswordValidEmail()
+    {
+        $this
+            ->apiCall('POST', 'api/v1/auth/password/request', [
+                'email' => 'not@valid.email'
+            ])
+            ->seeError(404);
+    }
+
+    public function testRequestPasswordInvalidEmail()
+    {
+        $user = factory(\App\Models\User::class)->create();
+
+        $this
+            ->apiCall('POST', 'api/v1/auth/password/request', [
+                'email' => $user->email
+            ])
+            ->seeSuccess();
+    }
 }
