@@ -1,5 +1,6 @@
 <html>
 <head>
+    <title>{{ $name }}</title>
     <style>
         @font-face {
             font-family: URWGeometric;
@@ -100,6 +101,9 @@
             border: 1px solid #d5d5d5;
             border-radius: 5px;
             width: 70%;
+        }
+        p.error {
+            color: #9a0006;
         }
     </style>
 </head>

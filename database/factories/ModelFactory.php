@@ -255,3 +255,14 @@ $factory->define(App\Models\Faq::class, function (Faker\Generator $faker) {
         'answer' => $faker->sentence
     ];
 });
+
+$factory->define(App\Models\PasswordReset::class, function (Faker\Generator $faker) {
+    return [
+        'token' => str_random('64'),
+        'ip' => $faker->ipv4,
+        'used' => $faker->boolean,
+        'email' => function() {
+            return factory(\App\Models\User::class)->create()->email;
+        }
+    ];
+});

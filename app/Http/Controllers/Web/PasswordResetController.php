@@ -44,7 +44,7 @@ class PasswordResetController extends Controller
     {
         $this->validate($request, [
             'token' => 'required',
-            'password' => 'required|confirmed',
+            'password' => 'required|min:6|confirmed',
         ]);
 
         $reset = PasswordReset
