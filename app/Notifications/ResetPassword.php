@@ -44,9 +44,10 @@ class ResetPassword extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('Please click the link below to reset your password.')
-            ->line('If you didn\'t request a password reset ignore this email.')
-            ->action('Reset Password', url('reset/password?token=' . $this->reset->token));
+            ->view('email.password', [
+                'name' => config('app.name'),
+                'token' => $this->reset->token,
+            ]);
     }
 
     /**

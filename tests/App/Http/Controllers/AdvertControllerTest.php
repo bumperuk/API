@@ -361,18 +361,18 @@ class AdvertControllerTest extends TestCase
 
     public function testOnlyOneUserAdverts()
     {
-        $user = factory(\App\Models\Vehicle::class)->create();
+        $user = factory(\App\Models\User::class)->create();
         $show = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
         ]);
         $hide = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => Carbon::now()->subSeconds(1)
+            'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => null
         ]);
 
         $this
             ->apiCall('GET', 'api/v1/adverts/user?id=' . $user->id)
             ->seePaginationCount(1)
-            ->seeJson(['id' => $show->id])
-            ->dontSeeJson(['id' => $hide->id]);
+            ->seeJson(['id' => $show->id, 'price' => $show->price])
+            ->dontSeeJson(['id' => $hide->id, 'price' => $hide->price]);
     }
 }

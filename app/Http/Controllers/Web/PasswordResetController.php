@@ -29,6 +29,7 @@ class PasswordResetController extends Controller
             ->firstOrFail();
 
         return view('web.password.reset', [
+            'name' => config('app.name'),
             'reset' => $reset
         ]);
     }
@@ -59,6 +60,8 @@ class PasswordResetController extends Controller
 
         $reset->user->save();
 
-        return view('web.password.updated');
+        return view('web.password.updated', [
+            'name' => config('app.name'),
+        ]);
     }
 }
