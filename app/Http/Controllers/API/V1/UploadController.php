@@ -149,7 +149,7 @@ class UploadController extends ApiController
         $vehicle->year_id = $request->input('year', $vehicle->year_id);
         $vehicle->color_id = $request->input('color', $vehicle->color_id);
         $vehicle->body_type_id = $request->input('body_type', $vehicle->body_type_id);
-        $vehicle->door_id = $request->input('doors', $vehicle->door_id);
+        $vehicle->door_id = $request->input('door', $vehicle->door_id);
         $vehicle->size_id = $request->input('size', $vehicle->size_id);
         $vehicle->mileage_id = $request->input('mileage', $vehicle->mileage_id);
         $vehicle->fuel_id = $request->input('fuel', $vehicle->fuel_id);

@@ -250,10 +250,10 @@ class UploadControllerTest extends TestCase
                 ],
                 'sms_number' => '0987654321',
                 'call_number' => '0123456789',
-                'email' => 'email@email.com',
-                'photos' => [
-                    '*' => ['id', 'url']
-                ]
+                'email' => 'email@email.com'
             ]);
+
+        $response = $this->decodeResponseJson();
+        $this->assertEquals(count($response['response_payload']['data']['vehicle']['photos']), 2);
     }
 }
