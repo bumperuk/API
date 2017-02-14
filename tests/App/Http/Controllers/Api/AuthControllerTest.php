@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Notification;
 
 /**
  * Created by PhpStorm.
@@ -99,8 +100,10 @@ class AuthControllerTest extends TestCase
             ->seeSuccess();
     }
 
-    public function testRequestPasswordValidEmail()
+    public function testRequestPasswordInvalidEmail()
     {
+        Notification::fake();
+
         $this
             ->apiCall('POST', 'api/v1/auth/password/request', [
                 'email' => 'not@valid.email'
@@ -108,8 +111,10 @@ class AuthControllerTest extends TestCase
             ->seeError(404);
     }
 
-    public function testRequestPasswordInvalidEmail()
+    public function testRequestPasswordValidEmail()
     {
+        Notification::fake();
+        
         $user = factory(\App\Models\User::class)->create();
 
         $this
