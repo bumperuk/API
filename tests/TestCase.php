@@ -87,13 +87,13 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param string $url
      * @param array $data
      * @param array $headers
+     * @param array $files
      * @return $this
      */
     public function apiCall(string $method, string $url, $data = [], $headers = [], $files = [])
     {
         if ($this->jwtToken) {
             $headers['Authorization'] = 'Bearer ' . $this->jwtToken;
-            //var_dump($url . ' ' . $this->jwtToken);
         }
 
         $content = json_encode($data);

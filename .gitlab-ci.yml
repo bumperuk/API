@@ -1,0 +1,41 @@
+variables:
+  WITH_XDEBUG: "1"
+  MYSQL_ROOT_PASSWORD: root
+  MYSQL_DATABASE: homestead
+  COMPOSER_HOME: /cache/composer
+
+stages:
+  - test
+  - deploy
+
+unit_test:
+  type: test
+  image: laradock/workspace:1.3
+  services:
+    - mysql:latest
+  script:
+    - composer install --no-progress --no-interaction
+    - cp .env.test .env
+    - php artisan key:generate
+    - php artisan jwt:generate
+    - php -v
+    - echo "Running PHPUnit Tests"
+    - php vendor/bin/phpunit --colors --coverage-text
+
+deploy_staging:
+  type: deploy
+  image: php:7.0
+  only:
+    - release
+  script:
+    - apt-get update
+    - apt-get install -y openssh-client
+    - eval "$(ssh-agent)"
+    - echo "$DEPLOY_SK" > ../deploy
+    - echo "$DEPLOY_PK" > ../deploy.pub
+    - chmod 600 ../deploy
+    - chmod 600 ../deploy.pub
+    - ssh-add ../deploy
+    - ssh -t -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "ls"
+    - scp deploy.sh $DEPLOY_USER@$DEPLOY_HOST:/var/www/deploy.sh
+    - ssh -t -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "chmod 777 /var/www/deploy.sh && /var/www/deploy.sh && rm /var/www/deploy.sh"

@@ -47,9 +47,7 @@ class ReportControllerTest extends TestCase
         $vehicle = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
-        factory(\App\Models\Report::class, 3)->create([
-            'vehicle_id' => $vehicle->id,
-        ]);
+        factory(\App\Models\Report::class, 3)->create(['vehicle_id' => $vehicle->id]);
 
         $this
             ->withNewToken()
