@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Thomas
- * Date: 19/01/2017
- * Time: 11:50
- */
 
 namespace App\Http\Controllers\API\V1;
 
@@ -54,7 +48,7 @@ class UploadController extends ApiController
         $user = $request->user();
         $model = Model::findOrFail($request->input('model'));
 
-        if ($user->user_type == 'private' && $user->vehicles()->active()->count() != 0) {
+        if ($user->vehicles()->active()->count() != $user->max_vehicles) {
             return $this->api_response([],
                 'You already have an active vehicle. Become a dealer to upload more.', false, 403);
         }
@@ -95,7 +89,7 @@ class UploadController extends ApiController
             $vehicle->photos()->save($photo);
         }
 
-        if ($user->user_type == 'dealer') {
+        if ($user->type == 'dealer') {
             $vehicle->paid_at = Carbon::now();
         }
 
@@ -194,7 +188,7 @@ class UploadController extends ApiController
 
         VehiclePhoto::whereIn('id', $existingPhotos)->delete();
 
-        if ($user->user_type == 'dealer') {
+        if ($user->type == 'dealer') {
             $vehicle->paid_at = Carbon::now();
         }
 

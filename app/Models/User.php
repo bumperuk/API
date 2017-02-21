@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $with = [
-        
+        'dealerRank'
     ];
 
     /**
@@ -34,7 +34,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'dealerRank', 'dealer_rank'
     ];
 
     /**
@@ -52,7 +52,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-
+        'type', 'vehicle_limit'
     ];
 
     /**
@@ -125,5 +125,39 @@ class User extends Authenticatable
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class);
+    }
+
+    /**
+     * Rank (name and upload limit) for the user if they are a dealer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function dealerRank()
+    {
+        return $this->belongsTo(DealerRank::class);
+    }
+
+    /**
+     * The type of the user (either private or dealer).
+     *
+     * @return string
+     */
+    public function getTypeAttribute()
+    {
+        return $this->dealer_rank ? 'dealer' : 'private';
+    }
+
+    /**
+     * The maximum amount of vehicles that can be active at once.
+     *
+     * @return int
+     */
+    public function getVehicleLimitAttribute()
+    {
+        if ($this->type == 'private') {
+            return 3;
+        }
+
+        return $this->dealer_rank->limit;
     }
 }

@@ -15,7 +15,14 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     return [
         'email' => $faker->email,
         'password' => 'password',
-        'user_type' => $faker->randomElement(['private', 'dealer'])
+    ];
+});
+
+$factory->define(App\Models\DealerRank::class, function (Faker\Generator $faker) {
+    $vehicleLimit = $faker->randomNumber(2);
+    return [
+        'limit' => $vehicleLimit,
+        'name' => 'Dealer ' . $vehicleLimit . ' vehicles',
     ];
 });
 

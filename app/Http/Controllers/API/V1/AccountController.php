@@ -102,13 +102,23 @@ class AccountController extends ApiController
     {
         $user = $request->user();
 
-        $canUpload =
-            $user->user_type == 'dealer' ||
-            $user->vehicles()->active()->count() == 0;
+        $active = $user->vehicles()->active()->count();
+        $limit = $user->vehicle_limit;
+        $canUpload = $active < $limit;
 
-        return $this->api_response(['can_upload' => $canUpload]);
+        return $this->api_response([
+            'can_upload' => $canUpload,
+            'active' => $active,
+            'limit' => $limit
+        ]);
     }
 
+    /**
+     * Get all adverts for the current user (including inactive)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAdverts(Request $request)
     {
         $user = $request->user();
