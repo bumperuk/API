@@ -29,14 +29,16 @@ class AccountControllerTest extends TestCase
             ->seeJson(['phone' => '08787878787']);
     }
 
-    public function testCanUploadDealer()
+    public function testCanUploadPrivate()
     {
-        $user = factory(\App\Models\User::class)->create(['user_type' => 'dealer']);
+        $user = factory(\App\Models\User::class)->create(['dealer_rank' => null]);
 
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
-            ->seeJson(['can_upload' => true]);
+            ->seeJson(['can_upload' => true])
+            ->seeJson(['active' => 0])
+            ->seeJson(['limit' => 3]);
 
         factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => null, 'user_id' => $user->id
@@ -45,35 +47,74 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
-            ->seeJson(['can_upload' => true]);
-    }
+            ->seeJson(['can_upload' => true])
+            ->seeJson(['active' => 1])
+            ->seeJson(['limit' => 3]);
 
-    public function testCanUploadPrivate()
-    {
-        $user = factory(\App\Models\User::class)->create(['user_type' => 'private']);
+        factory(\App\Models\Vehicle::class, 2)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => null, 'user_id' => $user->id
+        ]);
 
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
-            ->seeJson(['can_upload' => true]);
+            ->seeJson(['can_upload' => false])
+            ->seeJson(['active' => 3])
+            ->seeJson(['limit' => 3]);
+    }
 
-        factory(\App\Models\Vehicle::class)->create([
+    public function testCanUploadDealer()
+    {
+        $user = factory(\App\Models\User::class)->create([
+            'dealer_rank_id' => factory(\App\Models\DealerRank::class)->create(['limit' => 11])->id
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => true])
+            ->seeJson(['active' => 0])
+            ->seeJson(['limit' => 11]);
+
+        factory(\App\Models\Vehicle::class, 10)->create([
+            'paid_at' => Carbon::now()->subDays(4), 'deactivated_at' => Carbon::now()->addDays(2), 'user_id' => $user->id
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => true])
+            ->seeJson(['active' => 10])
+            ->seeJson(['limit' => 11]);
+
+        factory(\App\Models\Vehicle::class, 1)->create([
+            'paid_at' => Carbon::now()->subDays(4), 'deactivated_at' => Carbon::now()->addDays(2), 'user_id' => $user->id
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['can_upload' => false])
+            ->seeJson(['active' => 11])
+            ->seeJson(['limit' => 11]);
+    }
+
+    public function testCanUploadExpiredVehicles()
+    {
+        $user = factory(\App\Models\User::class)->create([
+            'dealer_rank_id' => factory(\App\Models\DealerRank::class)->create(['limit' => 11])->id
+        ]);
+
+        factory(\App\Models\Vehicle::class, 4)->create([
             'paid_at' => Carbon::now()->subDays(8), 'deactivated_at' => Carbon::now()->subDays(1), 'user_id' => $user->id
         ]);
 
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
-            ->seeJson(['can_upload' => true]);
-
-        factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addDays(7), 'user_id' => $user->id
-        ]);
-
-        $this
-            ->withToken($user)
-            ->apiCall('GET', 'api/v1/account/can-upload')
-            ->seeJson(['can_upload' => false]);
+            ->seeJson(['can_upload' => true])
+            ->seeJson(['active' => 0])
+            ->seeJson(['limit' => 11]);
     }
 
     public function testUserAdvertStructure()

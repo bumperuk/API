@@ -17,12 +17,14 @@ class CreateNewUserRanks extends Migration
             $table->increments('id');
             $table->string('name');
             $table->smallInteger('limit');
+            $table->string('itunes_product');
+            $table->string('play_product');
             $table->timestamps();
         });
 
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('user_type');
-            $table->integer('dealer_rank')->unsigned()->nullable()->after('id');
+            $table->integer('dealer_rank_id')->unsigned()->nullable()->after('id');
         });
     }
 
@@ -35,7 +37,7 @@ class CreateNewUserRanks extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('user_type', ['private', 'dealer']);
-            $table->dropColumn('dealer_rank');
+            $table->dropColumn('dealer_rank_id');
         });
 
         Schema::dropIfExists('dealer_ranks');

@@ -144,7 +144,7 @@ class User extends Authenticatable
      */
     public function getTypeAttribute()
     {
-        return $this->dealer_rank ? 'dealer' : 'private';
+        return $this->dealer_rank_id ? 'dealer' : 'private';
     }
 
     /**
@@ -158,6 +158,6 @@ class User extends Authenticatable
             return 3;
         }
 
-        return $this->dealer_rank->limit;
+        return $this->dealerRank->limit;
     }
 }

@@ -15,6 +15,9 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     return [
         'email' => $faker->email,
         'password' => 'password',
+        'dealer_rank_id' => function() use ($faker) {
+            return $faker->randomElement([factory(App\Models\DealerRank::class)->create()->id, null]);
+        }
     ];
 });
 
@@ -23,6 +26,8 @@ $factory->define(App\Models\DealerRank::class, function (Faker\Generator $faker)
     return [
         'limit' => $vehicleLimit,
         'name' => 'Dealer ' . $vehicleLimit . ' vehicles',
+        'itunes_product' => 'com.app.' . $faker->word,
+        'play_product' => 'com.app.' . $faker->word
     ];
 });
 

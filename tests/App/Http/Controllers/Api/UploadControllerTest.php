@@ -11,7 +11,7 @@ class UploadControllerTest extends TestCase
 {
     public function testPrivateUpload()
     {
-        $user = factory(\App\Models\User::class)->create(['user_type' => 'private']);
+        $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);
         $model = factory(\App\Models\Model::class)->create();
         $price = factory(\App\Models\Price::class)->create(['value' => 123.45]);
 
@@ -35,7 +35,7 @@ class UploadControllerTest extends TestCase
 
     public function testPrivateMultipleUpload()
     {
-        $user = factory(\App\Models\User::class)->create(['user_type' => 'private']);
+        $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);
         $vehicle = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'user_id' => $user->id
         ]);
@@ -59,7 +59,9 @@ class UploadControllerTest extends TestCase
 
     public function testDealerUpload()
     {
-        $user = factory(\App\Models\User::class)->create(['user_type' => 'dealer']);
+        $user = factory(\App\Models\User::class)->create([
+            'dealer_rank_id' => factory(\App\Models\DealerRank::class)->create(['limit' => 5])->id
+        ]);
         $model = factory(\App\Models\Model::class)->create();
         $price = factory(\App\Models\Price::class)->create(['value' => 123.45]);
 
