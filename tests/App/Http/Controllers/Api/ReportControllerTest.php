@@ -47,14 +47,7 @@ class ReportControllerTest extends TestCase
         $vehicle = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
-        factory(\App\Models\Report::class, 3)->create(['vehicle_id' => $vehicle->id]);
-
-        $this
-            ->withNewToken()
-            ->apiCall('POST', 'api/v1/reports', ['vehicle_id' => $vehicle->id])
-            ->seeSuccess()
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category_id)
-            ->seeJson(['id' => $vehicle->id]);
+        factory(\App\Models\Report::class, 4)->create(['vehicle_id' => $vehicle->id]);
 
         $this
             ->withNewToken()
