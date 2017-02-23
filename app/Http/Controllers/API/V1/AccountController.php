@@ -10,6 +10,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\Vehicle;
 use App\Notifications\VerifyPhone;
+use Carbon\Carbon;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -129,5 +130,38 @@ class AccountController extends ApiController
             ->paginate(16);
 
         return $this->api_response($vehicles);
+    }
+
+    /**
+     * Update the subscription receipt
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateSubscription(Request $request)
+    {
+        $this->validate($request, [
+            'receipt_type' => 'required|in:itunes,play',
+            'receipt' => 'required'
+        ]);
+
+        $user = $request->user();
+        $receiptType = $request->input('receipt_type');
+        $receipt = $request->input('receipt');
+
+        if ($user->receipt_type != null && $user->receipt_type != $receiptType) {
+            return $this->api_response([],
+                'You already have an active subscription for a different platform. ' .
+                'Please cancel your existing plan to continue.', false, 400);
+        }
+
+        //todo validate receipt here before saving it.
+
+        $user->receipt = $receipt;
+        $user->receipt_type = $receiptType;
+        $user->receipt_checked_at = Carbon::now();
+        $user->save();
+
+        return $this->api_response(['user' => $user]);
     }
 }

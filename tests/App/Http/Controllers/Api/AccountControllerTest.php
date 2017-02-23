@@ -31,7 +31,7 @@ class AccountControllerTest extends TestCase
 
     public function testCanUploadPrivate()
     {
-        $user = factory(\App\Models\User::class)->create(['dealer_rank' => null]);
+        $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);
 
         $this
             ->withToken($user)
@@ -169,5 +169,49 @@ class AccountControllerTest extends TestCase
             ->withNewToken()
             ->apiCall('GET', 'api/v1/account/adverts')
             ->dontSeeJson(['id' => 232]);
+    }
+
+    public function testUpdateSubscriptionInvalidType()
+    {
+        $this
+            ->withNewToken()
+            ->apiCall('POST', 'api/v1/account/subscription', [
+                'receipt_type' => 'wrong',
+                'receipt' => 'hghghghghghghghghghghghghghghghghghghghghghhghghghghghhghghghghghhghghghghgh'
+            ])
+            ->seeError(400);
+    }
+
+    public function testUpdateSubscriptionDifferentType()
+    {
+        $user = factory(\App\Models\User::class)->create([
+            'receipt' => 'abcdefg',
+            'receipt_type' => 'itunes',
+            'dealer_rank_id' => factory(\App\Models\DealerRank::class)->create(['limit' => 11])->id
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('POST', 'api/v1/account/subscription', [
+                'receipt_type' => 'play',
+                'receipt' => 'hghghghghghghghghghghghghghghghghghghghghghhghghghghghhghghghghghhghghghghgh'
+            ])
+            ->seeError(400)
+            ->seeText('You already have an active subscription for a different platform');
+    }
+
+    public function testUpdateSubscriptionValid()
+    {
+        $user = factory(\App\Models\User::class)->create();
+
+        $this
+            ->withToken($user)
+            ->apiCall('POST', 'api/v1/account/subscription', [
+                'receipt_type' => 'play',
+                'receipt' => 'ghghghghghghghhghghghghghghghhgh'
+            ])
+            ->seeSuccess()
+            ->seeJson(['receipt' => 'ghghghghghghghhghghghghghghghhgh'])
+            ->seeJson(['receipt_type' => 'play']);
     }
 }
