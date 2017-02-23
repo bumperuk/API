@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\ApiControllerCreatorCommand;
+use App\Console\Commands\CheckSubscriptionCommand;
 use App\Console\Commands\RenewNotificationsCommand;
 use App\Console\Commands\StartSocketCommand;
 use App\Console\Commands\VehicleImportCommand;
@@ -19,7 +20,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ApiControllerCreatorCommand::class,
         RenewNotificationsCommand::class,
-        VehicleImportCommand::class
+        VehicleImportCommand::class,
+        CheckSubscriptionCommand::class
     ];
 
     /**
@@ -31,6 +33,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('notifications:renew')->hourly();
+        $schedule->command('subscriptions:check')->hourly()->withoutOverlapping();
     }
 
     /**
