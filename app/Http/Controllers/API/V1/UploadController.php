@@ -95,6 +95,7 @@ class UploadController extends ApiController
 
         $vehicle->save();
 
+        dd($vehicle->fresh()->toArray());
         return $this->api_response([
             'vehicle' => $vehicle->fresh()
         ]);
