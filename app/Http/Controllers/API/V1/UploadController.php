@@ -28,8 +28,8 @@ class UploadController extends ApiController
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
             'price' => 'required|exists:prices,id',
+            'year' => 'integer',
             'condition' => 'exists:conditions,id',
-            'year' => 'exists:years,id',
             'color' => 'exists:colors,id',
             'body_type' => 'exists:body_types,id',
             'doors' => 'exists:doors,id',
@@ -61,10 +61,10 @@ class UploadController extends ApiController
         $vehicle->lat = $request->input('lat');
         $vehicle->lon = $request->input('lon');
         $vehicle->price = Price::findOrFail($request->input('price'))->value;
+        $vehicle->year = $request->input('year');
         $vehicle->description = $request->input('description');
 
         $vehicle->condition_id = $request->input('condition');
-        $vehicle->year_id = $request->input('year');
         $vehicle->color_id = $request->input('color');
         $vehicle->body_type_id = $request->input('body_type');
         $vehicle->door_id = $request->input('doors');
@@ -111,8 +111,8 @@ class UploadController extends ApiController
             'lat' => 'numeric',
             'lon' => 'numeric',
             'price' => 'exists:prices,id',
+            'year' => 'integer',
             'condition' => 'exists:conditions,id',
-            'year' => 'exists:years,id',
             'color' => 'exists:colors,id',
             'body_type' => 'exists:body_types,id',
             'doors' => 'exists:doors,id',
@@ -140,10 +140,10 @@ class UploadController extends ApiController
         $vehicle->lat = $request->input('lat', $vehicle->lat);
         $vehicle->lon = $request->input('lon', $vehicle->lon);
         $vehicle->price = Price::findOrFail($request->input('price'))->value;
+        $vehicle->year = $request->input('year', $vehicle->year);
         $vehicle->description = $request->input('description', $vehicle->description);
 
         $vehicle->condition_id = $request->input('condition', $vehicle->condition_id);
-        $vehicle->year_id = $request->input('year', $vehicle->year_id);
         $vehicle->color_id = $request->input('color', $vehicle->color_id);
         $vehicle->body_type_id = $request->input('body_type', $vehicle->body_type_id);
         $vehicle->door_id = $request->input('door', $vehicle->door_id);

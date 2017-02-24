@@ -77,14 +77,24 @@ $factory->define(App\Models\PriceRange::class, function (Faker\Generator $faker)
     ];
 });
 
-$factory->define(App\Models\Year::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\StartYear::class, function (Faker\Generator $faker) {
     return [
-        'value' => $faker->year,
+        'value' => $faker->numberBetween(1990, 2016),
         'category_id' => function() {
             return factory(App\Models\Category::class)->create()->id;
         },
     ];
 });
+
+$factory->define(App\Models\EndYear::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->numberBetween(1990, 2016),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
+    ];
+});
+
 
 $factory->define(App\Models\Color::class, function (Faker\Generator $faker) {
     return [
@@ -202,9 +212,6 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'condition_id' => function() {
             return factory(\App\Models\Condition::class)->create()->id;
         },
-        'year_id' => function() {
-            return factory(\App\Models\Year::class)->create()->id;
-        },
         'color_id' => function() {
             return factory(\App\Models\Color::class)->create()->id;
         },
@@ -236,6 +243,7 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
             return factory(\App\Models\Ownership::class)->create()->id;
         },
         'price' => $faker->randomNumber(4, true),
+        'year' => $faker->numberBetween(1990, 2016),
         'lat' => $faker->latitude,
         'lon' => $faker->longitude,
         'description' => $faker->sentence(3),
