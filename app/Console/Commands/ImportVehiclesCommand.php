@@ -42,21 +42,21 @@ class ImportVehiclesCommand extends Command
         $values = $this->loadCsv();
         $this->clearData($category);
 
-
-        $make = null;
-
         foreach ($values as $row) {
 
-            if (!empty($row[0])) {
-                $make = Make::where('value', $row[0])->firstOrCreate(['value' => $row[0]]);
-            }
+            $makeValue = trim($row[0]);
+            $modelValue = isset($row[1]) ? trim($row[1]) : null;
+
+            $make = Make::where('value', $makeValue)->firstOrCreate(['value' => $makeValue]);
 
             $model = new Model();
             $model->category()->associate($category);
             $model->make()->associate($make);
-            $model->value = !empty($row[1]) ? $row[1] : 'Any';
+            $model->value = $modelValue ?? 'Any';
             $model->save();
         }
+
+        $this->info(count($values) . ' vehicles imported for ' . $category->name);
     }
 
     private function clearData(Category $category)
@@ -86,7 +86,7 @@ class ImportVehiclesCommand extends Command
             die();
         }
 
-        $file = file_get_contents($this->argument('file'));
+        $file = trim(file_get_contents($this->argument('file')));
         $rows = explode("\n", $file);
 
         foreach ($rows as $row) {
