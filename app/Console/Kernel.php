@@ -6,7 +6,7 @@ use App\Console\Commands\ApiControllerCreatorCommand;
 use App\Console\Commands\CheckSubscriptionCommand;
 use App\Console\Commands\RenewNotificationsCommand;
 use App\Console\Commands\StartSocketCommand;
-use App\Console\Commands\VehicleImportCommand;
+use App\Console\Commands\ImportVehiclesCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ApiControllerCreatorCommand::class,
         RenewNotificationsCommand::class,
-        VehicleImportCommand::class,
+        ImportVehiclesCommand::class,
         CheckSubscriptionCommand::class
     ];
 

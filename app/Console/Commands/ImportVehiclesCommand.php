@@ -7,7 +7,7 @@ use App\Models\Make;
 use App\Models\Model;
 use Illuminate\Console\Command;
 
-class VehicleImportCommand extends Command
+class ImportVehiclesCommand extends Command
 {
     /**
      * The name and signature of the console command.
