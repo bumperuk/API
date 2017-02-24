@@ -30,7 +30,6 @@ class MakeVehicleYearStatic extends Migration
         Schema::table('vehicles', function (Blueprint $table) {
             $table->dropColumn('year');
             $table->integer('year_id')->unsigned();
-            $table->foreign('year_id')->references('id')->on('years');
         });
     }
 }

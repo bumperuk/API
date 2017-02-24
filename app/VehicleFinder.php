@@ -73,7 +73,7 @@ class VehicleFinder
 
         if ($end) {
             $end = EndYear::find($end);
-            $this->endYearFilter = $end->year;
+            $this->endYearFilter = $end->value;
         }
     }
 
