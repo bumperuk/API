@@ -39,7 +39,7 @@ class UploadController extends ApiController
             'transmission' => 'exists:transmissions,id',
             'engine' => 'exists:engines,id',
             'tax_band' => 'exists:tax_bands,id',
-            'ownership' => 'exists:ownership,id',
+            'ownership' => 'exists:ownerships,id',
             'description' => 'required',
             'call_number' => 'required_without_all:sms_number,email',
             'sms_number' => 'required_without_all:email,call_number',

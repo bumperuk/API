@@ -252,7 +252,7 @@ class UploadControllerTest extends TestCase
                     'transmission' => $newAttributes->transmission->value,
                     'engine' => $newAttributes->engine->value,
                     'tax_band' => $newAttributes->taxBand->value,
-                    'ownership' => $newAttributes->ownership->value
+                    'ownership' => $newAttributes->ownership->value,
                 ],
                 'sms_number' => '0987654321',
                 'call_number' => '0123456789',
