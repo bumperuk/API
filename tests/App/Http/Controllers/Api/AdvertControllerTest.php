@@ -182,11 +182,6 @@ class AdvertControllerTest extends TestCase
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&year=' . $valid->year_id)
-            ->seeJson(['id' => $valid->id])
-            ->dontSeeJson(['id' => $invalid->id]);
-
-        $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&body_type=' . $valid->body_type_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
@@ -299,6 +294,27 @@ class AdvertControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&colors=[99,54,34]')
             ->dontSeeJson(['id' => $vehicle1->id])
             ->dontSeeJson(['id' => $vehicle2->id]);
+    }
+
+    public function testYearFilter()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'description' => 'UniqueDescription'
+        ]);
+
+        $validStart = factory(\App\Models\StartYear::class)->create(['value' => $vehicle->year - 5]);
+        $validEnd = factory(\App\Models\EndYear::class)->create(['value' => $vehicle->year + 5]);
+
+        $invalidStart = factory(\App\Models\StartYear::class)->create(['value' => $vehicle->year - 5]);
+        $invalidEnd = factory(\App\Models\EndYear::class)->create(['value' => $vehicle->year - 3]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&start_year=' . $validStart->id . '&end_year=' . $validEnd->id)
+            ->seeJson(['description' => 'UniqueDescription']);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&start_year=' . $invalidStart->id . '&end_year=' . $invalidEnd->id)
+            ->dontSeeJson(['description' => 'UniqueDescription']);
     }
 
     public function testFavouriteBoolean()

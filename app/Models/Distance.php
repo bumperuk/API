@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Distance extends Model
+class Distance extends BaseModel
 {
     protected $hidden = [
         'created_at', 'updated_at'

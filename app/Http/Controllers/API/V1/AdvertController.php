@@ -27,12 +27,13 @@ class AdvertController extends ApiController
         $finder->setLatLon($request->input('lat'), $request->input('lon'));
         $finder->setOrder($request->input('order'));
         $finder->setFilters($request->only([
-            'model', 'condition', 'year', 'body_type', 'door', 'mileage',
+            'model', 'condition', 'body_type', 'door', 'mileage',
             'fuel', 'transmission', 'engine', 'tax_band', 'ownership'
         ]));
         $finder->setPriceRangeFilter($request->input('price_range'));
         $finder->setDistanceFilter($request->input('distance'));
         $finder->setSellerFilter($request->input('seller'));
+        $finder->setYearFilter($request->input('start_year'), $request->input('end_year'));
 
         if ($request->has('colors')) {
             $colors = json_decode($request->input('colors'), true);

@@ -2,7 +2,9 @@
 
 namespace App;
 use App\Models\Distance;
+use App\Models\EndYear;
 use App\Models\PriceRange;
+use App\Models\StartYear;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,6 +27,8 @@ class VehicleFinder
     private $priceRangeFilter;
     private $colorFilter;
     private $sellerFilter;
+    private $startYearFilter;
+    private $endYearFilter;
 
     public function __construct(int $category)
     {
@@ -55,7 +59,22 @@ class VehicleFinder
 
     public function setDistanceFilter($distance)
     {
-        $this->distanceFilter = Distance::findOrFail($distance);
+        if ($distance) {
+            $this->distanceFilter = Distance::find($distance);
+        }
+    }
+
+    public function setYearFilter($start, $end)
+    {
+        if ($start) {
+            $start = StartYear::find($start);
+            $this->startYearFilter = $start->value;
+        }
+
+        if ($end) {
+            $end = EndYear::find($end);
+            $this->endYearFilter = $end->year;
+        }
     }
 
     public function setPriceRangeFilter($priceRange)
@@ -102,6 +121,7 @@ class VehicleFinder
         $vehicles = $this->doPriceRangeFilter($vehicles);
         $vehicles = $this->doColorFilter($vehicles);
         $vehicles = $this->doSellerFilter($vehicles);
+        $vehicles = $this->doYearFilter($vehicles);
         $vehicles = $this->doOrder($vehicles);
 
         return $vehicles->paginate($perPage);
@@ -123,6 +143,19 @@ class VehicleFinder
                 (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
                  cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
                  sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value);
+        }
+
+        return $builder;
+    }
+
+    private function doYearFilter(Builder $builder): Builder
+    {
+        if ($this->startYearFilter) {
+            $builder = $builder->where('year', '>=', $this->startYearFilter);
+        }
+
+        if ($this->endYearFilter) {
+            $builder = $builder->where('year', '<=', $this->endYearFilter);
         }
 
         return $builder;
@@ -152,9 +185,9 @@ class VehicleFinder
     private function doSellerFilter(Builder $builder): Builder
     {
         if ($this->sellerFilter) {
-            $filter = $this->sellerFilter;
-            $builder->whereHas('user', function ($user) use ($filter) {
-                $user->where('user_type', $filter);
+            $dealer = $this->sellerFilter == 'dealer';
+            $builder->whereHas('user', function ($user) use ($dealer) {
+                $user->whereNotNull('dealer_rank_id');
             });
         }
 
