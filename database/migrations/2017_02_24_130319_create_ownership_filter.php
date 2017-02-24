@@ -16,6 +16,8 @@ class CreateOwnershipFilter extends Migration
         Schema::create('ownerships', function (Blueprint $table) {
             $table->increments('id');
             $table->string('value')->nullable();
+            $table->integer('category_id')->unsigned();
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamps();
         });
 

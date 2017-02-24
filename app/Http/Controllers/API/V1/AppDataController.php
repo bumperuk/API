@@ -19,6 +19,7 @@ use App\Models\Door;
 use App\Models\Engine;
 use App\Models\Fuel;
 use App\Models\Mileage;
+use App\Models\Ownership;
 use App\Models\PriceRange;
 use App\Models\Size;
 use App\Models\TaxBand;
@@ -63,6 +64,7 @@ class AppDataController extends ApiController
                 'transmissions' => Transmission::where('category_id', $category['id'])->get()->toArray(),
                 'engines' => Engine::where('category_id', $category['id'])->get()->toArray(),
                 'tax_bands' => TaxBand::where('category_id', $category['id'])->get()->toArray(),
+                'ownerships' => Ownership::where('category_id', $category['id'])->get()->toArray(),
             ];
         }
 
