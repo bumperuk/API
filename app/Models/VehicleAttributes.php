@@ -21,16 +21,6 @@ trait VehicleAttributes
     }
 
     /**
-     * Year manufactured
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function year()
-    {
-        return $this->belongsTo(Year::class);
-    }
-
-    /**
      * Vehicle color
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -134,7 +124,7 @@ trait VehicleAttributes
     public function getDetailsAttribute()
     {
         $details = [];
-        $keys = ['condition', 'year', 'color', 'bodyType', 'door', 'size', 'mileage',
+        $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'mileage',
                  'fuel', 'transmission', 'engine', 'taxBand', 'ownership'];
 
         foreach ($keys as $key) {
