@@ -31,7 +31,8 @@ class Vehicle extends BaseModel
     protected $casts = [
         'lat' => 'float',
         'lon' => 'float',
-        'price' => 'float'
+        'price' => 'float',
+        'views' => 'integer',
     ];
 
     protected $dates = [
