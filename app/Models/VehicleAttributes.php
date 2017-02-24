@@ -126,13 +126,22 @@ trait VehicleAttributes
     }
 
     /**
+     * Ownership
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ownership()
+    {
+        return $this->belongsTo(Ownership::class);
+    }
+
+    /**
      * Put all vehicle attributes in a single array.
      */
     public function getDetailsAttribute()
     {
         $details = [];
-        $keys = ['condition', 'year', 'color', 'bodyType', 'door', 'size',
-                 'mileage', 'fuel', 'transmission', 'engine', 'taxBand'];
+        $keys = ['condition', 'year', 'color', 'bodyType', 'door', 'size', 'mileage',
+                 'fuel', 'transmission', 'engine', 'taxBand', 'ownership'];
 
         foreach ($keys as $key) {
             $newKey = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $key));
