@@ -375,4 +375,39 @@ class AdvertControllerTest extends TestCase
             ->seeJson(['id' => $show->id, 'price' => $show->price])
             ->dontSeeJson(['id' => $hide->id, 'price' => $hide->price]);
     }
+
+    public function testAddViewInvalidVehicle()
+    {
+        factory(\App\Models\Vehicle::class)->create();
+
+        $this
+            ->apiCall('POST', 'api/v1/adverts/views', ['id' => 25])
+            ->seeError(400);
+    }
+
+    public function testAddViewValid()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create(['views' => 23]);
+
+        for ($i=1; $i<10; $i++) {
+            $this
+                ->withNewToken()
+                ->apiCall('POST', 'api/v1/adverts/views', ['id' => $vehicle->id])
+                ->seeSuccess()
+                ->seeJson(['views' => 23 + $i]);
+        }
+    }
+
+    public function testAddViewOwnVehicle()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create(['views' => 23]);
+
+        for ($i=0; $i<10; $i++) {
+            $this
+                ->withToken($vehicle->user)
+                ->apiCall('POST', 'api/v1/adverts/views', ['id' => $vehicle->id])
+                ->seeSuccess()
+                ->seeJson(['views' => 23]);
+        }
+    }
 }

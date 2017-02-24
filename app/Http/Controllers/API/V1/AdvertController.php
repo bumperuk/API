@@ -63,8 +63,11 @@ class AdvertController extends ApiController
         ]);
 
         $vehicle = Vehicle::find($request->input('id'));
-        $vehicle->views += 1;
-        $vehicle->save();
+
+        if ($request->user() && $request->user()->id != $vehicle->user->id) {
+            $vehicle->views += 1;
+            $vehicle->save();
+        }
 
         return $this->api_response($vehicle);
     }
