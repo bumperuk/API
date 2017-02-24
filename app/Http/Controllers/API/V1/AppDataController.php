@@ -11,6 +11,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\BodyType;
 use App\Models\Category;
+use App\Models\Distance;
 use App\Models\Make;
 use App\Models\Model;
 use App\Models\Color;
@@ -65,6 +66,7 @@ class AppDataController extends ApiController
                 'engines' => Engine::where('category_id', $category['id'])->get()->toArray(),
                 'tax_bands' => TaxBand::where('category_id', $category['id'])->get()->toArray(),
                 'ownerships' => Ownership::where('category_id', $category['id'])->get()->toArray(),
+                'distances' => Distance::where('category_id', $category['id'])->get()->toArray(),
             ];
         }
 

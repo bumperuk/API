@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Models\Distance;
 use App\Models\PriceRange;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -54,7 +55,7 @@ class VehicleFinder
 
     public function setDistanceFilter($distance)
     {
-        $this->distanceFilter = $distance;
+        $this->distanceFilter = Distance::findOrFail($distance);
     }
 
     public function setPriceRangeFilter($priceRange)
@@ -121,7 +122,7 @@ class VehicleFinder
             $builder = $builder->whereRaw('
                 (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
                  cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
-                 sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter);
+                 sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value);
         }
 
         return $builder;

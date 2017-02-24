@@ -47,6 +47,10 @@ class AdvertControllerTest extends TestCase
 
     public function testDistanceFilter()
     {
+        $distance90 = factory(\App\Models\Distance::class)->create(['value' => 90]);
+        $distance40 = factory(\App\Models\Distance::class)->create(['value' => 40]);
+        $distance87 = factory(\App\Models\Distance::class)->create(['value' => 87]);
+
         $vehicle = factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
             'lat' => 39, 'lon' => -76
@@ -55,15 +59,15 @@ class AdvertControllerTest extends TestCase
         //dist between vehicle and location passed to endpoint is 87.785 miles.
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=38&lon=-77&distance=90')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=38&lon=-77&distance=' . $distance90->id)
             ->seeJson(['id' => $vehicle->model->category->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=38&lon=-77&distance=40')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=38&lon=-77&distance=' . $distance40->id)
             ->dontSeeJson(['id' => $vehicle->model->category->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=38&lon=-77&distance=87')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=38&lon=-77&distance=' . $distance87->id)
             ->dontSeeJson(['id' => $vehicle->model->category->id]);
     }
 

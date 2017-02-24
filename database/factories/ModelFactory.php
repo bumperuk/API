@@ -176,6 +176,15 @@ $factory->define(App\Models\Ownership::class, function (Faker\Generator $faker) 
     ];
 });
 
+$factory->define(App\Models\Distance::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->numberBetween(10, 300),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
+    ];
+});
+
 $factory->define(App\Models\Price::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->numberBetween(1000, 50000),

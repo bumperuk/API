@@ -19,6 +19,7 @@ class AdvertController extends ApiController
     {
         $this->validate($request, [
             'category' => 'required|exists:categories,id',
+            'distance' => 'exists:distances,id'
         ]);
 
         $finder = new VehicleFinder($request->input('category'));
