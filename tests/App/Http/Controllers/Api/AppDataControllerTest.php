@@ -72,7 +72,8 @@ class AppDataControllerTest extends TestCase
                             'fuels',
                             'transmissions',
                             'engines',
-                            'tax_bands'
+                            'tax_bands',
+                            'ownerships'
                         ]
                     ]
                 ]
@@ -119,6 +120,10 @@ class AppDataControllerTest extends TestCase
             'value' => 'UniqueSizeValue'
         ]);
 
+        factory(\App\Models\Ownership::class)->create([
+            'value' => 'UniqueOwnershipValue'
+        ]);
+
         $this
             ->apiCall('GET', 'api/v1/app-data')
             ->seeSuccess()
@@ -130,6 +135,7 @@ class AppDataControllerTest extends TestCase
             ->seeJson(['value' => 'UniqueColourValue'])
             ->seeJson(['value' => 'UniqueBodyTypeValue'])
             ->seeJson(['value' => 'UniqueDoorValue'])
+            ->seeJson(['value' => 'UniqueOwnershipValue'])
             ->seeJson(['value' => 'UniqueSizeValue']);
     }
 }

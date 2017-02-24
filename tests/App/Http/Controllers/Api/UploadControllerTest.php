@@ -97,6 +97,7 @@ class UploadControllerTest extends TestCase
         $transmission = factory(\App\Models\Transmission::class)->create();
         $engine = factory(\App\Models\Engine::class)->create();
         $taxBand = factory(\App\Models\TaxBand::class)->create();
+        $ownership = factory(\App\Models\Ownership::class)->create();
 
         $this
             ->withNewToken()
@@ -120,6 +121,7 @@ class UploadControllerTest extends TestCase
                 'transmission' => $transmission->id,
                 'engine' => $engine->id,
                 'tax_band' => $taxBand->id,
+                'ownership' => $ownership->id
             ], [], [
                 'photos' => [$this->createFile('png')]
             ])
@@ -225,6 +227,7 @@ class UploadControllerTest extends TestCase
                 'transmission' => $newAttributes->transmission_id,
                 'engine' => $newAttributes->engine_id,
                 'tax_band' => $newAttributes->tax_band_id,
+                'ownership' => $newAttributes->ownership_id,
                 'sms_number' => '0987654321',
                 'call_number' => '0123456789',
                 'email' => 'email@email.com'
@@ -248,7 +251,8 @@ class UploadControllerTest extends TestCase
                     'fuel' => $newAttributes->fuel->value,
                     'transmission' => $newAttributes->transmission->value,
                     'engine' => $newAttributes->engine->value,
-                    'tax_band' => $newAttributes->taxBand->value
+                    'tax_band' => $newAttributes->taxBand->value,
+                    'ownership' => $newAttributes->ownership->value
                 ],
                 'sms_number' => '0987654321',
                 'call_number' => '0123456789',
