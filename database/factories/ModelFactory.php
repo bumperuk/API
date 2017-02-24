@@ -167,6 +167,15 @@ $factory->define(App\Models\TaxBand::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Models\Ownership::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->randomElement(['Buy', 'Rent']),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
+    ];
+});
+
 $factory->define(App\Models\Price::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->numberBetween(1000, 50000),

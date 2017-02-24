@@ -135,6 +135,22 @@ class AdvertControllerTest extends TestCase
             ->seePaginationItemsInOrder([$highest, $mid, $lowest]);
     }
 
+    public function testNullFilter()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+        $color = factory(\App\Models\Color::class)->create(['value' => null, 'category_id' => $category->id]);
+
+        $valid = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'color_id' => $color->id
+        ]);
+        $valid->model->category()->associate($category);
+        $valid->model->save();
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&color=unlisted')
+            ->seeJson(['id' => $valid->id]);
+    }
+
     public function testBasicFilters()
     {
         $category = factory(\App\Models\Category::class)->create();
