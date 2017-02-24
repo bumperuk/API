@@ -31,6 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'adverts'], function () {
             Route::get('/', 'API\V1\AdvertController@get');
             Route::get('/user', 'API\V1\AdvertController@getForUser');
+            Route::post('/views', 'API\V1\AdvertController@addView');
         });
 
     });

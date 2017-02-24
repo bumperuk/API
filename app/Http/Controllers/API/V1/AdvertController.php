@@ -55,4 +55,17 @@ class AdvertController extends ApiController
 
         return $this->api_response($vehicles);
     }
+
+    public function addView(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|exists:vehicles,id'
+        ]);
+
+        $vehicle = Vehicle::find($request->input('id'));
+        $vehicle->views += 1;
+        $vehicle->save();
+
+        return $this->api_response($vehicle);
+    }
 }
