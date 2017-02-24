@@ -32,5 +32,6 @@ class CreateEndYearsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('end_years');
+        Schema::rename('start_years', 'years');
     }
 }
