@@ -230,30 +230,29 @@ class AdvertControllerTest extends TestCase
         ]);
         $vehicle->model->category()->associate($category);
         $vehicle->model->save();
-        $range = factory(\App\Models\PriceRange::class)->create(['minimum' => 100, 'maximum' => 500]);
 
         $vehicle->price = 101;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
             ->seeJson(['id' => $vehicle->id]);
 
         $vehicle->price = 499;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
             ->seeJson(['id' => $vehicle->id]);
 
         $vehicle->price = 99;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
             ->dontSeeJson(['id' => $vehicle->id]);
 
         $vehicle->price = 501;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_range=' . $range->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
             ->dontSeeJson(['id' => $vehicle->id]);
     }
 

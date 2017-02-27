@@ -123,7 +123,10 @@ trait VehicleAttributes
      */
     public function getDetailsAttribute()
     {
-        $details = [];
+        $details = [
+            'price' => $this->price,
+            'year' => $this->year
+        ];
         $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'mileage',
                  'fuel', 'transmission', 'engine', 'taxBand', 'ownership'];
 

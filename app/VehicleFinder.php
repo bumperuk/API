@@ -1,20 +1,15 @@
 <?php
 
+
 namespace App;
+
 use App\Models\Distance;
 use App\Models\EndYear;
-use App\Models\PriceRange;
 use App\Models\StartYear;
 use App\Models\Vehicle;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Created by PhpStorm.
- * User: Thomas
- * Date: 11/01/2017
- * Time: 08:48
- */
+
 class VehicleFinder
 {
     private $category;
@@ -77,9 +72,11 @@ class VehicleFinder
         }
     }
 
-    public function setPriceRangeFilter($priceRange)
+    public function setPriceRangeFilter($minPrice, $maxPrice)
     {
-        $this->priceRangeFilter = $priceRange;
+        if ($minPrice || $maxPrice) {
+            $this->priceRangeFilter = [$minPrice, $maxPrice];
+        }
     }
 
     public function setColorFilter($colours)
@@ -163,10 +160,16 @@ class VehicleFinder
 
     private function doPriceRangeFilter(Builder $builder): Builder
     {
-        if ($this->priceRangeFilter && $priceRange = PriceRange::find($this->priceRangeFilter)) {
-            $builder = $builder
-                ->where('price', '>=', $priceRange->minimum)
-                ->where('price', '<=', $priceRange->maximum);
+        if ($priceRange = $this->priceRangeFilter) {
+
+            if ($priceRange[0]) {
+                $builder = $builder->where('price', '>=', $priceRange[0]);
+            }
+
+            if ($priceRange[1]) {
+                $builder = $builder->where('price', '<=', $priceRange[1]);
+            }
+
         }
 
         return $builder;
@@ -187,7 +190,11 @@ class VehicleFinder
         if ($this->sellerFilter) {
             $dealer = $this->sellerFilter == 'dealer';
             $builder->whereHas('user', function ($user) use ($dealer) {
-                $user->whereNotNull('dealer_rank_id');
+                if ($dealer) {
+                    $user->whereNotNull('dealer_rank_id');
+                } else {
+                    $user->whereNull('dealer_rank_id');
+                }
             });
         }
 

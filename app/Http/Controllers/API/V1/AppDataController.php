@@ -54,7 +54,6 @@ class AppDataController extends ApiController
             $categories[$key]['data'] = [
                 'makes' => $this->getMakes($category['id']),
                 'conditions' => Condition::where('category_id', $category['id'])->get()->toArray(),
-                'price_ranges' => PriceRange::where('category_id', $category['id'])->get()->toArray(),
                 'years' => Year::where('category_id', $category['id'])->get()->toArray(),
                 'colors' => Color::where('category_id', $category['id'])->get()->toArray(),
                 'body_types' => BodyType::where('category_id', $category['id'])->get()->toArray(),
