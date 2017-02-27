@@ -205,7 +205,7 @@ class UploadControllerTest extends TestCase
     public function testEditVehicleAttributes()
     {
         $vehicle = factory(\App\Models\Vehicle::class)->create();
-        $price = factory(\App\Models\Price::class)->create();
+        $price = factory(\App\Models\Price::class)->create(['value' => 9887]);
         $newAttributes = factory(\App\Models\Vehicle::class)->create();
 
         $this
@@ -253,6 +253,8 @@ class UploadControllerTest extends TestCase
                     'engine' => $newAttributes->engine->value,
                     'tax_band' => $newAttributes->taxBand->value,
                     'ownership' => $newAttributes->ownership->value,
+                    'price' => 9887,
+                    'year' => 2009
                 ],
                 'sms_number' => '0987654321',
                 'call_number' => '0123456789',
