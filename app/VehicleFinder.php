@@ -5,6 +5,7 @@ namespace App;
 
 use App\Models\Distance;
 use App\Models\EndYear;
+use App\Models\Engine;
 use App\Models\StartYear;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +25,7 @@ class VehicleFinder
     private $sellerFilter;
     private $startYearFilter;
     private $endYearFilter;
+    private $engineFilter;
 
     public function __construct(int $category)
     {
@@ -79,6 +81,13 @@ class VehicleFinder
         }
     }
 
+    public function setEngineFilter($minSize, $maxSize)
+    {
+        if ($minSize || $maxSize) {
+            $this->engineFilter = [$minSize, $maxSize];
+        }
+    }
+
     public function setColorFilter($colours)
     {
         if (is_array($colours)) {
@@ -119,6 +128,7 @@ class VehicleFinder
         $vehicles = $this->doColorFilter($vehicles);
         $vehicles = $this->doSellerFilter($vehicles);
         $vehicles = $this->doYearFilter($vehicles);
+        $vehicles = $this->doEngineFilter($vehicles);
         $vehicles = $this->doOrder($vehicles);
 
         return $vehicles->paginate($perPage);
@@ -189,13 +199,35 @@ class VehicleFinder
     {
         if ($this->sellerFilter) {
             $dealer = $this->sellerFilter == 'dealer';
-            $builder->whereHas('user', function ($user) use ($dealer) {
+            $builder = $builder->whereHas('user', function ($user) use ($dealer) {
                 if ($dealer) {
                     $user->whereNotNull('dealer_rank_id');
                 } else {
                     $user->whereNull('dealer_rank_id');
                 }
             });
+        }
+
+        return $builder;
+    }
+
+    private function doEngineFilter(Builder $builder): Builder
+    {
+        if ($engineFilter = $this->engineFilter) {
+            $minSize = Engine::find($engineFilter[0]);
+            $maxSize = Engine::find($engineFilter[1]);
+
+            if ($minSize) {
+                $builder = $builder->whereHas('engine', function($engine) use ($minSize) {
+                    $engine->where('litres', '>=', $minSize->litres);
+                });
+            }
+
+            if ($maxSize) {
+                $builder = $builder->whereHas('engine', function($engine) use ($maxSize) {
+                    $engine->where('litres', '<=', $maxSize->litres);
+                });
+            }
         }
 
         return $builder;

@@ -256,6 +256,41 @@ class AdvertControllerTest extends TestCase
             ->dontSeeJson(['id' => $vehicle->id]);
     }
 
+    public function testEngineFilter()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+
+        $engine1 = factory(\App\Models\Engine::class)->create(['litres' => 0.5]);
+        $engine2 = factory(\App\Models\Engine::class)->create(['litres' => 1]);
+        $engine3 = factory(\App\Models\Engine::class)->create(['litres' => 2]);
+        $engine4 = factory(\App\Models\Engine::class)->create(['litres' => 4]);
+
+        $vehicle->engine()->associate($engine3);
+        $vehicle->save();
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&min_engine=' . $engine1->id . '&max_engine=' . $engine4->id)
+            ->seeJson(['id' => $vehicle->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&min_engine=' . $engine3->id)
+            ->seeJson(['id' => $vehicle->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&max_engine=' . $engine4->id)
+            ->seeJson(['id' => $vehicle->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&min_engine=' . $engine4->id)
+            ->dontSeeJson(['id' => $vehicle->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&max_engine=' . $engine2->id)
+            ->dontSeeJson(['id' => $vehicle->id]);
+    }
+
     public function testColorFilter()
     {
         $category = factory(\App\Models\Category::class)->create();

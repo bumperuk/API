@@ -67,16 +67,6 @@ $factory->define(App\Models\Condition::class, function (Faker\Generator $faker) 
     ];
 });
 
-$factory->define(App\Models\PriceRange::class, function (Faker\Generator $faker) {
-    return [
-        'minimum' => $faker->randomNumber(4, true),
-        'maximum' => $faker->randomNumber(4, true),
-        'category_id' => function() {
-            return factory(App\Models\Category::class)->create()->id;
-        },
-    ];
-});
-
 $factory->define(App\Models\StartYear::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->numberBetween(1990, 2016),
@@ -162,6 +152,7 @@ $factory->define(App\Models\Transmission::class, function (Faker\Generator $fake
 $factory->define(App\Models\Engine::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomLetter,
+        'litres' => $faker->numberBetween(0.5, 5),
         'category_id' => function() {
             return factory(App\Models\Category::class)->create()->id;
         },
