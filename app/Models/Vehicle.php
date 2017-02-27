@@ -13,7 +13,7 @@ class Vehicle extends BaseModel
     use VehicleAttributes;
 
     protected $with = [
-        'photos', 'model', 'model.category', 'model.make', 'condition', 'year', 'color',
+        'photos', 'model', 'model.category', 'model.make', 'condition', 'color',
         'bodyType', 'door', 'size', 'mileage', 'fuel', 'transmission', 'engine', 'taxBand',
         'userReport', 'userFavourite'
     ];
