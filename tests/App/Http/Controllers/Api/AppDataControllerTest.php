@@ -62,7 +62,6 @@ class AppDataControllerTest extends TestCase
                                 ]
                             ],
                             'conditions',
-                            'price_ranges',
                             'years',
                             'colors',
                             'body_types',
@@ -95,11 +94,6 @@ class AppDataControllerTest extends TestCase
             'value' => 'UniqueConditionValue'
         ]);
 
-        factory(\App\Models\PriceRange::class)->create([
-            'minimum' => 555,
-            'maximum' => 999
-        ]);
-
         factory(\App\Models\Year::class)->create([
             'value' => 1234
         ]);
@@ -130,7 +124,6 @@ class AppDataControllerTest extends TestCase
             ->seeJson(['value' => 'UniqueMakeValue'])
             ->seeJson(['value' => 'UniqueModelValue'])
             ->seeJson(['value' => 'UniqueConditionValue'])
-            ->seeJson(['minimum' => 555, 'maximum' => 999])
             ->seeJson(['value' => 1234])
             ->seeJson(['value' => 'UniqueColourValue'])
             ->seeJson(['value' => 'UniqueBodyTypeValue'])

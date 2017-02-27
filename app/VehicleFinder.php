@@ -4,9 +4,7 @@
 namespace App;
 
 use App\Models\Distance;
-use App\Models\EndYear;
 use App\Models\Engine;
-use App\Models\StartYear;
 use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
@@ -156,7 +154,7 @@ class VehicleFinder
         }
 
         if ($this->yearFilter && $endYear = Year::find($this->yearFilter[1])) {
-            $builder = $builder->where('year', '>=', $endYear->value);
+            $builder = $builder->where('year', '<=', $endYear->value);
         }
 
         return $builder;
