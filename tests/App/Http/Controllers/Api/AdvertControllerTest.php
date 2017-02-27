@@ -336,11 +336,11 @@ class AdvertControllerTest extends TestCase
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'description' => 'UniqueDescription'
         ]);
 
-        $validStart = factory(\App\Models\StartYear::class)->create(['value' => $vehicle->year - 5]);
-        $validEnd = factory(\App\Models\EndYear::class)->create(['value' => $vehicle->year + 5]);
+        $validStart = factory(\App\Models\Year::class)->create(['value' => $vehicle->year - 5]);
+        $validEnd = factory(\App\Models\Year::class)->create(['value' => $vehicle->year + 5]);
 
-        $invalidStart = factory(\App\Models\StartYear::class)->create(['value' => $vehicle->year - 5]);
-        $invalidEnd = factory(\App\Models\EndYear::class)->create(['value' => $vehicle->year - 3]);
+        $invalidStart = factory(\App\Models\Year::class)->create(['value' => $vehicle->year - 5]);
+        $invalidEnd = factory(\App\Models\Year::class)->create(['value' => $vehicle->year - 3]);
 
         $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&start_year=' . $validStart->id . '&end_year=' . $validEnd->id)

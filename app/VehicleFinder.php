@@ -8,6 +8,7 @@ use App\Models\EndYear;
 use App\Models\Engine;
 use App\Models\StartYear;
 use App\Models\Vehicle;
+use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
 
 
@@ -23,8 +24,7 @@ class VehicleFinder
     private $priceRangeFilter;
     private $colorFilter;
     private $sellerFilter;
-    private $startYearFilter;
-    private $endYearFilter;
+    private $yearFilter;
     private $engineFilter;
 
     public function __construct(int $category)
@@ -61,16 +61,10 @@ class VehicleFinder
         }
     }
 
-    public function setYearFilter($start, $end)
+    public function setYearFilter($startYear, $endYear)
     {
-        if ($start) {
-            $start = StartYear::find($start);
-            $this->startYearFilter = $start->value;
-        }
-
-        if ($end) {
-            $end = EndYear::find($end);
-            $this->endYearFilter = $end->value;
+        if ($startYear || $endYear) {
+            $this->yearFilter = [$startYear, $endYear];
         }
     }
 
@@ -157,12 +151,12 @@ class VehicleFinder
 
     private function doYearFilter(Builder $builder): Builder
     {
-        if ($this->startYearFilter) {
-            $builder = $builder->where('year', '>=', $this->startYearFilter);
+        if ($this->yearFilter && $startYear = Year::find($this->yearFilter[0])) {
+            $builder = $builder->where('year', '>=', $startYear->value);
         }
 
-        if ($this->endYearFilter) {
-            $builder = $builder->where('year', '<=', $this->endYearFilter);
+        if ($this->yearFilter && $endYear = Year::find($this->yearFilter[1])) {
+            $builder = $builder->where('year', '>=', $endYear->value);
         }
 
         return $builder;

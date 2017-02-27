@@ -67,7 +67,7 @@ $factory->define(App\Models\Condition::class, function (Faker\Generator $faker) 
     ];
 });
 
-$factory->define(App\Models\StartYear::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Year::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->numberBetween(1990, 2016),
         'category_id' => function() {
@@ -75,16 +75,6 @@ $factory->define(App\Models\StartYear::class, function (Faker\Generator $faker) 
         },
     ];
 });
-
-$factory->define(App\Models\EndYear::class, function (Faker\Generator $faker) {
-    return [
-        'value' => $faker->numberBetween(1990, 2016),
-        'category_id' => function() {
-            return factory(App\Models\Category::class)->create()->id;
-        },
-    ];
-});
-
 
 $factory->define(App\Models\Color::class, function (Faker\Generator $faker) {
     return [
