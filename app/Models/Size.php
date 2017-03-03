@@ -9,6 +9,6 @@ class Size extends BaseModel
     use UnlistedValueAttribute;
 
     protected $hidden = [
-        'created_at', 'updated_at'
+        'created_at', 'updated_at', 'category_id'
     ];
 }
