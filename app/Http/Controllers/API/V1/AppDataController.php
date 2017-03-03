@@ -50,7 +50,7 @@ class AppDataController extends ApiController
         $categories = Category::all()->toArray();
 
         foreach ($categories as $key => $category) {
-            $categories[$key]['data'] = [
+            $categoryData = [
                 'makes' => $this->getMakes($category['id']),
                 'conditions' => Condition::where('category_id', $category['id'])->get()->toArray(),
                 'years' => Year::where('category_id', $category['id'])->get()->toArray(),
@@ -66,6 +66,14 @@ class AppDataController extends ApiController
                 'ownerships' => Ownership::where('category_id', $category['id'])->get()->toArray(),
                 'distances' => Distance::where('category_id', $category['id'])->get()->toArray(),
             ];
+
+            foreach ($categoryData as $filterName => $filter) {
+                if (count($categoryData[$filterName]) == 0) {
+                    $categoryData[$filterName] = null;
+                }
+            }
+
+            $categories[$key]['data'] = $categoryData;
         }
 
         return $this->api_response(['categories' => $categories]);
