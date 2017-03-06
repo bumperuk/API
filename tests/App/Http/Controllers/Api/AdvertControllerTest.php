@@ -220,6 +220,11 @@ class AdvertControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&seat_count=' . $valid->seat_count_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&berth=' . $valid->berth_id)
+            ->seeJson(['id' => $valid->id])
+            ->dontSeeJson(['id' => $invalid->id]);
     }
 
     public function testPriceRangeFilter()

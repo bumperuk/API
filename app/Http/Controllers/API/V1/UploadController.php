@@ -41,6 +41,7 @@ class UploadController extends ApiController
             'tax_band' => 'exists:tax_bands,id',
             'ownership' => 'exists:ownerships,id',
             'seat_count' => 'exists:seat_counts,id',
+            'berth' => 'exists:berths,id',
             'description' => 'required',
             'call_number' => 'required_without_all:sms_number,email',
             'sms_number' => 'required_without_all:email,call_number',
@@ -77,6 +78,7 @@ class UploadController extends ApiController
         $vehicle->tax_band_id = $request->input('tax_band');
         $vehicle->ownership_id = $request->input('ownership');
         $vehicle->seat_count_id = $request->input('seat_count');
+        $vehicle->berth = $request->input('berth');
 
         $vehicle->sms_number = $request->input('sms_number');
         $vehicle->call_number = $request->input('call_number');
@@ -126,6 +128,7 @@ class UploadController extends ApiController
             'tax_band' => 'exists:tax_bands,id',
             'ownership' => 'exists:ownerships,id',
             'seat_count' => 'exists:seat_counts,id',
+            'berth' => 'exists:berths,id',
             'description' => '',
             'call_number' => '',
             'sms_number' => '',
@@ -158,6 +161,7 @@ class UploadController extends ApiController
         $vehicle->tax_band_id = $request->input('tax_band', $vehicle->tax_band_id);
         $vehicle->ownership_id = $request->input('ownership', $vehicle->ownership_id);
         $vehicle->seat_count_id = $request->input('seat_count', $vehicle->seat_count_id);
+        $vehicle->berth_id = $request->input('berth', $vehicle->berth_id);
 
         $vehicle->sms_number = $request->input('sms_number', $vehicle->sms_number);
         $vehicle->call_number = $request->input('call_number', $vehicle->call_number);

@@ -176,6 +176,15 @@ $factory->define(App\Models\SeatCount::class, function (Faker\Generator $faker) 
     ];
 });
 
+$factory->define(App\Models\Berth::class, function (Faker\Generator $faker) {
+    return [
+        'value' => $faker->numberBetween(1, 10),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
+    ];
+});
+
 $factory->define(App\Models\Distance::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->numberBetween(10, 300),
@@ -234,6 +243,9 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         },
         'seat_count_id' => function() {
             return factory(\App\Models\SeatCount::class)->create()->id;
+        },
+        'berth_id' => function() {
+            return factory(\App\Models\Berth::class)->create()->id;
         },
         'price' => $faker->randomNumber(4, true),
         'year' => $faker->numberBetween(1990, 2016),

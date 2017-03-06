@@ -99,6 +99,7 @@ class UploadControllerTest extends TestCase
         $taxBand = factory(\App\Models\TaxBand::class)->create();
         $ownership = factory(\App\Models\Ownership::class)->create();
         $seatCount = factory(\App\Models\SeatCount::class)->create();
+        $berth = factory(\App\Models\Berth::class)->create();
 
         $this
             ->withNewToken()
@@ -124,6 +125,7 @@ class UploadControllerTest extends TestCase
                 'tax_band' => $taxBand->id,
                 'ownership' => $ownership->id,
                 'seat_count' => $seatCount->id,
+                'berth' => $berth->id
             ], [], [
                 'photos' => [$this->createFile('png')]
             ])
@@ -231,6 +233,7 @@ class UploadControllerTest extends TestCase
                 'tax_band' => $newAttributes->tax_band_id,
                 'ownership' => $newAttributes->ownership_id,
                 'seat_count' => $newAttributes->seat_count_id,
+                'berth' => $newAttributes->berth_id,
                 'sms_number' => '0987654321',
                 'call_number' => '0123456789',
                 'email' => 'email@email.com'
@@ -256,7 +259,8 @@ class UploadControllerTest extends TestCase
                     'engine' => $newAttributes->engine->value,
                     'tax_band' => $newAttributes->taxBand->value,
                     'ownership' => $newAttributes->ownership->value,
-                    'seat_count' => $newAttributes->seat_count->value,
+                    'seat_count' => $newAttributes->seatCount->value,
+                    'berth' => $newAttributes->berth->value,
                     'price' => 9887,
                     'year' => 2009
                 ],

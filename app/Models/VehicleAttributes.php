@@ -128,6 +128,15 @@ trait VehicleAttributes
     }
 
     /**
+     * Berth
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function berth()
+    {
+        return $this->belongsTo(Berth::class);
+    }
+
+    /**
      * Put all vehicle attributes in a single array.
      */
     public function getDetailsAttribute()
@@ -137,7 +146,7 @@ trait VehicleAttributes
             'year' => $this->year
         ];
         $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'mileage', 'seatCount',
-                 'fuel', 'transmission', 'engine', 'taxBand', 'ownership'];
+                 'fuel', 'transmission', 'engine', 'taxBand', 'ownership', 'berth'];
 
         foreach ($keys as $key) {
             $newKey = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $key));
