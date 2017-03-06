@@ -78,7 +78,7 @@ class UploadController extends ApiController
         $vehicle->tax_band_id = $request->input('tax_band');
         $vehicle->ownership_id = $request->input('ownership');
         $vehicle->seat_count_id = $request->input('seat_count');
-        $vehicle->berth = $request->input('berth');
+        $vehicle->berth_id = $request->input('berth');
 
         $vehicle->sms_number = $request->input('sms_number');
         $vehicle->call_number = $request->input('call_number');
