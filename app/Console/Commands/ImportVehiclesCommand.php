@@ -44,7 +44,7 @@ class ImportVehiclesCommand extends Command
 
         foreach ($values as $row) {
 
-            $makeValue = trim($row[0]);
+            $makeValue = trim($row[0], ' -');
             $modelValue = isset($row[1]) ? trim($row[1]) : null;
 
             $make = Make::where('value', $makeValue)->firstOrCreate(['value' => $makeValue]);

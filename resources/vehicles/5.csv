@@ -1,0 +1,809 @@
+Make ,Model
+AEON  -  ,300
+AEON  -  ,Aero
+AEON  -  ,Argon
+AEON  -  ,Cobra 220
+AEON  -  ,Cobra 50/100
+AEON  -  ,Co-In 125
+AEON  -  ,Echo
+AEON  -  ,Elite 350i
+AEON  -  ,Mini-Bike
+AEON  -  ,Minikolt 50
+AEON  -  ,Nox
+AEON  -  ,Overland 125 / 180
+AEON  -  ,Pulsar
+AEON  -  ,Revo II 50/100
+AEON  -  ,Sporty 125 / 180
+AEON  -  ,Regal
+AJP  -,PR3
+AJP  -,PR4
+AJP  -,PR5
+AJP  -,A9
+AJS  -  ,Cadwell
+AJS  -  ,DD
+AJS  -  ,Daytona
+AJS  -  ,Digita
+AJS  -  ,ECO-3
+AJS  -  ,EOS
+AJS  -  ,Firefox
+AJS  -  ,JS
+AJS  -  ,Modena
+AJS  -  ,R7
+AJS  -  ,Sorvio
+AJS  -  ,TN12
+AJS  -  ,TN 25
+APACHE  -  ,RTR 160
+APACHE  -  ,RTR 180
+APACHE  -  ,RTR 180 Abs
+APACHE  -  ,RTR 200
+APACHE  -  ,RTR 200 Pirelli
+APRILLA ,1000
+APRILLA ,1200
+APRILLA ,Caponord
+APRILLA ,Dorsoduro
+APRILLA ,Classic
+APRILLA ,Futura
+APRILLA ,Habana 
+APRILLA ,Mana
+APRILLA ,Mojito
+APRILLA ,Moto
+APRILLA ,RS
+APRILLA ,RS4
+APRILLA ,RST 
+APRILLA ,RSV
+APRILLA ,RSV4
+APRILLA ,RX
+APRILLA ,Shiver
+APRILLA ,Sport City
+APRILLA ,SL
+APRILLA ,SR
+APRILLA ,SX
+APRILLA ,SXV
+APRILLA ,Tuareg
+APRILLA ,Tuono
+APRILLA ,Rally
+APRILLA ,Other.
+ARCTIC CAT  -  ,150
+ARCTIC CAT  -  ,Alterra 90 
+ARCTIC CAT  -  ,Alterra 400 
+ARCTIC CAT  -  ,Alterra 500 
+ARCTIC CAT  -  ,Alterra TRV 500 
+ARCTIC CAT  -  ,Alterra 700 
+ARCTIC CAT  -  ,Alterra TRV 700 XT
+ARCTIC CAT  -  , Alterra 700 XT EPS 
+ARCTIC CAT  -  ,Alterra TRV 100 XT 
+ARCTIC CAT  -  ,DVX 90
+ARCTIC CAT  -  ,MudPro 1000  Ltd EPS 
+ARCTIC CAT  -  ,MudPro 700 Ltd EPS 
+ARCTIC CAT  -  ,Alterra 1000 XT EPS 
+ARCTIC CAT  -  ,TBX 700 EPS 
+ARCTIC CAT  -  ,XC450
+ARIEL  -  ,Ace
+BOATIAN  -  ,Apollo 10 
+BOATIAN  -  ,Apollo 12 
+BOATIAN  -  ,Citibike 125 
+BOATIAN  -  ,Eagle 50 
+BOATIAN  -  ,Eagle 50GT 
+BOATIAN  -  ,Evolution 125 
+BOATIAN  -  ,Falcon 50R 
+BOATIAN  -  ,Monza 50
+BOATIAN  -  ,Monza 125
+BENELLI  -   ,302R 
+BENELLI  -   ,304
+BENELLI  -   , BN 
+BENELLI  -   ,BX 
+BENELLI  -   ,Leoncino 
+BENELLI  -   ,Naked 
+BENELLI  -   ,TNT 
+BENELLI  -   ,TRE 
+BENELLI  -   ,TRT
+BENELLI  -   ,TRK 
+BENELLI  -   ,Tornado
+BENELLI  -   , Trek
+BETA  -    ,Alp 
+BETA  -    ,Enduro 
+BETA  -    ,Evo 
+BETA  -    ,RR 
+BETA  -    ,X-Trainer 
+BIG DOG  -  ,Unspecified
+BIMOTO  -  ,BB 
+BIMOTO  -  ,DB2 
+BIMOTO  -  ,DB3 
+BIMOTO  -  ,DBX 
+BIMOTO  -  ,DB8 
+BIMOTO  -  ,DB9 
+BIMOTO  -  ,Tesi 
+BIMOTO  -  ,V Due 
+BIMOTO  -  ,YB11
+BMW  ,C Evolution 
+BMW  ,C600 
+BMW  ,C650 Sport 
+BMW  ,C650 GT 
+BMW  ,F650 
+BMW  ,F700GS 
+BMW  ,F800
+BMW  ,F800GS 
+BMW  ,F800GT 
+BMW  ,F800R 
+BMW  ,F800S
+BMW  ,F800ST 
+BMW  ,G310R 
+BMW  ,G650 
+BMW  ,HP2 
+BMW  ,HP4 
+BMW  ,K100 
+BMW  ,K1100 
+BMW  ,K1200GT 
+BMW  ,K1200LT 
+BMW  ,K1200R
+BMW  , K1200RS
+BMW  , K1200S 
+BMW  ,K1300GT
+BMW  , K1300R 
+BMW  ,K1300S 
+BMW  ,K1600GT 
+BMW  ,K1600GTL 
+BMW  ,R nine T 
+BMW  ,R100 
+BMW  ,R1100
+BMW  ,R1150
+BMW  ,R1200 
+BMW  ,R1200C 
+BMW  ,R1200GS
+BMW  ,R1200GS Adventure
+BMW  ,R1200R
+BMW  ,R1200RS
+BMW  ,R1200RT 
+BMW  ,R1200S 
+BMW  ,R1200ST 
+BMW  ,R80 
+BMW  ,R850 
+BMW  ,S1000 
+BMW  ,S1000R 
+BMW  ,S1000RR 
+BMW  ,S1000XR.
+BRUTUS  -  ,Brutus 2
+BRUTUS  -  , V2 Rocket 
+BRUTUS  -  ,V9 
+BRUTUS  -  ,750
+BSA  -   ,A10 
+BSA  -   ,A75 
+BSA  -   ,B31 
+BSA  -   ,Bantam 
+BSA  -   ,C11 
+BSA  -   ,GoldFlash 
+BSA  -   ,GoldStar
+BSA  -   ,Unspecified
+BUELL  -  ,1125
+BUELL  -  ,1190RS 
+BUELL  -  ,1190RX
+BUELL  -  ,Firebolt 
+BUELL  -  ,Ulysses
+BUELL  -  ,XB12X
+BULLIT  -  ,Hunt
+BULTACO  -  ,Matador 
+BULTACO  -  ,Pursang
+BULTACO  -  ,Sherpa.
+CAGIVA   -   ,Elefant 
+CAGIVA   -   ,Mito 
+CAGIVA   -   ,Navigator
+CAGIVA   -   ,Raptor.
+CAN AM  -   ,Maverick
+CAN AM  -   ,Spyder
+CAN AM  -   ,Roadster.
+CATERHAM  -  ,750
+CCM  -  ,GP450
+CF MOTO  -  ,650TR
+CH RACING  -  ,WSM50
+CONFEDERATE  -  ,Combat 61 
+CONFEDERATE  -  ,P51
+CONFEDERATE  -  ,X132 Hellcat
+CPI -  ,SM
+CPI -  ,SX
+DAELIM  -   ,Besbi 
+DAELIM  -   ,Dart
+DAELIM  -   ,Daystar
+DAELIM  -   ,NS125 
+DAELIM  -   ,Roadsport 
+DAELIM  -   ,Roadwin
+DAELIM  -   ,S
+DAELIM  -   ,S1
+DAELIM  -   ,S3
+DAELIM  -   ,Steezer
+DAELIM  -   ,VJ125
+DAELIM  -   ,VL
+DERBI  -   ,City Cross 
+DERBI  -   ,GPR 
+DERBI  -   ,Mulhacen
+DERBI  -   ,Senda
+DERBI  -   ,Senda SM
+DERBI  -   ,Terra
+DIRECT BIKE  -  ,50
+DIRECT BIKE  -  ,125
+DUCATI  -   ,250
+DUCATI  -   ,500
+DUCATI  -   ,748
+DUCATI  -   ,749
+DUCATI  -   ,750
+DUCATI  -   ,800
+DUCATI  -   ,848
+DUCATI  -   ,851
+DUCATI  -   ,899 Panigale
+DUCATI  -   ,900
+DUCATI  -   ,916
+DUCATI  -   ,959 Panigale
+DUCATI  -   ,996
+DUCATI  -   ,998
+DUCATI  -   ,999
+DUCATI  -   ,1098
+DUCATI  -   ,1198
+DUCATI  -   ,1199 Panigale
+DUCATI  -   ,1299 Panigale
+DUCATI  -   ,Desmocedici 
+DUCATI  -   ,Diavel 
+DUCATI  -   ,Hypermotard
+DUCATI  -   ,Hyperstada
+DUCATI  -   ,Monster
+DUCATI  -   ,Multistrada 
+DUCATI  -   ,S4
+DUCATI  -   ,Scrambler
+DUCATI  -   ,Smart
+DUCATI  -   ,Super Sport
+DUCATI  -   ,ST2
+DUCATI  -   ,ST3
+DUCATI  -   ,ST4
+DUCATI  -   ,ST4S
+DUCATI  -   ,Streetfighter
+DUCATI  -   ,Superleggera 
+DUCATI  -   ,XDiavel
+EBR  -  ,1190RX
+EBR  -  ,1190SX.
+ENERGICA  -  ,EGO
+ENERGICA  -  ,EVA
+EXCELSIOR  -  ,Talisman
+EXCELSIOR  -  ,Talisman Modelli TT 
+EXCELSIOR  -  ,Super X
+FRANCIS BARNETT  -  ,250
+FRANCIS BARNETT  -  ,Cruiser
+FRANCIS BARNETT  -  ,Falcon
+FRANCIS BARNETT  -  ,Fulmar
+FRANCIS BARNETT  -  ,Lapwing
+FRANCIS BARNETT  -  ,Plover 150
+GAS GAS -  ,EC 
+GAS GAS -  ,TXT
+GEELY - ,JL
+GENATA  -  ,XRZ
+GILERA  -  ,600
+GILERA  -  ,Crono
+GILERA  -  ,DNA
+GILERA  -  ,Freestyle
+GILERA  -  ,GP
+GILERA  -  ,GFR
+GILERA  -  ,RC
+GILERA  -  ,MX
+GILERA  -  ,Runner
+GILERA  -  ,SC
+GILERA  -  ,Unspecified.
+HANWAY  -  ,BlackCafe
+HANWAY  -  ,Scrambler.
+HARLEY DAVIDSON  -  ,CVO
+HARLEY DAVIDSON  -  ,Dyna
+HARLEY DAVIDSON  -  ,Electra
+HARLEY DAVIDSON  -  ,Hardtail
+HARLEY DAVIDSON  -  ,KK
+HARLEY DAVIDSON  -  ,Peace Officer
+HARLEY DAVIDSON  -  ,Road Glide
+HARLEY DAVIDSON  -  ,Road King
+HARLEY DAVIDSON  -  ,Softail
+HARLEY DAVIDSON  -  ,Sportster
+HARLEY DAVIDSON  -  ,Street
+HARLEY DAVIDSON  -  ,Touring
+HARLEY DAVIDSON  -  ,Trike
+HARLEY DAVIDSON  -  ,Ultra
+HARLEY DAVIDSON  -  ,VR
+HARLEY DAVIDSON  -  ,Not listed.
+HERALD MOTOR CO  -  ,Classic
+HERALD MOTOR CO  -  ,250 Custom.
+HONDA  - ,125
+HONDA  - ,AFS Wave
+HONDA  - ,ANF125
+HONDA  - ,Big Red
+HONDA  - ,C50
+HONDA  - ,C90
+HONDA  - ,C200
+HONDA  - ,CB50
+HONDA  - ,CB1000
+HONDA  - ,CB100R
+HONDA  - ,CB1100
+HONDA  - ,CB125
+HONDA  - ,CB250
+HONDA  - ,CB400 
+HONDA  - ,CB500
+HONDA  - ,CB550
+HONDA  - ,CB650
+HONDA  - ,CB1300
+HONDA  - ,CB600F Hornet
+HONDA  - ,CB900F Hornet
+HONDA  - ,CBF100
+HONDA  - ,CBF125
+HONDA  - ,CBF 250 
+HONDA  - ,CBF500
+HONDA  - ,CBF600
+HONDA  - ,CBR125
+HONDA  - ,CBR250
+HONDA  - ,CBR300
+HONDA  - ,CBR400
+HONDA  - ,CBR500
+HONDA  - ,CBR650
+HONDA  - ,CBR600F
+HONDA  - ,CBR750
+HONDA  - ,CBR600RR
+HONDA  - , CBR1000RR Fireblade
+HONDA  - ,CBR1100
+HONDA  - ,CBXCD175
+HONDA  - ,CD250
+HONDA  - ,CG125
+HONDA  - ,Cityfly
+HONDA  - ,CMX
+HONDA  - ,CR80
+HONDA  - ,CR250
+HONDA  - ,CRF1000L AfricaTwin
+HONDA  - ,CRF110F
+HONDA  - ,CRF125F
+HONDA  - ,CRF150R
+HONDA  - ,CRF250L
+HONDA  - ,CRF250M
+HONDA  - ,CRF250X
+HONDA  - ,CRF450R
+HONDA  - ,CRF450X
+HONDA  - ,CRF50F
+HONDA  - ,CTX
+HONDA  - ,CX
+HONDA  - ,DN-01
+HONDA  - ,Dylan
+HONDA  - ,F6B
+HONDA  - ,F6C
+HONDA  - ,FES125
+HONDA  - ,FES250
+HONDA  - ,FMX650
+HONDA  - ,GB500
+HONDA  - ,GL1100 Goldwing
+HONDA  - ,GL1200 Goldwing
+HONDA  - ,GL1500 Goldwing
+HONDA  - ,GL1800 Goldwing
+HONDA  - ,Integra
+HONDA  - ,Lead
+HONDA  - ,MSX
+HONDA  - ,NC700
+HONDA  - ,NC750
+HONDA  - ,NM4
+HONDA  - ,NS400
+HONDA  - ,NSC50R
+HONDA  - ,NSS125A Forza
+HONDA  - ,NSS300 Forza
+HONDA  - ,NT650V Deauville
+HONDA  - ,NT700V Deauville
+HONDA  - ,NX
+HONDA  - ,PCX125
+HONDA  - ,PES125
+HONDA  - ,"Rebel , "
+HONDA  - ,SCV100
+HONDA  - ,SFX
+HONDA  - ,SH Mode
+HONDA  - ,SH50
+HONDA  - ,SH125
+HONDA  - ,SH300
+HONDA  - , Silverwing
+HONDA  - ,Shadow
+HONDA  - ,ST70
+HONDA  - ,ST1100 Pan European
+HONDA  - ,ST1300 Pan European
+HONDA  - ,TRX 90
+HONDA  - ,TRX250
+HONDA  - ,TRX500
+HONDA  - ,VF700
+HONDA  - ,VF750
+HONDA  - ,VF1000
+HONDA  - ,VFR400
+HONDA  - ,VFR750
+HONDA  - ,VFR800F 
+HONDA  - ,VFR800X CrossRunner
+HONDA  - ,VFR1200F
+HONDA  - ,VFR1200X CrossTourer
+HONDA  - ,Vision
+HONDA  - ,VT600
+HONDA  - ,VT700
+HONDA  - ,VT 750
+HONDA  - ,VT1100
+HONDA  - ,VTR1000
+HONDA  - ,VTX1300
+HONDA  - ,VTX1800
+HONDA  - ,XL125 Varadero
+HONDA  - ,XL1000V Varadero
+HONDA  - ,XL600 TransAlp
+HONDA  - ,XL650 TransAlp
+HONDA  - ,XL700VA TransAlp
+HONDA  - ,XR125L
+HONDA  - ,XRV750 AfricaTwin
+HONDA  - ,Not listed
+HONLEY  -  ,Classic
+HONLEY  -  ,HD2
+HONLEY  -  ,HD3
+HONLEY  -  ,Oliver.
+HUSABERG  - ,Enduro
+HUSABERG  - ,FE
+HUSABERG  - ,TE
+HUSABERG  - ,Other.
+HUSQVARNA  -  ,701
+HUSQVARNA  -  ,FC
+HUSQVARNA  -  ,FE
+HUSQVARNA  -  ,FS
+HUSQVARNA  -  ,TC
+HUSQVARNA  -  ,TE
+HUSQVARNA  -  ,WR125
+HUSQVARNA  -  ,WR250
+HUSQVARNA  -  ,Other
+HYOSUNG  -  ,Aquilla
+HYOSUNG  -  ,Cruise
+HYOSUNG  -  ,GD250
+HYOSUNG  -  ,GT
+HYOSUNG  -  ,GT125 
+HYOSUNG  -  ,GT250
+HYOSUNG  -  ,GT650RC
+HYOSUNG  -  ,GV125
+HYOSUNG  -  ,GV 250
+HYOSUNG  -  ,GV650
+HYOSUNG  -  ,RT125D
+HYOSUNG  -  ,ST7
+INDIAN  -   ,Chief
+INDIAN  -   ,Chieftan
+INDIAN  -   ,Classic
+INDIAN  -   ,Roadmaster
+INDIAN  -   ,Scout
+INDIAN  -   ,Springfield
+INDIAN  -   ,Vintage
+JOTOGAS  -  ,300
+KAWASAKI  -  ,D-Tracker
+KAWASAKI  -  ,Elimanator
+KAWASAKI  -  ,EN500
+KAWASAKI  -  ,ER-5
+KAWASAKI  -  ,ER-6F
+KAWASAKI  -  ,ER-6N
+KAWASAKI  -  ,GPX
+KAWASAKI  -  ,GPZ
+KAWASAKI  -  ,GTR1000
+KAWASAKI  -  ,GTR1400
+KAWASAKI  -  ,J125
+KAWASAKI  -  ,J300
+KAWASAKI  -  ,KE
+KAWASAKI  -  ,KH
+KAWASAKI  -  ,KLE
+KAWASAKI  -  ,KLV
+KAWASAKI  -  ,KLX125
+KAWASAKI  -  ,KLX250
+KAWASAKI  -  ,KLX450
+KAWASAKI  -  ,KX125
+KAWASAKI  -  ,KX250
+KAWASAKI  -  ,KX450F
+KAWASAKI  -  ,KX500
+KAWASAKI  -  ,MULE
+KAWASAKI  -  ,Ninja250
+KAWASAKI  -  ,Ninja300
+KAWASAKI  -  ,Ninja H2
+KAWASAKI  -  ,Versys 650
+KAWASAKI  -  ,VN 750
+KAWASAKI  -  ,VN800
+KAWASAKI  -  ,VN900
+KAWASAKI  -  ,VN1500
+KAWASAKI  -  ,VN1600
+KAWASAKI  -  ,VN 1700
+KAWASAKI  -  ,VN2000
+KAWASAKI  -  ,Vulcan
+KAWASAKI  -  ,W650
+KAWASAKI  -  ,W800
+KAWASAKI  -  ,Z1000 
+KAWASAKI  -  ,Z1000SX
+KAWASAKI  -  ,Z250
+KAWASAKI  -  ,Z300
+KAWASAKI  -  ,Z400
+KAWASAKI  -  ,Z650
+KAWASAKI  -  ,Z750
+KAWASAKI  -  ,Z800
+KAWASAKI  -  ,Z1100
+KAWASAKI  -  ,ZEPHYR
+KAWASAKI  -  ,ZR-7
+KAWASAKI  -  ,ZRX1100
+KAWASAKI  -  ,ZRX1200
+KAWASAKI  -  ,ZX-10R
+KAWASAKI  -  ,ZX-12R
+KAWASAKI  -  ,ZX-6R
+KAWASAKI  -  ,ZX-7R
+KAWASAKI  -  ,ZX-9R
+KAWASAKI  -  ,ZXR250
+KAWASAKI  -  ,ZXR400
+KAWASAKI  -  ,ZXR 750
+KAWASAKI  -  ,ZZR1100
+KAWASAKI  -  ,ZZR1200
+KAWASAKI  -  ,ZZR1400
+KAWASAKI  -  ,ZZR600
+KAWASAKI  -  ,OTHER
+KEEWAY -  ,Blackster
+KEEWAY -  ,Cityblade
+KEEWAY -  ,Cruiser
+KEEWAY -  ,Fact
+KEEWAY -  ,Hacker
+KEEWAY -  ,Logik
+KEEWAY -  ,Matrix
+KEEWAY -  ,RK
+KEEWAY -  ,RKS
+KEEWAY -  ,RKV
+KEEWAY -  ,Speed
+KEEWAY -  ,Strike
+KEEWAY -  ,Superlight
+KEEWAY -  ,Target
+KEEWAY -  ,TX50
+KEEWAY -  ,TX125. 
+KSR MOTO  -  ,Code
+KSR MOTO  -  ,Code X
+KSR MOTO  -  ,GRS
+KSR MOTO  -  ,Sirion
+KSR MOTO  -  ,TR
+KSR MOTO  -  ,TW
+KSR MOTO  -  ,Vertigo
+KSR MOTO  -  ,Worx
+KSR MOTO  -  ,Other
+KTM  - ,Adventure
+KTM  - ,Duke
+KTM  - ,Enduro
+KTM  - ,EXC-R
+KTM  - ,Freeride
+KTM  - ,Freeride E
+KTM  - ,RC125
+KTM  - ,RC390
+KTM  - ,RC8
+KTM  - ,Superduke
+KTM  - ,Supermoto
+KTM  - ,SMR
+KTM  - ,SX
+KTM  - ,XC
+KTM  - ,XC-F
+KTM  - ,XC-W
+KTM  - ,XCF-W
+KTM  - ,Other
+KYMCO - ,Active
+KYMCO - ,Agility
+KYMCO - ,Candy
+KYMCO - ,CK
+KYMCO - ,Compagno
+KYMCO - ,Downtown
+KYMCO - ,Like
+KYMCO - ,Jetix
+KYMCO - ,Jockey
+KYMCO - ,K-XCT
+KYMCO - ,Maxxer
+KYMCO - ,People
+KYMCO - ,Pulsar
+KYMCO - ,UXV
+KYMCO - ,Super 8
+KYMCO - ,Xciting
+KYMCO - ,Other
+LAMBRETTA  -,Li
+LAMBRETTA  -,Other
+LAVERDA  -,3C
+LAVERDA  -,500
+LAVERDA  -,650
+LAVERDA  -,668
+LAVERDA  -,750
+LAVERDA  -,1000
+LAVERDA  -,Ghost
+LAVERDA  -,Jota
+LAVERDA  -,RGS
+LAVERDA  -,SF
+LEXMOTO  -,Adrenaline
+LEXMOTO  -,Arizona
+LEXMOTO  -,Aspire
+LEXMOTO  -,Assault
+LEXMOTO  -,Diablo
+LEXMOTO  -,Echo
+LEXMOTO  -,FM
+LEXMOTO  -,FMR
+LEXMOTO  -,FMS
+LEXMOTO  -,FMX
+LEXMOTO  -,Gladiator
+LEXMOTO  -,Matador
+LEXMOTO  -,Michigan
+LEXMOTO  -,Milano
+LEXMOTO  -,Oregon
+LEXMOTO  -,Ranger
+LEXMOTO  -,Scout
+LEXMOTO  -,Street
+LEXMOTO  -,Tommy
+LEXMOTO  -,Tornado
+LEXMOTO  -,Valencia
+LEXMOTO  -,Valiant
+LEXMOTO  -,Venom
+LEXMOTO  -,Verona
+LEXMOTO  -,Vienna
+LEXMOTO  -,Vixen
+LEXMOTO  -,XTR
+LEXMOTO  -,ZSB
+LEXMOTO  -,ZSF
+LEXMOTO  -,ZSX
+LML  - ,Screen Star
+LML  - ,125
+LML  - ,Nuovo
+LML  - ,RS
+LML  - ,Star lite 
+MASH MOTORCYCLE  -    ,Black7
+MASH MOTORCYCLE  -    ,Custom
+MASH MOTORCYCLE  -    ,DirtStar
+MASH MOTORCYCLE  -    ,FlatTracker
+MASH MOTORCYCLE  -    ,RoadStar
+MASH MOTORCYCLE  -    ,TrackStar
+MBK  - ,125
+MBK  - ,350
+MEGELLI  -,Naked250S
+MEGELLI  -,Motard250M
+MEGELLI  -,Sport250R
+MONTESSA  -,Cota
+MONTESSA  -,Other
+MORGAN  -,Unspecified
+MOTO GUZZI  -,Audace
+MOTO GUZZI  -,Breva
+MOTO GUZZI  -,California
+MOTO GUZZI  -,Eldorado
+MOTO GUZZI  -,Griso
+MOTO GUZZI  -,Le Mans
+MOTO GUZZI  -,Nevada
+MOTO GUZZI  -,MGX
+MOTO GUZZI  -,Norge
+MOTO GUZZI  -,Sport
+MOTO GUZZI  -,Stelvio
+MOTO GUZZI  -,Stornello
+MOTO GUZZI  -,V7
+MOTO GUZZI  -,V9
+MOTO GUZZI  -,V1200
+MOTO GUZZI  -,Other
+MOTORINI  -,Bomber
+MOTORINI  -,EXP
+MOTORINI  -,EXP125
+MOTORINI  -,GP125
+MOTORINI  -,SMR125
+MOTORINI  -,SXR125
+MOTORINI  -,XO125
+MOTORINI  -,XP
+MUTT  -,Desert Racer
+MUTT  -,DirtQuake
+MUTT  -,Mongrel
+MUTT  -,Mushman
+MUTT  -,Imperial Roadster
+MUTT  -,Sabbath
+MOTORHISPANIA  -,RX50
+MOTORHISPANIA  -,RX125
+MOTORHISPANIA  -,KN1
+MOTORHISPANIA  -,MH7
+MV AUGUSTA  -,Brutale
+MV AUGUSTA  -,Dragster
+MV AUGUSTA  -,F3
+MV AUGUSTA  -,F4
+MV AUGUSTA  -,Rivale
+MV AUGUSTA  -,Stradale
+MV AUGUSTA  -,Turismo
+MV AUGUSTA  -,Unlisted
+MZ  -  ,1000S
+MZ  -  ,Streetfighter
+MZ  -  ,SuperFighter
+MZ  -  ,SuperTraveller
+NECO  -  ,Azzuro
+NECO  -  ,Borgia
+NECO  -  ,GPX
+NECO  -  ,Lola
+NIPPONIA  -,Brio
+NIPPONIA  -,Diou
+NIPPONIA  -,Miro
+NIPPONIA  -,Neon
+NORTON  -,Classic
+NORTON  -,Commando
+NORTON  -,Dominator
+NORTON  -,F1
+NORTON  -,NRV
+NORTON  -,Other
+OSET  -  Eco,Racing
+OSET  -  Eco,Jr
+OSET  -  Eco,Lite
+OSET  -  Eco,MX10
+PEGASUS  -,Corona
+PEGASUS  -,Sky
+PEUGEOT  -,CityStar
+PEUGEOT  -,Django
+PEUGEOT  -,Kisbee
+PEUGEOT  -,Ludix
+PEUGEOT  -,Metropolis
+PEUGEOT  -,Satelis
+PEUGEOT  -,SpeedFight
+PEUGEOT  -,Tweet
+PEUGEOT  -,V-Clic
+PEUGEOT  -,Vivacity
+PEUGEOT  -,Vox
+PEUGEOT  -,Other
+PIAGGIO  -,Beverly
+PIAGGIO  -,ET2
+PIAGGIO  -,ET4
+PIAGGIO  -,Fly
+PIAGGIO  -,Liberty
+PIAGGIO  -,Medley 125
+PIAGGIO  -,MP3
+PIAGGIO  -,NRG
+PIAGGIO  -,Typhoon 50
+PIAGGIO  -,Typhoon 125
+PIAGGIO  -,Vespa
+PIAGGIO  -,Vespa 50
+PIAGGIO  -,Vespa GT
+PIAGGIO  -,Vespa GTS
+PIAGGIO  -,Vespa LX
+PIAGGIO  -,Vespa Primavera
+PIAGGIO  -,Vespa PX
+PIAGGIO  -,Vespa S
+PIAGGIO  -,Vespa Sprint
+PIAGGIO  -,X7
+PIAGGIO  -,X8
+PIAGGIO  -,X9
+PIAGGIO  -,X10
+PIAGGIO  -,X Evo
+PIAGGIO  -,Zip
+PIAGGIO  -,Unlisted
+PIONEER  -,Torro
+POLARIS  -,Ranger
+POLARIS  -,RZR
+POLARIS  -,Victory
+POLARIS  -,Unspecified
+PUCH  -,Maxi
+PUCH  -,M50
+PUCH  -,Sabre
+PULSE  -,Adrenalin
+PULSE  -,Phantom
+QINGQI  -,QM
+QINGQI  -,Other
+QUADRO  -,Quadro 3
+QUADRO  -,Quadro 4
+QUADZILLA  -,400
+QUADZILLA  -,500
+QUADZILLA  -,520
+QUADZILLA  -,Buzz
+QUADZILLA  -,CF
+QUADZILLA  -,CForce
+QUADZILLA  -,CVT
+QUADZILLA  -,Proshark
+QUADZILLA  -,RS6
+QUADZILLA  -,Tracker
+QUADZILLA  -,Terrain
+QUADZILLA  -,X8
+QUADZILLA  -,XLC
+QUADZILLA  -,Z
+RIEJU  -,Marathon
+RIEJU  -,MRT
+RIEJU  -,RR50
+RIEJU  -,RS2
+RIEJU  -,RS3
+RIEJU  -,Tango
+ROYAL ENFIELD  -,Bullet
+ROYAL ENFIELD  -,Classic
+ROYAL ENFIELD  -,Continental GT
+ROYAL ENFIELD  -,Electra
+ROYAL ENFIELD  -,Fury
+ROYAL ENFIELD  -,Thunderbird
+ROYAL ENFIELD  -,Trials
+ROYAL ENFIELD  -,Woodsman
+ROYAL ENFIELD  -,Unspecified
+SACHS  -,Enduro / SuperMoto
+SACHS  -,SpeedForce
+SACHS  -,ZX
+SACHS  -,Unspecified.
+SAXON  -,Crown
+SAXON  -,Firestorm
+SAXON  -,Griffin
+SAXON  -,Sceptre
+SAXON  -,Reaper
+SAXON  -,Villain
+SAXON  -,Warlord
+SAXON  -,Whip
