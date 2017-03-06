@@ -67,12 +67,6 @@ class AppDataController extends ApiController
                 'distances' => Distance::where('category_id', $category['id'])->get()->toArray(),
             ];
 
-            foreach ($categoryData as $filterName => $filter) {
-                if (count($categoryData[$filterName]) == 0) {
-                    $categoryData[$filterName] = null;
-                }
-            }
-
             $categories[$key]['data'] = $categoryData;
         }
 
