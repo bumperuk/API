@@ -21,6 +21,7 @@ use App\Models\Engine;
 use App\Models\Fuel;
 use App\Models\Mileage;
 use App\Models\Ownership;
+use App\Models\SeatCount;
 use App\Models\Size;
 use App\Models\TaxBand;
 use App\Models\Transmission;
@@ -65,6 +66,7 @@ class AppDataController extends ApiController
                 'tax_bands' => TaxBand::where('category_id', $category['id'])->get()->toArray(),
                 'ownerships' => Ownership::where('category_id', $category['id'])->get()->toArray(),
                 'distances' => Distance::where('category_id', $category['id'])->get()->toArray(),
+                'seat_counts' => SeatCount::where('category_id', $category['id'])->get()->toArray(),
             ];
 
             $categories[$key]['data'] = $categoryData;

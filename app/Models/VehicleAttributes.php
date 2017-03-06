@@ -119,6 +119,15 @@ trait VehicleAttributes
     }
 
     /**
+     * Seat count
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function seatCount()
+    {
+        return $this->belongsTo(SeatCount::class);
+    }
+
+    /**
      * Put all vehicle attributes in a single array.
      */
     public function getDetailsAttribute()
@@ -127,7 +136,7 @@ trait VehicleAttributes
             'price' => $this->price,
             'year' => $this->year
         ];
-        $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'mileage',
+        $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'mileage', 'seatCount',
                  'fuel', 'transmission', 'engine', 'taxBand', 'ownership'];
 
         foreach ($keys as $key) {
