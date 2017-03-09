@@ -21,6 +21,7 @@ class VehicleFinder
     private $distanceFilter;
     private $priceRangeFilter;
     private $colorFilter;
+    private $makeFilter;
     private $sellerFilter;
     private $yearFilter;
     private $engineFilter;
@@ -87,6 +88,13 @@ class VehicleFinder
         }
     }
 
+    public function setMakeFilter($makes)
+    {
+        if (is_array($makes)) {
+            $this->makeFilter = $makes;
+        }
+    }
+
     public function setSellerFilter($seller)
     {
         if (in_array($seller, ['private', 'dealer'])) {
@@ -118,6 +126,7 @@ class VehicleFinder
         $vehicles = $this->doDistanceFilter($vehicles);
         $vehicles = $this->doPriceRangeFilter($vehicles);
         $vehicles = $this->doColorFilter($vehicles);
+        $vehicles = $this->doMakeFilter($vehicles);
         $vehicles = $this->doSellerFilter($vehicles);
         $vehicles = $this->doYearFilter($vehicles);
         $vehicles = $this->doEngineFilter($vehicles);
@@ -182,6 +191,16 @@ class VehicleFinder
         if ($this->colorFilter) {
             $builder = $builder
                 ->whereIn('color_id', $this->colorFilter);
+        }
+
+        return $builder;
+    }
+
+    private function doMakeFilter(Builder $builder): Builder
+    {
+        if ($this->makeFilter) {
+            $builder = $builder
+                ->whereIn('make_id', $this->makeFilter);
         }
 
         return $builder;

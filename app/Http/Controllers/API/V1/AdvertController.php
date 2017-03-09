@@ -30,15 +30,18 @@ class AdvertController extends ApiController
             'model', 'condition', 'body_type', 'door', 'mileage', 'berth',
             'fuel', 'transmission', 'tax_band', 'ownership', 'seat_count'
         ]));
-        $finder->setPriceRangeFilter($request->input('min_price'), $request->input('max_price'));
+        $finder->setPriceRangeFilter($request->input('price_min'), $request->input('price_max'));
         $finder->setDistanceFilter($request->input('distance'));
         $finder->setSellerFilter($request->input('seller'));
-        $finder->setYearFilter($request->input('start_year'), $request->input('end_year'));
-        $finder->setEngineFilter($request->input('min_engine'), $request->input('max_engine'));
+        $finder->setYearFilter($request->input('year_min'), $request->input('year_max'));
+        $finder->setEngineFilter($request->input('engine_min'), $request->input('engine_max'));
 
         if ($request->has('colors')) {
-            $colors = json_decode($request->input('colors'), true);
-            $finder->setColorFilter($colors);
+            $finder->setColorFilter($request->input('colors'));
+        }
+
+        if ($request->has('make')) {
+            $finder->setMakeFilter($request->input('make'));
         }
 
         return $this->api_response($finder->paginate(16));

@@ -239,25 +239,25 @@ class AdvertControllerTest extends TestCase
         $vehicle->price = 101;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_min=100&price_max=500')
             ->seeJson(['id' => $vehicle->id]);
 
         $vehicle->price = 499;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_min=100&price_max=500')
             ->seeJson(['id' => $vehicle->id]);
 
         $vehicle->price = 99;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_min=100&price_max=500')
             ->dontSeeJson(['id' => $vehicle->id]);
 
         $vehicle->price = 501;
         $vehicle->save();
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&min_price=100&max_price=500')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&price_min=100&price_max=500')
             ->dontSeeJson(['id' => $vehicle->id]);
     }
 
@@ -276,23 +276,23 @@ class AdvertControllerTest extends TestCase
         $vehicle->save();
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&min_engine=' . $engine1->id . '&max_engine=' . $engine4->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&engine_min=' . $engine1->id . '&engine_max=' . $engine4->id)
             ->seeJson(['id' => $vehicle->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&min_engine=' . $engine3->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&engine_min=' . $engine3->id)
             ->seeJson(['id' => $vehicle->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&max_engine=' . $engine4->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&engine_max=' . $engine4->id)
             ->seeJson(['id' => $vehicle->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&min_engine=' . $engine4->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&engine_min=' . $engine4->id)
             ->dontSeeJson(['id' => $vehicle->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&max_engine=' . $engine2->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&engine_max=' . $engine2->id)
             ->dontSeeJson(['id' => $vehicle->id]);
     }
 
@@ -314,23 +314,23 @@ class AdvertControllerTest extends TestCase
 
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&colors=[' . $vehicle1->color_id . ']')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&color[]=' . $vehicle1->color_id)
             ->seeJson(['id' => $vehicle1->id])
             ->dontSeeJson(['id' => $vehicle2->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&colors=[99,' . $vehicle1->color_id . ']')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&color[]=99&&color[]=' . $vehicle1->color_id)
             ->seeJson(['id' => $vehicle1->id])
             ->dontSeeJson(['id' => $vehicle2->id]);
 
         $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id .
-                '&colors=[43,' . $vehicle2->color_id . ',' . $vehicle1->color_id . ']')
+                '&color[]=43&color[]=' . $vehicle2->color_id . '&color[]=' . $vehicle1->color_id)
             ->seeJson(['id' => $vehicle1->id])
             ->seeJson(['id' => $vehicle2->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&colors=[99,54,34]')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&color[]=99&&color[]=88&color[]=810')
             ->dontSeeJson(['id' => $vehicle1->id])
             ->dontSeeJson(['id' => $vehicle2->id]);
     }
@@ -348,11 +348,11 @@ class AdvertControllerTest extends TestCase
         $invalidEnd = factory(\App\Models\Year::class)->create(['value' => $vehicle->year - 3]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&start_year=' . $validStart->id . '&end_year=' . $validEnd->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&year_min=' . $validStart->id . '&year_max=' . $validEnd->id)
             ->seeJson(['description' => 'UniqueDescription']);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&start_year=' . $invalidStart->id . '&end_year=' . $invalidEnd->id)
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&year_min=' . $invalidStart->id . '&year_max=' . $invalidEnd->id)
             ->dontSeeJson(['description' => 'UniqueDescription']);
     }
 
