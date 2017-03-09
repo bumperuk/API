@@ -15,7 +15,7 @@ class CreateFiltersTable extends Migration
     {
         Schema::create('filters', function (Blueprint $table) {
             $table->increments('id');
-            $table->boolean('default');
+            $table->boolean('always_visible');
             $table->string('source');
             $table->string('key');
             $table->string('name');

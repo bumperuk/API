@@ -26,6 +26,7 @@ use App\Models\Size;
 use App\Models\TaxBand;
 use App\Models\Transmission;
 use App\Models\Year;
+use App\Transformers\AppDataTransformer;
 use Illuminate\Http\Request;
 
 class AppDataController extends ApiController
@@ -49,51 +50,8 @@ class AppDataController extends ApiController
     public function get($id)
     {
         $category = Category::findOrFail($id);
+        $transformer = new AppDataTransformer($category);
 
-        $categoryData = [
-            'makes' => $this->getMakes($category->id),
-            'conditions' => Condition::where('category_id', $category->id)->get()->toArray(),
-            'years' => Year::where('category_id', $category->id)->get()->toArray(),
-            'colors' => Color::where('category_id', $category->id)->get()->toArray(),
-            'body_types' => BodyType::where('category_id', $category->id)->get()->toArray(),
-            'doors' => Door::where('category_id', $category->id)->get()->toArray(),
-            'sizes' => Size::where('category_id', $category->id)->get()->toArray(),
-            'mileages' => Mileage::where('category_id', $category->id)->get()->toArray(),
-            'fuels' => Fuel::where('category_id', $category->id)->get()->toArray(),
-            'transmissions' => Transmission::where('category_id', $category->id)->get()->toArray(),
-            'engines' => Engine::where('category_id', $category->id)->get()->toArray(),
-            'tax_bands' => TaxBand::where('category_id', $category->id)->get()->toArray(),
-            'ownerships' => Ownership::where('category_id', $category->id)->get()->toArray(),
-            'distances' => Distance::where('category_id', $category->id)->get()->toArray(),
-            'seat_counts' => SeatCount::where('category_id', $category->id)->get()->toArray(),
-        ];
-
-        $category = $category->toArray();
-        $category['data'] = $categoryData;
-
-        return $this->api_response(['category' => $category]);
-    }
-
-    /**
-     * Group models by their makes.
-     *
-     * @param $categoryId
-     * @return mixed
-     */
-    private function getMakes($categoryId)
-    {
-        $models = Model::where('category_id', $categoryId)->get();
-        $makes = Make::whereIn('id', $models->pluck('make_id'))->get()->toArray();
-        $models = $models->groupBy('make_id')->toArray();
-
-        foreach ($makes as $key => $make) {
-            if (isset($models[$make['id']])) {
-                $makes[$key]['models'] = $models[$make['id']];
-            } else {
-                $makes[$key]['models'] = [];
-            }
-        }
-
-        return $makes;
+        return $this->api_response(['category' => $transformer->toArray()]);
     }
 }
