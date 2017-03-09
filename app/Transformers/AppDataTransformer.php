@@ -29,22 +29,34 @@ class AppDataTransformer {
         $filtersArray = $filters->toArray();
 
         foreach ($filtersArray as $i => &$filter) {
-            $filter['values'] = $this->mergeValues($filters[$i]);
-            $filter['dep_values'] = $this->mergeDepValues($filters[$i]);
+            $options = $this->getOptions($filters[$i]);
+
+            if ($options->count() == 0) {
+                unset($filtersArray[$i]);
+            } else {
+                $filter['values'] = $this->mergeValues($filters[$i], $options);
+                $filter['dep_values'] = $this->mergeDepValues($filters[$i], $options);
+            }
         }
 
-        return $filtersArray;
+        return array_values($filtersArray);
     }
 
-    private function mergeValues(Filter $filter)
+    private function getOptions(Filter $filter)
+    {
+        $model = 'App\\Models\\' . $filter->source;
+        $options = $model::where('category_id', $this->category->id)->get();
+
+        return $options;
+    }
+
+    private function mergeValues(Filter $filter, $options)
     {
         if ($filter->depends_on) {
             return null;
         }
 
         $values = [];
-        $model = 'App\\Models\\' . $filter->source;
-        $options = $model::where('category_id', $this->category->id)->get();
 
         foreach ($options as $option) {
             $values[$option->id] = strval($option->value);
@@ -53,15 +65,13 @@ class AppDataTransformer {
         return $values;
     }
 
-    private function mergeDepValues(Filter $filter)
+    private function mergeDepValues(Filter $filter, $options)
     {
         if (!$filter->depends_on) {
             return null;
         }
 
         $values = [];
-        $model = 'App\\Models\\' . $filter->source;
-        $options = $model::where('category_id', $this->category->id)->get();
 
         foreach ($options as $option) {
             $values[$option->make_id][$option->id] = $option->value;

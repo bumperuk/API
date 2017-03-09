@@ -9,6 +9,38 @@
 /*!40101 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+-- Dumping data for table bumper.categories: ~4 rows (approximately)
+/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+INSERT INTO `categories` (`id`, `name`, `image_1x`, `image_2x`, `image_3x`, `image_4x`, `created_at`, `updated_at`) VALUES
+	(1, 'Cars', 'todo', 'todo', 'todo', '', NULL, NULL);
+INSERT INTO `categories` (`id`, `name`, `image_1x`, `image_2x`, `image_3x`, `image_4x`, `created_at`, `updated_at`) VALUES
+	(2, 'Vans', 'todo', 'todo', 'todo', '', NULL, NULL);
+INSERT INTO `categories` (`id`, `name`, `image_1x`, `image_2x`, `image_3x`, `image_4x`, `created_at`, `updated_at`) VALUES
+	(3, 'Black Cabs', 'todo', 'todo', 'todo', '', NULL, NULL);
+INSERT INTO `categories` (`id`, `name`, `image_1x`, `image_2x`, `image_3x`, `image_4x`, `created_at`, `updated_at`) VALUES
+	(4, 'Motorhomes and Campervans', 'todo', 'todo', 'todo', '', NULL, NULL);
+INSERT INTO `categories` (`id`, `name`, `image_1x`, `image_2x`, `image_3x`, `image_4x`, `created_at`, `updated_at`) VALUES
+	(5, 'Motorbike', 'todo', 'todo', 'todo', '', NULL, NULL);
+INSERT INTO `categories` (`id`, `name`, `image_1x`, `image_2x`, `image_3x`, `image_4x`, `created_at`, `updated_at`) VALUES
+	(6, 'Private Hire', 'todo', 'todo', 'todo', '', NULL, NULL);
+/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+
+
+-- --------------------------------------------------------
+-- Host:                         192.168.10.10
+-- Server version:               5.7.13-0ubuntu0.16.04.2 - (Ubuntu)
+-- Server OS:                    Linux
+-- HeidiSQL Version:             9.3.0.4984
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 -- Dumping data for table bumper.berths: ~0 rows (approximately)
 /*!40000 ALTER TABLE `berths` DISABLE KEYS */;
 /*!40000 ALTER TABLE `berths` ENABLE KEYS */;
