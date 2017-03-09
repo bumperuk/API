@@ -14,12 +14,12 @@ class AddMissingCategoryIds extends Migration
     public function up()
     {
         Schema::table('makes', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned()->default(1)->after('value');
+            $table->integer('category_id')->unsigned()->nullable()->after('value');
             $table->foreign('category_id')->references('id')->on('categories');
         });
 
         Schema::table('prices', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned()->default(1)->after('value');
+            $table->integer('category_id')->unsigned()->nullable()->after('value');
             $table->foreign('category_id')->references('id')->on('categories');
         });
     }

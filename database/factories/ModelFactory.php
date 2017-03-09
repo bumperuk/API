@@ -36,13 +36,17 @@ $factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
         'name' => $faker->firstName,
         'image_1x' => $faker->imageUrl(),
         'image_2x' => $faker->imageUrl(),
-        'image_3x' => $faker->imageUrl()
+        'image_3x' => $faker->imageUrl(),
+        'image_4x' => $faker->imageUrl()
     ];
 });
 
 $factory->define(App\Models\Make::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->firstName,
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
     ];
 });
 
@@ -197,6 +201,22 @@ $factory->define(App\Models\Distance::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Price::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->numberBetween(1000, 50000),
+        'category_id' => function() {
+            return factory(App\Models\Category::class)->create()->id;
+        },
+    ];
+});
+
+$factory->define(App\Models\Filter::class, function (Faker\Generator $faker) {
+    $name = strtolower($faker->firstName);
+    return [
+        'always_visible' => $faker->boolean(30),
+        'multiple' => $faker->boolean(20),
+        'range' => $faker->boolean(20),
+        'source' => ucfirst($name),
+        'key' => $name,
+        'name' => ucfirst($name),
+        'placeholder' => 'Any'
     ];
 });
 

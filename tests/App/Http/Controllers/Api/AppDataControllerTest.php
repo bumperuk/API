@@ -38,97 +38,95 @@ class AppDataControllerTest extends TestCase
 
     public function testValidStructure()
     {
-        factory(\App\Models\Vehicle::class, 10)->create();
+        $model = factory(\App\Models\Model::class)->create();
+        factory(\App\Models\Vehicle::class, 10)->create(['model_id' => $model->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/app-data')
+            ->apiCall('GET', 'api/v1/app-data/' . $model->category->id)
             ->seeSuccess()
             ->seePayloadStructure([
-                'categories' => [
-                    '*' => [
-                        'name',
-                        'image_1x',
-                        'image_2x',
-                        'image_3x',
-                        'data' => [
-                            'makes' => [
-                                '*' => [
-                                    'value',
-                                    'models' => [
-                                        '*' => [
-                                            'value'
-                                        ]
-                                    ]
-                                ]
-                            ],
-                            'conditions',
-                            'years',
-                            'colors',
-                            'body_types',
-                            'doors',
-                            'sizes',
-                            'mileages',
-                            'fuels',
-                            'transmissions',
-                            'engines',
-                            'tax_bands',
-                            'ownerships'
-                        ]
-                    ]
+                'category' => [
+                    'name',
+                    'image_1x',
+                    'image_2x',
+                    'image_3x',
+                    'image_4x',
+                    'filters'
                 ]
             ]);
     }
 
     public function testIfValuesArePopulated()
     {
+        $category = factory(\App\Models\Make::class)->create();
+
         $make = factory(\App\Models\Make::class)->create([
-            'value' => 'UniqueMakeValue'
+            'value' => 'UniqueMakeValue',
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\Model::class)->create([
+        $model = factory(\App\Models\Model::class)->create([
             'make_id' => $make->id,
-            'value' => 'UniqueModelValue'
+            'value' => 'UniqueModelValue',
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\Condition::class)->create([
-            'value' => 'UniqueConditionValue'
+        $condition = factory(\App\Models\Condition::class)->create([
+            'value' => 'UniqueConditionValue',
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\Year::class)->create([
-            'value' => 1234
+        $year = factory(\App\Models\Year::class)->create([
+            'value' => 1234,
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\Color::class)->create([
-            'value' => 'UniqueColourValue'
+        $color = factory(\App\Models\Color::class)->create([
+            'value' => 'UniqueColourValue',
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\BodyType::class)->create([
-            'value' => 'UniqueBodyTypeValue'
+        $bodyType = factory(\App\Models\BodyType::class)->create([
+            'value' => 'UniqueBodyTypeValue',
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\Door::class)->create([
-            'value' => 'UniqueDoorValue'
+        $door = factory(\App\Models\Door::class)->create([
+            'value' => 'UniqueDoorValue',
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\Size::class)->create([
-            'value' => 'UniqueSizeValue'
+        $size = factory(\App\Models\Size::class)->create([
+            'value' => 'UniqueSizeValue',
+            'category_id' => $category->id,
         ]);
 
-        factory(\App\Models\Ownership::class)->create([
-            'value' => 'UniqueOwnershipValue'
+        $ownership = factory(\App\Models\Ownership::class)->create([
+            'value' => 'UniqueOwnershipValue',
+            'category_id' => $category->id,
         ]);
+
+        factory(\App\Models\Filter::class)->create(['source' => 'Make']);
+        factory(\App\Models\Filter::class)->create(['source' => 'Model']);
+        factory(\App\Models\Filter::class)->create(['source' => 'Condition']);
+        factory(\App\Models\Filter::class)->create(['source' => 'Year']);
+        factory(\App\Models\Filter::class)->create(['source' => 'Color']);
+        factory(\App\Models\Filter::class)->create(['source' => 'BodyType']);
+        factory(\App\Models\Filter::class)->create(['source' => 'Door']);
+        factory(\App\Models\Filter::class)->create(['source' => 'Ownership']);
+        factory(\App\Models\Filter::class)->create(['source' => 'Size']);
 
         $this
-            ->apiCall('GET', 'api/v1/app-data')
+            ->apiCall('GET', 'api/v1/app-data/' . $category->id)
             ->seeSuccess()
-            ->seeJson(['value' => 'UniqueMakeValue'])
-            ->seeJson(['value' => 'UniqueModelValue'])
-            ->seeJson(['value' => 'UniqueConditionValue'])
-            ->seeJson(['value' => 1234])
-            ->seeJson(['value' => 'UniqueColourValue'])
-            ->seeJson(['value' => 'UniqueBodyTypeValue'])
-            ->seeJson(['value' => 'UniqueDoorValue'])
-            ->seeJson(['value' => 'UniqueOwnershipValue'])
-            ->seeJson(['value' => 'UniqueSizeValue']);
+            ->seeJson([$make->id => 'UniqueMakeValue'])
+            ->seeJson([$model->id => 'UniqueModelValue'])
+            ->seeJson([$condition->id => 'UniqueConditionValue'])
+            ->seeJson([$year->id => "1234"])
+            ->seeJson([$color->id => 'UniqueColourValue'])
+            ->seeJson([$bodyType->id => 'UniqueBodyTypeValue'])
+            ->seeJson([$door->id => 'UniqueDoorValue'])
+            ->seeJson([$ownership->id => 'UniqueOwnershipValue'])
+            ->seeJson([$size->id => 'UniqueSizeValue']);
     }
 }
