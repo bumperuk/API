@@ -46,33 +46,32 @@ class AppDataController extends ApiController
         ]);
     }
 
-    public function get()
+    public function get($id)
     {
-        $categories = Category::all()->toArray();
+        $category = Category::findOrFail($id);
 
-        foreach ($categories as $key => $category) {
-            $categoryData = [
-                'makes' => $this->getMakes($category['id']),
-                'conditions' => Condition::where('category_id', $category['id'])->get()->toArray(),
-                'years' => Year::where('category_id', $category['id'])->get()->toArray(),
-                'colors' => Color::where('category_id', $category['id'])->get()->toArray(),
-                'body_types' => BodyType::where('category_id', $category['id'])->get()->toArray(),
-                'doors' => Door::where('category_id', $category['id'])->get()->toArray(),
-                'sizes' => Size::where('category_id', $category['id'])->get()->toArray(),
-                'mileages' => Mileage::where('category_id', $category['id'])->get()->toArray(),
-                'fuels' => Fuel::where('category_id', $category['id'])->get()->toArray(),
-                'transmissions' => Transmission::where('category_id', $category['id'])->get()->toArray(),
-                'engines' => Engine::where('category_id', $category['id'])->get()->toArray(),
-                'tax_bands' => TaxBand::where('category_id', $category['id'])->get()->toArray(),
-                'ownerships' => Ownership::where('category_id', $category['id'])->get()->toArray(),
-                'distances' => Distance::where('category_id', $category['id'])->get()->toArray(),
-                'seat_counts' => SeatCount::where('category_id', $category['id'])->get()->toArray(),
-            ];
+        $categoryData = [
+            'makes' => $this->getMakes($category->id),
+            'conditions' => Condition::where('category_id', $category->id)->get()->toArray(),
+            'years' => Year::where('category_id', $category->id)->get()->toArray(),
+            'colors' => Color::where('category_id', $category->id)->get()->toArray(),
+            'body_types' => BodyType::where('category_id', $category->id)->get()->toArray(),
+            'doors' => Door::where('category_id', $category->id)->get()->toArray(),
+            'sizes' => Size::where('category_id', $category->id)->get()->toArray(),
+            'mileages' => Mileage::where('category_id', $category->id)->get()->toArray(),
+            'fuels' => Fuel::where('category_id', $category->id)->get()->toArray(),
+            'transmissions' => Transmission::where('category_id', $category->id)->get()->toArray(),
+            'engines' => Engine::where('category_id', $category->id)->get()->toArray(),
+            'tax_bands' => TaxBand::where('category_id', $category->id)->get()->toArray(),
+            'ownerships' => Ownership::where('category_id', $category->id)->get()->toArray(),
+            'distances' => Distance::where('category_id', $category->id)->get()->toArray(),
+            'seat_counts' => SeatCount::where('category_id', $category->id)->get()->toArray(),
+        ];
 
-            $categories[$key]['data'] = $categoryData;
-        }
+        $category = $category->toArray();
+        $category['data'] = $categoryData;
 
-        return $this->api_response(['categories' => $categories]);
+        return $this->api_response(['category' => $category]);
     }
 
     /**

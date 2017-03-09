@@ -11,7 +11,7 @@
 
 Route::group(['prefix' => 'v1'], function () {
 
-    Route::get('/app-data', 'API\V1\AppDataController@get');
+    Route::get('/app-data/{id}', 'API\V1\AppDataController@get');
     Route::get('/force-update', 'API\V1\AppDataController@update');
 
     Route::group(['prefix' => 'auth'], function () {
