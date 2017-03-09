@@ -47,7 +47,14 @@ class ImportVehiclesCommand extends Command
             $makeValue = trim($row[0], ' -');
             $modelValue = isset($row[1]) ? trim($row[1]) : null;
 
-            $make = Make::where('value', $makeValue)->firstOrCreate(['value' => $makeValue]);
+            $make = Make
+                ::where('value', $makeValue)
+                ->where('category_id', $category->id)
+                ->firstOrCreate([
+                    'value' => $makeValue,
+                ]);
+            $make->category_id = $category->id;
+            $make->save();
 
             $model = new Model();
             $model->category()->associate($category);

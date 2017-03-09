@@ -1,6 +1,5 @@
-Make,Model
 AXIAM,Mega
-CHEVROLET   ,Doublecab
+CHEVROLET,Doublecab
 CITROEN,Berlingo
 CITROEN,C-Crosser 
 CITROEN,C15
@@ -11,7 +10,7 @@ CITROEN,Relay
 CITROEN,Other
 DAIHATSU,Extol
 DAIHATSU,Hijet
-DFSK  ,Loadhopper
+DFSK,Loadhopper
 FIAT,Doblo
 FIAT, Ducato 
 FIAT,Fiorino 
@@ -42,21 +41,21 @@ ISUZU,LS
 ISUZU,N
 ISUZU,NKR
 ISUZU,Rodeo
-IVECO ,Cargo
-IVECO ,Daily
-IVECO ,Eurocargo
-LANDROVER ,110
-LANDROVER ,90
-LANDROVER ,Defender 110
-LANDROVER ,Defender 130
-LANDROVER ,Defender 90
-LANDROVER ,Discovery
-LANDROVER ,Discovery 2
-LANDROVER ,Discovery 3
-LANDROVER ,Discovery 4
-LANDROVER ,Discovery Sport
-LANDROVER , Freelander
-LANDROVER ,Freelander 2
+IVECO,Cargo
+IVECO,Daily
+IVECO,Eurocargo
+LANDROVER,110
+LANDROVER,90
+LANDROVER,Defender 110
+LANDROVER,Defender 130
+LANDROVER,Defender 90
+LANDROVER,Discovery
+LANDROVER,Discovery 2
+LANDROVER,Discovery 3
+LANDROVER,Discovery 4
+LANDROVER,Discovery Sport
+LANDROVER, Freelander
+LANDROVER,Freelander 2
 LDV,400
 LDV,Convoy
 LDV,Maxus
@@ -106,7 +105,7 @@ PEUGEOT,Expert
 PEUGEOT,Expert Tepee
 PEUGEOT,Partner
 PIAGGIO,Porter
-PROTON ,Jumbuck
+PROTON,Jumbuck
 RENAULT,Clio
 RENAULT,Kangoo
 RENAULT,Kangoo Compact
@@ -118,30 +117,30 @@ RENAULT,Other
 SSANGYONG,Korrando Sports 
 SSANGYONG,Rexton
 SSANGYONG,Other
-SUZUKI ,Carry
-SUZUKI ,Super Carry
-TOYOTA ,Dyna
-TOYOTA ,Hiace
-TOYOTA ,Hilux
-TOYOTA ,Proace
-VAUXHALL ,Astravan
-VAUXHALL ,Brava
-VAUXHALL ,Combo
-VAUXHALL ,Corsa Van
-VAUXHALL ,Movano
-VAUXHALL ,Vivaro
-VAUXHALL ,Other
-VOLKSWAGEN ,Amarok
-VOLKSWAGEN ,Caddy
-VOLKSWAGEN ,Caddy Maxi
-VOLKSWAGEN ,Caddy Maxi Sportline
-VOLKSWAGEN ,California
-VOLKSWAGEN ,Campervan
-VOLKSWAGEN ,Caravelle
-VOLKSWAGEN ,Crafter
-VOLKSWAGEN ,LT
-VOLKSWAGEN ,Transporter
-VOLKSWAGEN ,Transporter Shuttle
-VOLKSWAGEN ,Transported Sportline
-VOLKSWAGEN ,Other
+SUZUKI,Carry
+SUZUKI,Super Carry
+TOYOTA,Dyna
+TOYOTA,Hiace
+TOYOTA,Hilux
+TOYOTA,Proace
+VAUXHALL,Astravan
+VAUXHALL,Brava
+VAUXHALL,Combo
+VAUXHALL,Corsa Van
+VAUXHALL,Movano
+VAUXHALL,Vivaro
+VAUXHALL,Other
+VOLKSWAGEN,Amarok
+VOLKSWAGEN,Caddy
+VOLKSWAGEN,Caddy Maxi
+VOLKSWAGEN,Caddy Maxi Sportline
+VOLKSWAGEN,California
+VOLKSWAGEN,Campervan
+VOLKSWAGEN,Caravelle
+VOLKSWAGEN,Crafter
+VOLKSWAGEN,LT
+VOLKSWAGEN,Transporter
+VOLKSWAGEN,Transporter Shuttle
+VOLKSWAGEN,Transported Sportline
+VOLKSWAGEN,Other
 OTHER,OTHER
