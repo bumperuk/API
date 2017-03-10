@@ -72,9 +72,10 @@ class AppDataTransformer {
         }
 
         $values = [];
+        $property = $filter->depends_property;
 
         foreach ($options as $option) {
-            $values[$option->make_id][$option->id] = $option->value;
+            $values[$option->$property][$option->id] = $option->value;
         }
 
         return [
