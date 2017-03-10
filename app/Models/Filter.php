@@ -9,7 +9,7 @@ class Filter extends BaseModel
     ];
 
     protected $casts = [
-        'default' => 'boolean',
+        'always_visible' => 'boolean',
         'multiple' => 'boolean',
         'range' => 'boolean',
     ];
