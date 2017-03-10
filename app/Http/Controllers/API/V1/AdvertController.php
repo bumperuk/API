@@ -36,8 +36,8 @@ class AdvertController extends ApiController
         $finder->setYearFilter($request->input('year_min'), $request->input('year_max'));
         $finder->setEngineFilter($request->input('engine_min'), $request->input('engine_max'));
 
-        if ($request->has('colors')) {
-            $finder->setColorFilter($request->input('colors'));
+        if ($request->has('color')) {
+            $finder->setColorFilter($request->input('color'));
         }
 
         if ($request->has('make')) {

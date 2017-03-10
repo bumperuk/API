@@ -20,7 +20,7 @@ class Vehicle extends BaseModel
 
     protected $hidden = [
         'condition', 'year', 'color', 'bodyType', 'door', 'size', 'mileage', 'seatCount', 'berth',
-        'fuel', 'transmission', 'engine', 'taxBand',
+        'fuel', 'transmission', 'engine', 'taxBand', 'ownership',
         'userReport', 'userFavourite'
     ];
 

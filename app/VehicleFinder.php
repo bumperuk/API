@@ -81,10 +81,10 @@ class VehicleFinder
         }
     }
 
-    public function setColorFilter($colours)
+    public function setColorFilter($colors)
     {
-        if (is_array($colours)) {
-            $this->colorFilter = $colours;
+        if (is_array($colors)) {
+            $this->colorFilter = $colors;
         }
     }
 

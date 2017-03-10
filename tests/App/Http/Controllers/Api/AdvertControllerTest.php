@@ -301,13 +301,13 @@ class AdvertControllerTest extends TestCase
         $category = factory(\App\Models\Category::class)->create();
 
         $vehicle1 = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+            'id' => 123, 'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
         $vehicle1->model->category()->associate($category);
         $vehicle1->model->save();
 
         $vehicle2 = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
+            'id' => 321, 'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek()
         ]);
         $vehicle2->model->category()->associate($category);
         $vehicle2->model->save();
@@ -443,10 +443,10 @@ class AdvertControllerTest extends TestCase
     {
         $user = factory(\App\Models\User::class)->create();
         $show = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
+            'id' => 9991, 'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
         ]);
         $hide = factory(\App\Models\Vehicle::class)->create([
-            'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => null
+            'id' => 9233, 'paid_at' => Carbon::now()->subSeconds(10), 'deactivated_at' => null
         ]);
 
         $this
