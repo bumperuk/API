@@ -409,7 +409,7 @@ class AdvertControllerTest extends TestCase
 
     public function testUserAdvertsStructure()
     {
-        $user = factory(\App\Models\Vehicle::class)->create();
+        $user = factory(\App\Models\User::class)->create();
         factory(\App\Models\Vehicle::class)->create([
             'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null, 'user_id' => $user->id
         ]);

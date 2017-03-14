@@ -58,7 +58,7 @@ class AppDataControllerTest extends TestCase
 
     public function testIfValuesArePopulated()
     {
-        $category = factory(\App\Models\Make::class)->create();
+        $category = factory(\App\Models\Category::class)->create();
 
         $make = factory(\App\Models\Make::class)->create([
             'value' => 'UniqueMakeValue',

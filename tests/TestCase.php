@@ -1,11 +1,13 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Artisan;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
-    use \Illuminate\Foundation\Testing\DatabaseMigrations;
+    use DatabaseTransactions;
 
     private $jwtToken = null;
 
@@ -27,6 +29,8 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         $app = require __DIR__ . '/../bootstrap/app.php';
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+
+        Artisan::call('migrate');
 
         return $app;
     }
