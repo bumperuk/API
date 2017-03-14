@@ -11,6 +11,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\Vehicle;
 use App\VehicleFinder;
+use App\VehicleFinderException;
 use Illuminate\Http\Request;
 
 class AdvertController extends ApiController
@@ -44,7 +45,12 @@ class AdvertController extends ApiController
             $finder->setMakeFilter($request->input('make'));
         }
 
-        return $this->api_response($finder->paginate(16));
+        try {
+            $vehicles = $finder->paginate(16);
+        } catch (VehicleFinderException $ex) {
+            return $this->api_response([], $ex->getMessage(), false, 400);
+        }
+        return $this->api_response($vehicles);
     }
 
     public function getForUser(Request $request)

@@ -8,6 +8,7 @@ use App\Models\Engine;
 use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
+use Mockery\CountValidator\Exception;
 
 
 class VehicleFinder
@@ -104,6 +105,7 @@ class VehicleFinder
 
     public function paginate(int $perPage)
     {
+        $this->checkRequirements();
         $category = $this->category;
 
         $vehicles = Vehicle
@@ -133,6 +135,17 @@ class VehicleFinder
         $vehicles = $this->doOrder($vehicles);
 
         return $vehicles->paginate($perPage);
+    }
+
+    private function checkRequirements()
+    {
+        if ($this->order == 'distance' && ($this->lat === null || $this->lon === null)) {
+            throw new VehicleFinderException("Lat and lon are required to order by distance.");
+        }
+
+        if ($this->distanceFilter !== null && ($this->lat === null || $this->lon === null)) {
+            throw new VehicleFinderException("Lat and lon are required to filter by distance.");
+        }
     }
 
     private function doFilter(Builder $builder): Builder
