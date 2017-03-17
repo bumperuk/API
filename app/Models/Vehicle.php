@@ -17,7 +17,7 @@ class Vehicle extends BaseModel
     protected $with = [
         'photos', 'model', 'model.category', 'model.make', 'condition', 'color', 'seatCount', 'berth',
         'bodyType', 'door', 'size', 'mileage', 'fuel', 'transmission', 'engine', 'taxBand',
-        'userReport', 'userFavourite'
+        'user', 'userReport', 'userFavourite'
     ];
 
     protected $hidden = [
