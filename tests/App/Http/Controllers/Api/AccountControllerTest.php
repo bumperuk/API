@@ -211,7 +211,8 @@ class AccountControllerTest extends TestCase
                 'receipt' => 'ghghghghghghghhghghghghghghghhgh'
             ])
             ->seeSuccess()
-            ->seeJson(['receipt' => 'ghghghghghghghhghghghghghghghhgh'])
             ->seeJson(['receipt_type' => 'play']);
+
+        $this->seeInDatabase('users', ['receipt' => 'ghghghghghghghhghghghghghghghhgh', 'receipt_type' => 'play']);
     }
 }
