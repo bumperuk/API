@@ -108,6 +108,7 @@ class AccountController extends ApiController
         $canUpload = $active < $limit;
 
         return $this->api_response([
+            'user_type' => $user->type,
             'can_upload' => $canUpload,
             'active' => $active,
             'limit' => $limit

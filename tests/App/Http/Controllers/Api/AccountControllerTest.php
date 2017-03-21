@@ -36,6 +36,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['user_type' => 'private'])
             ->seeJson(['can_upload' => true])
             ->seeJson(['active' => 0])
             ->seeJson(['limit' => 3]);
@@ -47,6 +48,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['user_type' => 'private'])
             ->seeJson(['can_upload' => true])
             ->seeJson(['active' => 1])
             ->seeJson(['limit' => 3]);
@@ -58,6 +60,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['user_type' => 'private'])
             ->seeJson(['can_upload' => false])
             ->seeJson(['active' => 3])
             ->seeJson(['limit' => 3]);
@@ -72,6 +75,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['user_type' => 'dealer'])
             ->seeJson(['can_upload' => true])
             ->seeJson(['active' => 0])
             ->seeJson(['limit' => 11]);
@@ -83,6 +87,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['user_type' => 'dealer'])
             ->seeJson(['can_upload' => true])
             ->seeJson(['active' => 10])
             ->seeJson(['limit' => 11]);
@@ -94,6 +99,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['user_type' => 'dealer'])
             ->seeJson(['can_upload' => false])
             ->seeJson(['active' => 11])
             ->seeJson(['limit' => 11]);
