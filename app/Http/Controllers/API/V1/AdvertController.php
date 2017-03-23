@@ -36,13 +36,10 @@ class AdvertController extends ApiController
         $finder->setSellerFilter($request->input('seller'));
         $finder->setYearFilter($request->input('year_min'), $request->input('year_max'));
         $finder->setEngineFilter($request->input('engine_min'), $request->input('engine_max'));
+        $finder->setMakeFilter($request->input('make'));
 
         if ($request->has('color')) {
             $finder->setColorFilter($request->input('color'));
-        }
-
-        if ($request->has('make')) {
-            $finder->setMakeFilter($request->input('make'));
         }
 
         try {
@@ -50,6 +47,7 @@ class AdvertController extends ApiController
         } catch (VehicleFinderException $ex) {
             return $this->api_response([], $ex->getMessage(), false, 400);
         }
+
         return $this->api_response($vehicles);
     }
 

@@ -89,11 +89,9 @@ class VehicleFinder
         }
     }
 
-    public function setMakeFilter($makes)
+    public function setMakeFilter($make)
     {
-        if (is_array($makes)) {
-            $this->makeFilter = $makes;
-        }
+        $this->makeFilter = $make;
     }
 
     public function setSellerFilter($seller)
@@ -212,8 +210,10 @@ class VehicleFinder
     private function doMakeFilter(Builder $builder): Builder
     {
         if ($this->makeFilter) {
-            $builder = $builder
-                ->whereIn('make_id', $this->makeFilter);
+            $make = $this->makeFilter;
+            $builder = $builder->whereHas('model', function ($model) use ($make) {
+                $model->where('make_id', $make);
+            });
         }
 
         return $builder;
