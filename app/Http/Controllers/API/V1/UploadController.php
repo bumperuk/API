@@ -53,6 +53,8 @@ class UploadController extends ApiController
         $user = $request->user();
         $model = Model::findOrFail($request->input('model'));
 
+        Log::error(@file_get_contents('php://input'));
+
         if ($user->vehicles()->active()->count() != $user->max_vehicles) {
             return $this->api_response([],
                 'You already have an active vehicle. Become a dealer to upload more.', false, 403);
