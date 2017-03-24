@@ -36,16 +36,17 @@ class UploadControllerTest extends TestCase
     public function testPrivateMultipleUpload()
     {
         $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);
-        $vehicle = factory(\App\Models\Vehicle::class)->create([
+        $vehicle = factory(\App\Models\Vehicle::class, 3)->create([
             'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'user_id' => $user->id
         ]);
         $price = factory(\App\Models\Price::class)->create(['value' => 123.45]);
+
 
         //Cant upload because there is already an active vehicle
         $this
             ->withToken($user)
             ->apiCall('POST', 'api/v1/upload', [
-                'model' => $vehicle->model->id,
+                'model' => $vehicle->first()->model->id,
                 'lat' => 1.5,
                 'lon' => 1.5,
                 'description' => 'Good car.',

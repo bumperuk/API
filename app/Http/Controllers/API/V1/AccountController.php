@@ -105,11 +105,10 @@ class AccountController extends ApiController
 
         $active = $user->vehicles()->active()->count();
         $limit = $user->vehicle_limit;
-        $canUpload = $active < $limit;
 
         return $this->api_response([
             'user_type' => $user->type,
-            'can_upload' => $canUpload,
+            'can_upload' => $user->canUpload(),
             'active' => $active,
             'limit' => $limit
         ]);

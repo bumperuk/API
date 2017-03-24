@@ -53,11 +53,9 @@ class UploadController extends ApiController
         $user = $request->user();
         $model = Model::findOrFail($request->input('model'));
 
-        Log::error(@file_get_contents('php://input'));
-
-        if ($user->vehicles()->active()->count() != $user->max_vehicles) {
+        if (!$user->canUpload()) {
             return $this->api_response([],
-                'You already have an active vehicle. Become a dealer to upload more.', false, 403);
+                'You already have ' . $user->vehicle_limit. ' active vehicles. Upgrade your subscription to increase the limit.', false, 403);
         }
 
         $vehicle = new Vehicle();
@@ -241,16 +239,18 @@ class UploadController extends ApiController
     public function renew(Request $request)
     {
         $this->validate($request, [
-            'vehicle_id' => 'required|exists:vehicles,id'
+            'vehicle_id' => 'required|exists:vehicles,id',
+            'receipt' => 'required',
+            'receipt_type' => 'required'
         ]);
 
         $vehicle = Vehicle::find($request->input('vehicle_id'));
         $receipt = $request->input('receipt');
+        $receiptType = $request->input('receipt_type');
 
         $validator = new ReceiptValidator();
 
-        if (!$validator->validateConsumable($receipt)) {
-            Log::error('Invalid IAP receipt: ' . $receipt);
+        if (!$validator->validateConsumable($receipt, $receiptType)) {
             return $this->api_response([], 'Invalid IAP receipt.', false, 400);
         }
 

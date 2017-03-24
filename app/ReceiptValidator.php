@@ -15,12 +15,19 @@ use ReceiptValidator\iTunes\Validator;
  */
 class ReceiptValidator
 {
-    public function validateConsumable($receipt): bool
+    public function validateConsumable($receipt, $type): bool
     {
-        //todo: logic to determine if the receipt is ios or android
+        switch ($type) {
+            case 'itunes':
+                return $this->validateItunesConsumable($receipt);
+            case 'play':
+                return $this->validatePlayConsumable($receipt);
+        }
+
+        return false;
     }
 
-    public function validItunesConsumable($receipt): bool
+    private function validateItunesConsumable($receipt): bool
     {
         $mode = env('RECEIPT_DEBUG') ? Validator::ENDPOINT_SANDBOX :  Validator::ENDPOINT_PRODUCTION;
         $validator = new Validator($mode);
@@ -28,14 +35,16 @@ class ReceiptValidator
         try {
             $response = $validator->setReceiptData($receipt)->validate();
         } catch (\Exception $e) {
-            Log::error('Invalid iTunes receipt');
+            Log::error('Invalid iTunes receipt: ' . $receipt);
             return false;
         }
+
+        //dd($response->getBundleId());
 
         return $response->isValid();
     }
 
-    public function validPlayConsumable($receipt): bool
+    private function validatePlayConsumable($receipt): bool
     {
 
     }
@@ -45,12 +54,12 @@ class ReceiptValidator
 
     }
 
-    public function validateItunesSubscription($receipt): bool
+    private function validateItunesSubscription($receipt): bool
     {
 
     }
 
-    public function validatePlaySubscription($receipt): bool
+    private function validatePlaySubscription($receipt): bool
     {
 
     }

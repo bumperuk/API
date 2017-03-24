@@ -160,4 +160,12 @@ class User extends Authenticatable
 
         return $this->dealerRank->limit;
     }
+
+    /**
+     * Boolean to determine if the user can upload
+     */
+    public function canUpload(): bool
+    {
+        return $this->vehicles()->active()->count() < $this->vehicle_limit;
+    }
 }
