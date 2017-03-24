@@ -7,8 +7,10 @@ use App\Models\Model;
 use App\Models\Price;
 use App\Models\Vehicle;
 use App\Models\VehiclePhoto;
+use App\ReceiptValidator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -226,5 +228,38 @@ class UploadController extends ApiController
         $vehicle->delete();
 
         return $this->api_response([]);
+    }
+
+    /**
+     * Renew a vehicle for 7 more days.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function renew(Request $request)
+    {
+        $this->validate($request, [
+            'vehicle_id' => 'required|exists:vehicles,id'
+        ]);
+
+        $vehicle = Vehicle::find($request->input('vehicle_id'));
+        $receipt = $request->input('receipt');
+
+        $validator = new ReceiptValidator();
+
+        if (!$validator->validateConsumable($receipt)) {
+            Log::error('Invalid IAP receipt: ' . $receipt);
+            return $this->api_response([], 'Invalid IAP receipt.', false, 400);
+        }
+
+        if (!$vehicle->deactivated_at || $vehicle->deactivated_at < Carbon::now()) {
+            $vehicle->deactivated_at = Carbon::now()->addWeek();
+        } else {
+            $vehicle->deactivated_at = $vehicle->deactivated_at->addWeek();
+        }
+
+        $vehicle->save();
+
+        return $this->api_response($vehicle);
     }
 }

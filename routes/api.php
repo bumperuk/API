@@ -50,6 +50,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'upload'], function () {
             Route::post('/', 'API\V1\UploadController@upload');
             Route::post('/edit', 'API\V1\UploadController@edit');
+            Route::post('/renew', 'API\V1\UploadController@renew');
         });
 
         Route::group(['prefix' => 'favourites'], function () {
