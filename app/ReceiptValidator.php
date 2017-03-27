@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Models\DealerRank;
 use App\Models\UsedReceipt;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -68,18 +69,54 @@ class ReceiptValidator
 
     }
 
-    public function validateSubscription($receipt): bool
+    public function rankForSubscription($receipt, $type)
     {
+        switch ($type) {
+            case 'itunes':
+                return $this->rankForItunesSubscription($receipt);
+            case 'play':
+                return $this->rankForPlaySubscription($receipt);
+        }
 
+        return false;
     }
 
-    private function validateItunesSubscription($receipt): bool
+    private function rankForItunesSubscription($receipt)
     {
+        $mode = env('RECEIPT_DEBUG') ? Validator::ENDPOINT_SANDBOX :  Validator::ENDPOINT_PRODUCTION;
+        $validator = new Validator($mode);
+        $ranks = $this->ranksForPlatform('itunes');
+        $bestRankId = null;
 
+        try {
+            $response = $validator->setSharedSecret(env('RECEIPT_ITUNES_SECRET'))->setReceiptData($receipt)->validate();
+            $purchases = $response->getPurchases();
+
+            foreach ($purchases as $purchase) {
+                if (isset($ranks[$purchase['product_id']])) {
+                    $bestRankId = $ranks[$purchase['product_id']];
+                }
+            }
+
+            return $bestRankId ?? false;
+        } catch (\Exception $e) {
+            Log::error('Invalid iTunes subscription receipt: ' . $receipt);
+            return false;
+        }
     }
 
-    private function validatePlaySubscription($receipt): bool
+    private function rankForPlaySubscription($receipt)
     {
+        return false;
+    }
 
+    private function ranksForPlatform($type)
+    {
+        $property =  $type . '_product';
+        $ranks = DealerRank::all()->mapWithKeys(function ($dealerRank) use ($property) {
+            return [$dealerRank->$property => $dealerRank->id];
+        })->toArray();
+
+        return $ranks;
     }
 }

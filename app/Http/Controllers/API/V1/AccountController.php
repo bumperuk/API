@@ -10,6 +10,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\Vehicle;
 use App\Notifications\VerifyPhone;
+use App\ReceiptValidator;
 use Carbon\Carbon;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -182,7 +183,10 @@ class AccountController extends ApiController
                 'Please cancel your existing plan to continue.', false, 400);
         }
 
-        //todo validate receipt here before saving it.
+        $validator = new ReceiptValidator();
+        if ($validator->validateSubscription($receipt, $receiptType)) {
+            return $this->api_response([], 'The receipt is invalid.', false, 400);
+        }
 
         $user->receipt = $receipt;
         $user->receipt_type = $receiptType;
