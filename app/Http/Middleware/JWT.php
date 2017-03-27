@@ -16,8 +16,6 @@ use Tymon\JWTAuth\Middleware\BaseMiddleware;
 
 class JWT extends BaseMiddleware
 {
-
-
     /**
      * Handle an incoming request.
      *
