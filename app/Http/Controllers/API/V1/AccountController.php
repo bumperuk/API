@@ -133,6 +133,33 @@ class AccountController extends ApiController
     }
 
     /**
+     * Get the current user subscription
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getSubscription(Request $request)
+    {
+        $this->validate($request, [
+            'platform' => 'required|in:itunes,play'
+        ]);
+
+        $user = $request->user();
+        $platform = $request->input('platform');
+
+        if ($user->type == 'dealer' && $user->receipt_type != $platform) {
+            return $this->api_response([],
+                'You already have an active subscription for a different platform. ' .
+                'Please cancel your existing plan to continue.', false, 400);
+        }
+
+        $property = $platform . '_product';
+        $product = $user->dealerRank ? $user->dealerRank->$property : null;
+
+        return $this->api_response(['product_id' => $product]);
+    }
+
+    /**
      * Update the subscription receipt
      *
      * @param Request $request

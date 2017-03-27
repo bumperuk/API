@@ -64,6 +64,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['prefix' => 'account'], function () {
             Route::get('/', 'API\V1\AccountController@view');
+            Route::get('/subscription', 'API\V1\AccountController@getSubscription');
             Route::get('/can-upload', 'API\V1\AccountController@canUpload');
             Route::post('/push-token', 'API\V1\AccountController@savePushToken');
             Route::get('/adverts', 'API\V1\AccountController@getAdverts');

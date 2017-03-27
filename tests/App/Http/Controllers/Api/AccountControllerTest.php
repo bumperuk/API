@@ -221,4 +221,70 @@ class AccountControllerTest extends TestCase
 
         $this->seeInDatabase('users', ['receipt' => 'ghghghghghghghhghghghghghghghhgh', 'receipt_type' => 'play']);
     }
+
+    public function testGetSubscriptionNoSubscription()
+    {
+        $user = factory(\App\Models\User::class)->create();
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/subscription', [
+                'platform' => 'play',
+            ])
+            ->seeSuccess()
+            ->seeJson(['product_id' => null]);
+    }
+
+    public function testGetSubscriptionValidItunes()
+    {
+        $rank = factory(\App\Models\DealerRank::class)->create();
+        $user = factory(\App\Models\User::class)->create([
+            'dealer_rank_id' => $rank->id,
+            'receipt' => 'data',
+            'receipt_type' => 'itunes',
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/subscription', [
+                'platform' => 'itunes',
+            ])
+            ->seeSuccess()
+            ->seeJson(['product_id' => $rank->itunes_product]);
+    }
+
+    public function testGetSubscriptionValidPlay()
+    {
+        $rank = factory(\App\Models\DealerRank::class)->create();
+        $user = factory(\App\Models\User::class)->create([
+            'dealer_rank_id' => $rank->id,
+            'receipt' => 'data',
+            'receipt_type' => 'play',
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/subscription', [
+                'platform' => 'play',
+            ])
+            ->seeSuccess()
+            ->seeJson(['product_id' => $rank->play_product]);
+    }
+
+    public function testGetSubscriptionWrongStore()
+    {
+        $rank = factory(\App\Models\DealerRank::class)->create();
+        $user = factory(\App\Models\User::class)->create([
+            'dealer_rank_id' => $rank->id,
+            'receipt' => 'data',
+            'receipt_type' => 'itunes',
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/subscription', [
+                'platform' => 'play',
+            ])
+            ->seeError(400);
+    }
 }
