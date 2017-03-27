@@ -296,7 +296,9 @@ class UploadControllerTest extends TestCase
 
         $response = $this->decodeResponseJson();
         $responseDate = Carbon::parse($response['response_payload']['data']['deactivated_at']);
+        $responsePaid = $response['response_payload']['data']['paid_at'];
 
+        $this->assertNotNull($responsePaid);
         $this->assertEquals($responseDate->toDateString(), Carbon::now()->addWeek()->toDateString());
     }
 
@@ -324,7 +326,9 @@ class UploadControllerTest extends TestCase
 
         $response = $this->decodeResponseJson();
         $responseDate = Carbon::parse($response['response_payload']['data']['deactivated_at']);
+        $responsePaid = $response['response_payload']['data']['paid_at'];
 
+        $this->assertNotNull($responsePaid);
         $this->assertEquals($responseDate->toDateString(), $date->addWeek()->toDateString());
     }
 

@@ -254,13 +254,14 @@ class UploadController extends ApiController
         if (!$validator->validateConsumable($receipt, $receiptType, $receiptId) && !$request->input('mock')) {
             return $this->api_response([], 'Invalid IAP receipt.', false, 400);
         }
-        
+
         if (!$vehicle->deactivated_at || Carbon::now()->gt($vehicle->deactivated_at)) {
             $vehicle->deactivated_at = Carbon::now()->addWeek();
         } else {
             $vehicle->deactivated_at = $vehicle->deactivated_at->addWeek();
         }
-
+        
+        $vehicle->paid_at = Carbon::now();
         $vehicle->save();
 
         return $this->api_response($vehicle);
