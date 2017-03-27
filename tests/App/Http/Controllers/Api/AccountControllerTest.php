@@ -225,6 +225,7 @@ class AccountControllerTest extends TestCase
     public function testGetSubscriptionNoSubscription()
     {
         $user = factory(\App\Models\User::class)->create([
+            'dealer_rank_id' => null,
             'receipt' => null,
             'receipt_type' => null,
         ]);
