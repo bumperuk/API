@@ -273,4 +273,77 @@ class UploadControllerTest extends TestCase
         $response = $this->decodeResponseJson();
         $this->assertEquals(count($response['response_payload']['data']['vehicle']['photos']), 2);
     }
+
+    public function testRenewVehicleFromPreviousDate()
+    {
+        $user = factory(\App\Models\User::class)->create();
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'user_id' => $user->id,
+            'paid_at' => Carbon::now()->subWeeks(2),
+            'deactivated_at' => Carbon::now()->subWeek(),
+        ]);
+
+        $this
+            ->withToken($vehicle->user)
+            ->apiCall('POST', 'api/v1/upload/renew', [
+                'receipt' => 'test',
+                'receipt_id' => '92399339',
+                'receipt_type' => 'itunes',
+                'vehicle_id' => $vehicle->id,
+                'mock' => true,
+            ])
+            ->seeSuccess();
+
+        $response = $this->decodeResponseJson();
+        $responseDate = Carbon::parse($response['response_payload']['data']['deactivated_at']);
+
+        $this->assertEquals($responseDate->toDateString(), Carbon::now()->addWeek()->toDateString());
+    }
+
+
+    public function testRenewVehicleFromFutureDate()
+    {
+        $date = Carbon::now()->addWeek();
+        $user = factory(\App\Models\User::class)->create();
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'user_id' => $user->id,
+            'paid_at' => $date->subWeek(),
+            'deactivated_at' => $date,
+        ]);
+
+        $this
+            ->withToken($vehicle->user)
+            ->apiCall('POST', 'api/v1/upload/renew', [
+                'receipt' => 'test',
+                'receipt_id' => '92399339',
+                'receipt_type' => 'itunes',
+                'vehicle_id' => $vehicle->id,
+                'mock' => true,
+            ])
+            ->seeSuccess();
+
+        $response = $this->decodeResponseJson();
+        $responseDate = Carbon::parse($response['response_payload']['data']['deactivated_at']);
+
+        $this->assertEquals($responseDate->toDateString(), $date->addWeek()->toDateString());
+    }
+
+    public function testRenewVehicleInvalidVehicleId()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(),
+            'deactivated_at' => null,
+        ]);
+
+        $this
+            ->withToken($vehicle->user)
+            ->apiCall('POST', 'api/v1/upload/renew', [
+                'receipt' => 'test',
+                'receipt_id' => '92399339',
+                'receipt_type' => 'itunes',
+                'vehicle_id' => 123,
+                'mock' => true,
+            ])
+            ->seeError(400);
+    }
 }

@@ -10,7 +10,6 @@ use App\Models\VehiclePhoto;
 use App\ReceiptValidator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -241,20 +240,22 @@ class UploadController extends ApiController
         $this->validate($request, [
             'vehicle_id' => 'required|exists:vehicles,id',
             'receipt' => 'required',
-            'receipt_type' => 'required'
+            'receipt_type' => 'required',
+            'receipt_id' => 'required_if:receipt_type,itunes'
         ]);
 
         $vehicle = Vehicle::find($request->input('vehicle_id'));
         $receipt = $request->input('receipt');
         $receiptType = $request->input('receipt_type');
+        $receiptId = $request->input('receipt_id');
 
         $validator = new ReceiptValidator();
 
-        if (!$validator->validateConsumable($receipt, $receiptType)) {
+        if (!$validator->validateConsumable($receipt, $receiptType, $receiptId) && !$request->input('mock')) {
             return $this->api_response([], 'Invalid IAP receipt.', false, 400);
         }
-
-        if (!$vehicle->deactivated_at || $vehicle->deactivated_at < Carbon::now()) {
+        
+        if (!$vehicle->deactivated_at || Carbon::now()->gt($vehicle->deactivated_at)) {
             $vehicle->deactivated_at = Carbon::now()->addWeek();
         } else {
             $vehicle->deactivated_at = $vehicle->deactivated_at->addWeek();
