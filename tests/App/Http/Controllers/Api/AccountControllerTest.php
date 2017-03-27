@@ -224,7 +224,10 @@ class AccountControllerTest extends TestCase
 
     public function testGetSubscriptionNoSubscription()
     {
-        $user = factory(\App\Models\User::class)->create();
+        $user = factory(\App\Models\User::class)->create([
+            'receipt' => null,
+            'receipt_type' => null,
+        ]);
 
         $this
             ->withToken($user)
