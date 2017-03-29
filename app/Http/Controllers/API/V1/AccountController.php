@@ -201,7 +201,24 @@ class AccountController extends ApiController
         }
 
         $user->save();
-        
+
+        $used = 0;
+        $vehicles = $this->vehicles()->orderBy('paid_at', 'desc')->get();
+
+        foreach ($vehicles as $vehicle) {
+
+            $used += (int) $vehicle->active;
+
+            if ($used > $user->vehicle_limit) {
+                $vehicle->deactivated_at = Carbon::now();
+            } else {
+                $vehicle->deactivated_at = null;
+            }
+
+            $vehicle->save();
+
+        }
+
         return $this->api_response(['user' => $user]);
     }
 }

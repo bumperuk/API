@@ -1,12 +1,10 @@
 <?php
 
 namespace App;
+
+
 use App\Models\DealerRank;
 use App\Models\UsedReceipt;
-use App\Models\User;
-use App\Models\Vehicle;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use ReceiptValidator\iTunes\Validator;
 

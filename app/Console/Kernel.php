@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\ApiControllerCreatorCommand;
+use App\Console\Commands\BubbleDealerAdvertsCommand;
 use App\Console\Commands\CheckSubscriptionCommand;
 use App\Console\Commands\RenewNotificationsCommand;
 use App\Console\Commands\StartSocketCommand;
@@ -21,7 +22,8 @@ class Kernel extends ConsoleKernel
         ApiControllerCreatorCommand::class,
         RenewNotificationsCommand::class,
         ImportVehiclesCommand::class,
-        CheckSubscriptionCommand::class
+        CheckSubscriptionCommand::class,
+        BubbleDealerAdvertsCommand::class,
     ];
 
     /**
@@ -34,6 +36,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('notifications:renew')->hourly();
         $schedule->command('subscriptions:check')->everyMinute()->withoutOverlapping();
+        $schedule->command('vehicles:bubble')->everyMinute();
     }
 
     /**

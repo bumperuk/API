@@ -70,6 +70,15 @@ class CheckSubscriptionCommand extends Command
             $user->receipt = null;
             $user->receipt_type = null;
             $user->receipt_checked_at = null;
+
+            //Downgrade vehicles
+            
+            $vehicles = $user->vehicles()->get();
+
+            foreach ($vehicles as $vehicle) {
+                $vehicle->deactivated_at = $vehicle->paid_at->addWeek();
+                $vehicle->save();
+            }
         }
 
         $user->save();
