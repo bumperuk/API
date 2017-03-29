@@ -184,14 +184,22 @@ class AccountController extends ApiController
         }
 
         $validator = new ReceiptValidator();
-        if ($validator->validateSubscription($receipt, $receiptType)) {
-            return $this->api_response([], 'The receipt is invalid.', false, 400);
-        }
+        $rank = $validator->validateSubscription($receipt, $receiptType);
 
-        $user->receipt = $receipt;
-        $user->receipt_type = $receiptType;
-        $user->receipt_checked_at = Carbon::now();
-        $user->save();
+        if ($rank || shouldMock()) {
+            if ($rank) {
+                $user->dealerRank()->associate($rank);
+            }
+            $user->receipt = $receipt;
+            $user->receipt_type = $receiptType;
+            $user->receipt_checked_at = Carbon::now();
+            $user->save();
+        } else {
+            $user->dealerRank()->dissociate();
+            $user->receipt = null;
+            $user->receipt_type = null;
+            $user->receipt_checked_at = null;
+        }
 
         return $this->api_response(['user' => $user]);
     }

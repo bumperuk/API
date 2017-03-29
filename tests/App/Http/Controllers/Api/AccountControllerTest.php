@@ -212,9 +212,10 @@ class AccountControllerTest extends TestCase
 
         $this
             ->withToken($user)
-            ->apiCall('POST', 'api/v1/account/subscription', [
+            ->apiCall('POST', 'api/v1/account/subscription?mock', [
                 'receipt_type' => 'play',
-                'receipt' => 'ghghghghghghghhghghghghghghghhgh'
+                'receipt' => 'ghghghghghghghhghghghghghghghhgh',
+                'mock' => true,
             ])
             ->seeSuccess()
             ->seeJson(['receipt_type' => 'play']);
@@ -251,7 +252,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/subscription', [
-                'platform' => 'itunes',
+                'platform' => 'itunes'
             ])
             ->seeSuccess()
             ->seeJson(['product_id' => $rank->itunes_product]);
@@ -269,7 +270,7 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('GET', 'api/v1/account/subscription', [
-                'platform' => 'play',
+                'platform' => 'play'
             ])
             ->seeSuccess()
             ->seeJson(['product_id' => $rank->play_product]);

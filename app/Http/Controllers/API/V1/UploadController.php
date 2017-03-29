@@ -251,7 +251,7 @@ class UploadController extends ApiController
 
         $validator = new ReceiptValidator();
 
-        if (!$validator->validateConsumable($receipt, $receiptType, $receiptId) && !$request->input('mock')) {
+        if (!$validator->validateConsumable($receipt, $receiptType, $receiptId) && !shouldMock()) {
             return $this->api_response([], 'Invalid IAP receipt.', false, 400);
         }
 

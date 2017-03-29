@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Faker\Provider\DateTime;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -43,7 +44,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-
+        'receipt_checked_at' => 'datetime'
     ];
 
     /**
