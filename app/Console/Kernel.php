@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('notifications:renew')->hourly();
-        $schedule->command('subscriptions:check')->hourly()->withoutOverlapping();
+        $schedule->command('subscriptions:check')->everyMinute()->withoutOverlapping();
     }
 
     /**

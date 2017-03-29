@@ -193,7 +193,6 @@ class AccountController extends ApiController
             $user->receipt = $receipt;
             $user->receipt_type = $receiptType;
             $user->receipt_checked_at = Carbon::now();
-            $user->save();
         } else {
             $user->dealerRank()->dissociate();
             $user->receipt = null;
@@ -201,6 +200,8 @@ class AccountController extends ApiController
             $user->receipt_checked_at = null;
         }
 
+        $user->save();
+        
         return $this->api_response(['user' => $user]);
     }
 }

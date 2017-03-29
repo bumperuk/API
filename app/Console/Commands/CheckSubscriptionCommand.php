@@ -39,13 +39,16 @@ class CheckSubscriptionCommand extends Command
     public function handle()
     {
         $validator = new ReceiptValidator();
-        $oneDayAgo = Carbon::now()->subDay();
+        $checkBefore = env('RECEIPT_DEBUG') ? Carbon::now()->subMinute() : Carbon::now()->subHours(6);
 
-        User::where('receipt_checked_at', '<', $oneDayAgo)->chunk(50, function($users) use ($validator) {
-            foreach ($users as $user) {
-                $this->checkUser($validator, $user);
-            }
-        });
+        User
+            ::whereNotNull('dealer_rank_id')
+            ->where('receipt_checked_at', '<', $checkBefore)
+            ->chunk(50, function ($users) use ($validator) {
+                foreach ($users as $user) {
+                    $this->checkUser($validator, $user);
+                }
+            });
     }
 
     /**
@@ -56,11 +59,19 @@ class CheckSubscriptionCommand extends Command
      */
     public function checkUser(ReceiptValidator $validator, User $user)
     {
-        if (!$validator->validateSubscription($user->receipt)) {
+        $this->info('Checking user ' . $user->id);
+        $rank = $validator->validateSubscription($user->receipt, $user->receipt_type);
+
+        if ($rank) {
+            $user->dealerRank()->associate($rank);
+            $user->receipt_checked_at = Carbon::now();
+        } else {
+            $user->dealerRank()->dissociate();
             $user->receipt = null;
             $user->receipt_type = null;
             $user->receipt_checked_at = null;
-            $user->save();
         }
+
+        $user->save();
     }
 }
