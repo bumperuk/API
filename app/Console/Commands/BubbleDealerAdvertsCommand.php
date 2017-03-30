@@ -20,7 +20,7 @@ class BubbleDealerAdvertsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Bubble vehicles that are at the bottom of the list to the top after a week.';
 
     /**
      * Create a new command instance.
@@ -37,11 +37,11 @@ class BubbleDealerAdvertsCommand extends Command
      */
     public function handle()
     {
-        $lastWeek = Carbon::now()->subWeek();
+        $oneWeekAgo = Carbon::now()->subWeek();
 
         Vehicle
-            ::whereNull('deactivate_at')
-            ->where('paid_at', '<=', $lastWeek)
+            ::whereNull('deactivated_at')
+            ->where('paid_at', '<=', $oneWeekAgo)
             ->chunk(50, function ($vehicles) {
                 foreach ($vehicles as $vehicle) {
                     $vehicle->paid_at = Carbon::now();

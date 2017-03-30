@@ -3,10 +3,10 @@
 return [
 
     /*
-     * Private seller purchase ID
+     * Private seller consumable purchase IDs
      */
 
-    'private' => [
+    'consumable' => [
         'itunes' => 'uk.co.bumper.Bumper.PrivateSellerAdvert',
         'play' => ''
     ]

@@ -43,7 +43,7 @@ class ReceiptValidator
 
             foreach ($purchases as $purchase) {
                 if (
-                    $purchase['product_id'] == config('ipa.private.itunes') &&
+                    $purchase['product_id'] == config('iap.consumable.itunes') &&
                     $purchase['original_transaction_id'] == $transactionID &&
                     !UsedReceipt::where('receipt_id', $transactionID)->where('type', 'itunes')->count()
                 ) {

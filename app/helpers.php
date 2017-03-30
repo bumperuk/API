@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Request;
 
 
 /**
- * If the app is in debug and a mock param is passed retutn true.
+ * If the app is in debug and a mock param is passed return true.
  */
 function shouldMock()
 {
