@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 
+use App\LocationFinder;
 use App\Models\Model;
 use App\Models\Price;
 use App\Models\Vehicle;
@@ -63,6 +64,11 @@ class UploadController extends ApiController
 
         $vehicle->lat = $request->input('lat');
         $vehicle->lon = $request->input('lon');
+        if (shouldMock()) {
+            $vehicle->location = 'Unknown';
+        } else {
+            $vehicle->location = (new LocationFinder($vehicle->lat, $vehicle->lon))->getName();
+        }
         $vehicle->price = Price::findOrFail($request->input('price'))->value;
         $vehicle->year = $request->input('year');
         $vehicle->description = $request->input('description');
@@ -144,8 +150,14 @@ class UploadController extends ApiController
         $model = Model::findOrFail($request->input('model', $vehicle->model_id));
         $vehicle->model()->associate($model);
 
-        $vehicle->lat = $request->input('lat', $vehicle->lat);
-        $vehicle->lon = $request->input('lon', $vehicle->lon);
+        if ($request->input('lat') != $vehicle->lat || $request->input('lon') != $vehicle->lon) {
+            $vehicle->lat = $request->input('lat');
+            $vehicle->lon = $request->input('lon');
+            if (!shouldMock()) {
+                $vehicle->location = (new LocationFinder($vehicle->lat, $vehicle->lon))->getName();
+            }
+        }
+
         $vehicle->price = Price::findOrFail($request->input('price'))->value;
         $vehicle->year = $request->input('year', $vehicle->year);
         $vehicle->description = $request->input('description', $vehicle->description);
