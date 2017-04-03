@@ -23,7 +23,7 @@ class AdvertController extends ApiController
             'distance' => 'exists:distances,id'
         ]);
 
-        $finder = new VehicleFinder($request->input('category'));
+        $finder = new VehicleFinder($request, $request->input('category'));
 
         $finder->setLatLon($request->input('lat'), $request->input('lon'));
         $finder->setOrder($request->input('order'));

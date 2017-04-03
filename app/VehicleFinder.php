@@ -8,12 +8,13 @@ use App\Models\Engine;
 use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
-use Mockery\CountValidator\Exception;
-
+use Illuminate\Http\Request;
 
 class VehicleFinder
 {
+    private $request;
     private $category;
+
     private $lat;
     private $lon;
     private $order;
@@ -27,8 +28,9 @@ class VehicleFinder
     private $yearFilter;
     private $engineFilter;
 
-    public function __construct(int $category)
+    public function __construct(Request $request, int $category)
     {
+        $this->request = $request;
         $this->category = $category;
     }
 
@@ -132,7 +134,10 @@ class VehicleFinder
         $vehicles = $this->doEngineFilter($vehicles);
         $vehicles = $this->doOrder($vehicles);
 
-        return $vehicles->paginate($perPage);
+        $resutls = $vehicles->paginate(1);
+        $resutls->appends($this->request->except('page'));
+
+        return $resutls;
     }
 
     private function checkRequirements()
