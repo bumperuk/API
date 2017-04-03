@@ -212,7 +212,7 @@ class AccountControllerTest extends TestCase
 
         $this
             ->withToken($user)
-            ->apiCall('POST', 'api/v1/account/subscription?mock', [
+            ->apiCall('POST', 'api/v1/account/subscription', [
                 'receipt_type' => 'play',
                 'receipt' => 'ghghghghghghghhghghghghghghghhgh',
                 'mock' => true,

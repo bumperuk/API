@@ -25,6 +25,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function createApplication()
     {
+        putenv('RUNNING_TESTS=true');
         putenv('DB_CONNECTION=mysql_test');
 
         $app = require __DIR__ . '/../bootstrap/app.php';

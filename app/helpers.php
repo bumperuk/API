@@ -3,13 +3,11 @@
 /*
  * Helper functions
  */
-use Illuminate\Support\Facades\Request;
-
 
 /**
  * If the app is in debug and a mock param is passed return true.
  */
 function shouldMock()
 {
-    return config('app.debug') && Request::has('mock');
+    return !empty(env('RUNNING_TESTS'));
 }

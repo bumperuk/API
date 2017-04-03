@@ -260,6 +260,7 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'year' => $faker->numberBetween(1990, 2016),
         'lat' => $faker->latitude,
         'lon' => $faker->longitude,
+        'location' => $faker->city,
         'description' => $faker->sentence(3),
         'call_number' => $faker->randomElement([null, $faker->phoneNumber]),
         'sms_number' => $faker->randomElement([null, $faker->phoneNumber]),
