@@ -134,10 +134,10 @@ class VehicleFinder
         $vehicles = $this->doEngineFilter($vehicles);
         $vehicles = $this->doOrder($vehicles);
 
-        $resutls = $vehicles->paginate($perPage);
-        $resutls->appends($this->request->except('page'));
+        $results = $vehicles->paginate($perPage);
+        $results->appends($this->request->except('page'));
 
-        return $resutls;
+        return $results;
     }
 
     private function checkRequirements()
