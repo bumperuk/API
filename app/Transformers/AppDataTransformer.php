@@ -45,7 +45,13 @@ class AppDataTransformer {
     private function getOptions(Filter $filter)
     {
         $model = 'App\\Models\\' . $filter->source;
-        $options = $model::where('category_id', $this->category->id)->get();
+        $options = $model::where('category_id', $this->category->id);
+
+        if ($filter->order_property && $filter->order_direction) {
+            $options = $options->orderBy($filter->order_property, $filter->order_direction);
+        }
+
+        $options = $options->get();
 
         return $options;
     }
