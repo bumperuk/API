@@ -470,6 +470,32 @@ class AdvertControllerTest extends TestCase
             ->seeError(400);
     }
 
+    public function testViewSingleVehicle()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'id' => 996633, 'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null
+        ]);
+
+        $this
+            ->withNewToken()
+            ->apiCall('GET', 'api/v1/adverts/' . $vehicle->id)
+            ->seeSuccess()
+            ->seeJson(['id' => 996633]);
+    }
+
+    public function testViewSingleDeactivatedVehicle()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'id' => 996633, 'paid_at' => Carbon::now()->subWeek(), 'deactivated_at' => Carbon::now()->subDay()
+        ]);
+
+        $this
+            ->withNewToken()
+            ->apiCall('GET', 'api/v1/adverts/' . $vehicle->id)
+            ->seeError(400);
+    }
+
+
     public function testAddViewValid()
     {
         $vehicle = factory(\App\Models\Vehicle::class)->create(['views' => 23]);

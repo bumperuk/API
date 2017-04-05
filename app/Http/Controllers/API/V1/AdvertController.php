@@ -51,6 +51,17 @@ class AdvertController extends ApiController
         return $this->api_response($vehicles);
     }
 
+    public function getById($id)
+    {
+        $vehicle = Vehicle::active()->find($id);
+
+        if (!$vehicle) {
+            return $this->api_response([], 'The vehicle doesn\'t exist or was removed.', false, 400);
+        }
+
+        return $this->api_response(['vehicle' => $vehicle]);
+    }
+
     public function getForUser(Request $request)
     {
         $this->validate($request, [
