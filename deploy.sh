@@ -5,7 +5,7 @@
 # ---------------------------------------
 
 cd /var/www/app
-git pull origin release
+git pull origin master
 composer install
 php artisan migrate --force
 php artisan cache:clear

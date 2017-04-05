@@ -28,7 +28,7 @@ deploy_staging:
   type: deploy
   image: php:7.0
   only:
-    - release
+    - master
   script:
     - apt-get update
     - apt-get install -y openssh-client
