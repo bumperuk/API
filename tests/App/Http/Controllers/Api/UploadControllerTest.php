@@ -13,7 +13,6 @@ class UploadControllerTest extends TestCase
     {
         $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);
         $model = factory(\App\Models\Model::class)->create();
-        $price = factory(\App\Models\Price::class)->create(['value' => 123.45]);
 
         $this
             ->withToken($user)
@@ -23,7 +22,7 @@ class UploadControllerTest extends TestCase
                 'lon' => 1.5,
                 'description' => 'Good car.',
                 'email' => 'car@car.com',
-                'price' => $price->id,
+                'price' => 123.45,
             ], [], [
                 'photos' => [$this->createFile('png')]
             ])
