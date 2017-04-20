@@ -25,7 +25,7 @@ class AppDataTransformer {
 
     private function mergeFilters(): array
     {
-        $filters = Filter::all();
+        $filters = Filter::orderBy('index', 'asc')->get();
         $filtersArray = $filters->toArray();
 
         foreach ($filtersArray as $i => &$filter) {

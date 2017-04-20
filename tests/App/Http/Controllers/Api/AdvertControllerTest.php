@@ -224,11 +224,6 @@ class AdvertControllerTest extends TestCase
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&mileage=' . $valid->mileage_id)
-            ->seeJson(['id' => $valid->id])
-            ->dontSeeJson(['id' => $invalid->id]);
-
-        $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&fuel=' . $valid->fuel_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
@@ -262,6 +257,43 @@ class AdvertControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&make=' . $valid->model->make_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
+    }
+
+    public function testMileageFilter()
+    {
+        $mileage = factory(\App\Models\Mileage::class)->create(['min' => 100, 'max' => 199]);
+        $category = factory(\App\Models\Category::class)->create();
+
+        $valid1 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 199
+        ]);
+        $valid1->model->category()->associate($category);
+        $valid1->model->save();
+
+        $invalid1 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 220
+        ]);
+        $invalid1->model->category()->associate($category);
+        $invalid1->model->save();
+
+        $valid2 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 150
+        ]);
+        $valid2->model->category()->associate($category);
+        $valid2->model->save();
+
+        $invalid2 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 99,
+        ]);
+        $invalid2->model->category()->associate($category);
+        $invalid2->model->save();
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&mileage=' . $mileage->id)
+            ->dontSeeJson(['id' => $invalid1->id])
+            ->dontSeeJson(['id' => $invalid2->id])
+            ->seeJson(['id' => $valid1->id])
+            ->seeJson(['id' => $valid2->id]);
     }
 
     public function testPriceRangeFilter()

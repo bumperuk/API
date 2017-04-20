@@ -108,6 +108,8 @@ $factory->define(App\Models\Size::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Mileage::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomNumber(5, true) . ' - ' . $faker->randomNumber(5, true),
+        'min' => $faker->numberBetween(1, 10000),
+        'max' => $faker->numberBetween(10000, 1000000),
         'category_id' => function() {
             return factory(App\Models\Category::class)->create()->id;
         },

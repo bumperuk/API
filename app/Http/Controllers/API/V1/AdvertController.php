@@ -28,9 +28,10 @@ class AdvertController extends ApiController
         $finder->setLatLon($request->input('lat'), $request->input('lon'));
         $finder->setOrder($request->input('order'));
         $finder->setFilters($request->only([
-            'model', 'condition', 'body_type', 'door', 'mileage', 'berth',
+            'model', 'condition', 'body_type', 'door', 'berth',
             'fuel', 'transmission', 'tax_band', 'ownership', 'seat_count'
         ]));
+        $finder->setMileageFilter($request->input('mileage'));
         $finder->setPriceRangeFilter($request->input('price_min'), $request->input('price_max'));
         $finder->setDistanceFilter($request->input('distance'));
         $finder->setSellerFilter($request->input('seller'));
