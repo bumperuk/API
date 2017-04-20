@@ -6,14 +6,12 @@ use App\Models\Category;
 use App\Models\Filter;
 
 
-class AppDataTransformer
-{
-    private $mode;
+class AppDataTransformer {
+
     private $category;
 
-    public function __construct(Category $category, $mode)
+    public function __construct(Category $category)
     {
-        $this->mode = $mode;
         $this->category = $category;
     }
 
@@ -25,17 +23,9 @@ class AppDataTransformer
         return $category;
     }
 
-    private function fetchFilters()
-    {
-        return Filter
-            ::whereNull('mode')
-            ->orWhere('mode', $this->mode)
-            ->get();
-    }
-
     private function mergeFilters(): array
     {
-        $filters = $this->fetchFilters();
+        $filters = Filter::all();
         $filtersArray = $filters->toArray();
 
         foreach ($filtersArray as $i => &$filter) {
