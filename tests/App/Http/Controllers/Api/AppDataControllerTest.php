@@ -56,6 +56,33 @@ class AppDataControllerTest extends TestCase
             ]);
     }
 
+    public function testFilterByMode()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+        factory(\App\Models\Filter::class, 7)->create(['mode' => 'view', 'source' => 'Door']);
+        factory(\App\Models\Filter::class, 5)->create(['mode' => 'upload', 'source' => 'Door']);
+        factory(\App\Models\Filter::class, 3)->create(['source' => 'Door']);
+        factory(\App\Models\Door::class, 10)->create(['category_id' => $category->id]);
+
+        $this
+            ->apiCall('GET', 'api/v1/app-data/' . $category->id)
+            ->seeSuccess();
+
+        $this->assertEquals(10, count($this->decodeResponseJson()['response_payload']['data']['category']['filters']));
+
+        $this
+            ->apiCall('GET', 'api/v1/app-data/' . $category->id . '?mode=view')
+            ->seeSuccess();
+
+        $this->assertEquals(10, count($this->decodeResponseJson()['response_payload']['data']['category']['filters']));
+
+        $this
+            ->apiCall('GET', 'api/v1/app-data/' . $category->id . '?mode=upload')
+            ->seeSuccess();
+
+        $this->assertEquals(8, count($this->decodeResponseJson()['response_payload']['data']['category']['filters']));
+    }
+
     public function testIfValuesArePopulated()
     {
         $category = factory(\App\Models\Category::class)->create();

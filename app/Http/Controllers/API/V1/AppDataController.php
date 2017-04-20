@@ -47,10 +47,11 @@ class AppDataController extends ApiController
         ]);
     }
 
-    public function get($id)
+    public function get(Request $request, $id)
     {
+        $mode = $request->input('mode', 'view');
         $category = Category::findOrFail($id);
-        $transformer = new AppDataTransformer($category);
+        $transformer = new AppDataTransformer($category, $mode);
 
         return $this->api_response(['category' => $transformer->toArray()]);
     }
