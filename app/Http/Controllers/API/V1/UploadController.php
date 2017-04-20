@@ -29,7 +29,7 @@ class UploadController extends ApiController
             'photos.*' => 'image',
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
-            'price' => 'required|exists:prices,id',
+            'price' => 'required|integer',
             'year' => 'integer',
             'condition' => 'exists:conditions,id',
             'color' => 'exists:colors,id',
@@ -69,7 +69,7 @@ class UploadController extends ApiController
         } else {
             $vehicle->location = (new LocationFinder($vehicle->lat, $vehicle->lon))->getName();
         }
-        $vehicle->price = Price::findOrFail($request->input('price'))->value;
+        $vehicle->price = $request->input('price');
         $vehicle->year = $request->input('year');
         $vehicle->description = $request->input('description');
 
@@ -121,7 +121,7 @@ class UploadController extends ApiController
             'photos' => 'array|min:1',
             'lat' => 'numeric',
             'lon' => 'numeric',
-            'price' => 'exists:prices,id',
+            'price' => 'integer',
             'year' => 'integer',
             'condition' => 'exists:conditions,id',
             'color' => 'exists:colors,id',
@@ -158,7 +158,7 @@ class UploadController extends ApiController
             }
         }
 
-        $vehicle->price = Price::findOrFail($request->input('price'))->value;
+        $vehicle->price = $request->input('price', $vehicle->price);
         $vehicle->year = $request->input('year', $vehicle->year);
         $vehicle->description = $request->input('description', $vehicle->description);
 
