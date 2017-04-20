@@ -36,7 +36,7 @@ class VehicleFinder
 
     public function setOrder(string $order = null)
     {
-        if (in_array($order, ['asc', 'desc', 'distance'])) {
+        if (in_array($order, ['price-asc', 'price-desc', 'distance-asc', 'make-asc', 'year-asc', 'year-desc'])) {
             $this->order = $order;
         }
     }
@@ -122,6 +122,12 @@ class VehicleFinder
                      sin(radians(vehicles.lat)))
                 ) AS distance
             ');
+        }
+
+        if ($this->order == 'make-asc') {
+            $vehicles = $vehicles
+                ->join('models', 'models.id', '=', 'vehicles.model_id')
+                ->join('makes', 'makes.id', '=', 'models.make_id');
         }
 
         $vehicles = $this->doFilter($vehicles);
@@ -265,9 +271,12 @@ class VehicleFinder
     private function doOrder(Builder $builder): Builder
     {
         switch ($this->order) {
-            case 'asc': return $builder->orderBy('price', 'asc');
-            case 'desc': return $builder->orderBy('price', 'desc');
-            case 'distance': return $builder->orderBy('distance', 'asc');
+            case 'price-asc': return $builder->orderBy('price', 'asc');
+            case 'price-desc': return $builder->orderBy('price', 'desc');
+            case 'distance-asc': return $builder->orderBy('distance', 'asc');
+            case 'make-asc': return $builder->orderBy('makes.value', 'asc');
+            case 'year-asc': return $builder->orderBy('year', 'asc');
+            case 'year-desc': return $builder->orderBy('year', 'desc');
             default: return $builder->orderBy('paid_at', 'desc');
         }
     }

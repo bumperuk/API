@@ -112,31 +112,63 @@ class AdvertControllerTest extends TestCase
     {
         $category = factory(\App\Models\Category::class)->create();
 
-        $mid = factory(\App\Models\Vehicle::class)->create([
-            'price' => 500, 'paid_at' => Carbon::now(), 'deactivated_at' => null
+        $vehicle1 = factory(\App\Models\Vehicle::class)->create([
+            'price' => 500, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2014
         ]);
-        $mid->model->category()->associate($category);
-        $mid->model->save();
+        $vehicle1->model->category()->associate($category);
+        $vehicle1->model->save();
 
-        $lowest = factory(\App\Models\Vehicle::class)->create([
-            'price' => 100, 'paid_at' => Carbon::now(), 'deactivated_at' => null
+        $vehicle2 = factory(\App\Models\Vehicle::class)->create([
+            'price' => 100, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2012
         ]);
-        $lowest->model->category()->associate($category);
-        $lowest->model->save();
+        $vehicle2->model->category()->associate($category);
+        $vehicle2->model->save();
 
-        $highest = factory(\App\Models\Vehicle::class)->create([
-            'price' => 1000, 'paid_at' => Carbon::now(), 'deactivated_at' => null
+        $vehicle3 = factory(\App\Models\Vehicle::class)->create([
+            'price' => 1000, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2010
         ]);
-        $highest->model->category()->associate($category);
-        $highest->model->save();
+        $vehicle3->model->category()->associate($category);
+        $vehicle3->model->save();
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=asc')
-            ->seePaginationItemsInOrder([$lowest, $mid, $highest]);
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=price-asc')
+            ->seePaginationItemsInOrder([$vehicle2, $vehicle1, $vehicle3]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=desc')
-            ->seePaginationItemsInOrder([$highest, $mid, $lowest]);
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=price-desc')
+            ->seePaginationItemsInOrder([$vehicle3, $vehicle1, $vehicle2]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=year-asc')
+            ->seePaginationItemsInOrder([$vehicle3, $vehicle2, $vehicle1]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=year-desc')
+            ->seePaginationItemsInOrder([$vehicle1, $vehicle2, $vehicle3]);
+    }
+
+    public function testOrderByMake()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+
+        $makeC = factory(\App\Models\Make::class)->create(['value' => 'C']);
+        $modelC = factory(\App\Models\Model::class)->create(['make_id' => $makeC->id, 'category_id' => $category->id]);
+        $vehicleC = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'model_id' => $modelC->id, 'description' => 'VehicleC']);
+
+        $makeA = factory(\App\Models\Make::class)->create(['value' => 'A']);
+        $modelA = factory(\App\Models\Model::class)->create(['make_id' => $makeA->id, 'category_id' => $category->id]);
+        $vehicleA = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'model_id' => $modelA->id, 'description' => 'VehicleA']);
+
+        $makeB = factory(\App\Models\Make::class)->create(['value' => 'B']);
+        $modelB = factory(\App\Models\Model::class)->create(['make_id' => $makeB->id, 'category_id' => $category->id]);
+        $vehicleB = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'model_id' => $modelB->id, 'description' => 'VehicleB']);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=make-asc')
+            ->seePaginationItemsInOrder([$vehicleA, $vehicleB, $vehicleC], 'description');
     }
 
     public function testNullFilter()

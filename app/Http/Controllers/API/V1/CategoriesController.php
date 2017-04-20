@@ -15,7 +15,7 @@ class CategoriesController extends ApiController
 {
     public function get()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('index', 'asc')->get();
         return $this->api_response($categories);
     }
 }
