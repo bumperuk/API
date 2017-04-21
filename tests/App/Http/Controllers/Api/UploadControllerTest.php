@@ -259,7 +259,7 @@ class UploadControllerTest extends TestCase
                     'ownership' => $newAttributes->ownership->value,
                     'seat_count' => $newAttributes->seatCount->value,
                     'berth' => $newAttributes->berth->value,
-                    'price' => 444,
+                    'price' => 445,
                     'year' => 2009,
                     'mileage' => 101,
                 ],
