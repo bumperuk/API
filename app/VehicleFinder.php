@@ -189,9 +189,14 @@ class VehicleFinder
     private function doMileageFilter(Builder $builder): Builder
     {
         if ($mileage = Mileage::find($this->mileageFilter)) {
-            $builder = $builder
-                ->where('mileage', '>=' , $mileage->min)
-                ->where('mileage', '<=', $mileage->max);
+            if (is_null($mileage->value)) {
+                $builder = $builder
+                    ->whereNull('mileage');
+            } else {
+                $builder = $builder
+                    ->where('mileage', '>=', $mileage->min)
+                    ->where('mileage', '<=', $mileage->max);
+            }
         }
 
         return $builder;
