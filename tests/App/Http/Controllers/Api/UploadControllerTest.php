@@ -243,7 +243,7 @@ class UploadControllerTest extends TestCase
             ->seeJson([
                 'lat' => 999.99,
                 'lon' => 999.99,
-                'price' => $price->value,
+                'price' => 445,
                 'year' => 2009,
                 'description' => 'New description',
                 'details' => [
