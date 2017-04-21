@@ -5,6 +5,7 @@ namespace App;
 
 use App\Models\Distance;
 use App\Models\Engine;
+use App\Models\Mileage;
 use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,6 +21,7 @@ class VehicleFinder
     private $order;
 
     private $filters = [];
+    private $mileageFilter;
     private $distanceFilter;
     private $priceRangeFilter;
     private $colorFilter;
@@ -54,6 +56,11 @@ class VehicleFinder
                 $this->filters[$filter] = $value;
             }
         }
+    }
+
+    public function setMileageFilter($mileage)
+    {
+        $this->mileageFilter = $mileage;
     }
 
     public function setDistanceFilter($distance)
@@ -131,6 +138,7 @@ class VehicleFinder
         }
 
         $vehicles = $this->doFilter($vehicles);
+        $vehicles = $this->doMileageFilter($vehicles);
         $vehicles = $this->doDistanceFilter($vehicles);
         $vehicles = $this->doPriceRangeFilter($vehicles);
         $vehicles = $this->doColorFilter($vehicles);
@@ -173,6 +181,17 @@ class VehicleFinder
                 (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
                  cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
                  sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value);
+        }
+
+        return $builder;
+    }
+
+    private function doMileageFilter(Builder $builder): Builder
+    {
+        if ($mileage = Mileage::find($this->mileageFilter)) {
+            $builder = $builder
+                ->where('mileage', '>=' , $mileage->min)
+                ->where('mileage', '<=', $mileage->max);
         }
 
         return $builder;

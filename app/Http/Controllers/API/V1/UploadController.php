@@ -29,14 +29,14 @@ class UploadController extends ApiController
             'photos.*' => 'image',
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
-            'price' => 'required|exists:prices,id',
+            'price' => 'required|integer',
             'year' => 'integer',
+            'mileage' => 'integer',
             'condition' => 'exists:conditions,id',
             'color' => 'exists:colors,id',
             'body_type' => 'exists:body_types,id',
             'doors' => 'exists:doors,id',
             'size' => 'exists:sizes,id',
-            'mileage' => 'exists:mileages,id',
             'fuel' => 'exists:fuels,id',
             'transmission' => 'exists:transmissions,id',
             'engine' => 'exists:engines,id',
@@ -55,7 +55,7 @@ class UploadController extends ApiController
 
         if (!$user->canUpload()) {
             return $this->api_response([],
-                'You already have ' . $user->vehicle_limit. ' active vehicles. Upgrade your subscription to increase the limit.', false, 403);
+                'You already have ' . $user->vehicle_limit . ' active vehicles. Upgrade your subscription to increase the limit.', false, 403);
         }
 
         $vehicle = new Vehicle();
@@ -69,16 +69,16 @@ class UploadController extends ApiController
         } else {
             $vehicle->location = (new LocationFinder($vehicle->lat, $vehicle->lon))->getName();
         }
-        $vehicle->price = Price::findOrFail($request->input('price'))->value;
+        $vehicle->price = $request->input('price');
         $vehicle->year = $request->input('year');
         $vehicle->description = $request->input('description');
+        $vehicle->mileage = $request->input('mileage');
 
         $vehicle->condition_id = $request->input('condition');
         $vehicle->color_id = $request->input('color');
         $vehicle->body_type_id = $request->input('body_type');
         $vehicle->door_id = $request->input('doors');
         $vehicle->size_id = $request->input('size');
-        $vehicle->mileage_id = $request->input('mileage');
         $vehicle->fuel_id = $request->input('fuel');
         $vehicle->transmission_id = $request->input('transmission');
         $vehicle->engine_id = $request->input('engine');
@@ -121,14 +121,14 @@ class UploadController extends ApiController
             'photos' => 'array|min:1',
             'lat' => 'numeric',
             'lon' => 'numeric',
-            'price' => 'exists:prices,id',
+            'price' => 'integer',
             'year' => 'integer',
+            'mileage' => 'integer',
             'condition' => 'exists:conditions,id',
             'color' => 'exists:colors,id',
             'body_type' => 'exists:body_types,id',
             'doors' => 'exists:doors,id',
             'size' => 'exists:sizes,id',
-            'mileage' => 'exists:mileages,id',
             'fuel' => 'exists:fuels,id',
             'transmission' => 'exists:transmissions,id',
             'engine' => 'exists:engines,id',
@@ -158,16 +158,16 @@ class UploadController extends ApiController
             }
         }
 
-        $vehicle->price = Price::findOrFail($request->input('price'))->value;
+        $vehicle->price = $request->input('price', $vehicle->price);
         $vehicle->year = $request->input('year', $vehicle->year);
         $vehicle->description = $request->input('description', $vehicle->description);
+        $vehicle->mileage = $request->input('mileage', $vehicle->mileage);
 
         $vehicle->condition_id = $request->input('condition', $vehicle->condition_id);
         $vehicle->color_id = $request->input('color', $vehicle->color_id);
         $vehicle->body_type_id = $request->input('body_type', $vehicle->body_type_id);
         $vehicle->door_id = $request->input('door', $vehicle->door_id);
         $vehicle->size_id = $request->input('size', $vehicle->size_id);
-        $vehicle->mileage_id = $request->input('mileage', $vehicle->mileage_id);
         $vehicle->fuel_id = $request->input('fuel', $vehicle->fuel_id);
         $vehicle->transmission_id = $request->input('transmission', $vehicle->transmission_id);
         $vehicle->engine_id = $request->input('engine', $vehicle->engine_id);

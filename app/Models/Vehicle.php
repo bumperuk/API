@@ -16,7 +16,7 @@ class Vehicle extends BaseModel
 
     protected $with = [
         'photos', 'model', 'model.category', 'model.make', 'condition', 'color', 'seatCount', 'berth',
-        'bodyType', 'door', 'size', 'mileage', 'fuel', 'transmission', 'engine', 'taxBand',
+        'bodyType', 'door', 'size', 'fuel', 'transmission', 'engine', 'taxBand',
         'user', 'userReport', 'userFavourite'
     ];
 
