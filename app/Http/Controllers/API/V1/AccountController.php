@@ -13,6 +13,7 @@ use App\Notifications\VerifyPhone;
 use App\ReceiptValidator;
 use Carbon\Carbon;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +24,7 @@ class AccountController extends ApiController
      * View profile for the currently signed in user
      *
      * @param Request $request
-     * @return json
+     * @return JsonResponse
      */
     public function view(Request $request)
     {
@@ -36,7 +37,7 @@ class AccountController extends ApiController
      * Request a verification code
      *
      * @param Request $request The HTTP request
-     * @return json
+     * @return JsonResponse
      */
     public function requestPhoneCode(Request $request)
     {
@@ -56,7 +57,7 @@ class AccountController extends ApiController
      * Enter the code the user has received to verify their phone
      *
      * @param Request $request The HTTP request
-     * @return json
+     * @return JsonResponse
      */
     public function verifyPhoneCode(Request $request)
     {
@@ -79,7 +80,7 @@ class AccountController extends ApiController
      * Update the push token for the user
      *
      * @param Request $request
-     * @return json
+     * @return JsonResponse
      */
     public function savePushToken(Request $request)
     {
@@ -98,7 +99,7 @@ class AccountController extends ApiController
      * Check if a user is able to upload another vehicle.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function canUpload(Request $request)
     {
