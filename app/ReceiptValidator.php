@@ -5,6 +5,7 @@ namespace App;
 
 use App\Models\DealerRank;
 use App\Models\UsedReceipt;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use ReceiptValidator\iTunes\Validator;
 
@@ -16,19 +17,7 @@ use ReceiptValidator\iTunes\Validator;
  */
 class ReceiptValidator
 {
-    public function validateConsumable($receipt, $type, $transactionId = null): bool
-    {
-        switch ($type) {
-            case 'itunes':
-                return $this->validateItunesConsumable($receipt, $transactionId);
-            case 'play':
-                return $this->validatePlayConsumable($receipt);
-        }
-
-        return false;
-    }
-
-    private function validateItunesConsumable($receipt, $transactionID): bool
+    public function validateItunesConsumable($receipt, $transactionID): bool
     {
         $mode = env('RECEIPT_DEBUG') ? Validator::ENDPOINT_SANDBOX :  Validator::ENDPOINT_PRODUCTION;
         $validator = new Validator($mode);
@@ -43,7 +32,7 @@ class ReceiptValidator
 
             foreach ($purchases as $purchase) {
                 if (
-                    $purchase['product_id'] == config('iap.consumable.itunes') &&
+                    $purchase['product_id'] == config('iap.itunes.product_id') &&
                     $purchase['original_transaction_id'] == $transactionID &&
                     !UsedReceipt::where('receipt_id', $transactionID)->where('type', 'itunes')->count()
                 ) {
@@ -64,24 +53,22 @@ class ReceiptValidator
         }
     }
 
-    private function validatePlayConsumable($receipt): bool
+    public function validatePlayConsumable($token): bool
     {
+        $url = 'https://www.googleapis.com/androidpublisher/v2/applications/' .
+            config('iap.play.app') . '/purchases/products/' . config('iap.play.product_id') . '/tokens/' .
+            $token . '?access_token=' . config('iap.play.access_token');
 
+        $client = new Client();
+        $response = $client->get($url);
+
+        $usedReceipt = new UsedReceipt();
+        $usedReceipt->receipt_id = '123';
+        $usedReceipt->type = 'play';
+        $usedReceipt->save();
     }
 
-    public function validateSubscription($receipt, $type)
-    {
-        switch ($type) {
-            case 'itunes':
-                return $this->validateItunesSubscription($receipt);
-            case 'play':
-                return $this->validatePlaySubscription($receipt);
-        }
-
-        return false;
-    }
-
-    private function validateItunesSubscription($receipt)
+    public function validateItunesSubscription($receipt)
     {
         $mode = env('RECEIPT_DEBUG') ? Validator::ENDPOINT_SANDBOX :  Validator::ENDPOINT_PRODUCTION;
         $validator = new Validator($mode);
@@ -115,8 +102,15 @@ class ReceiptValidator
         }
     }
 
-    private function validatePlaySubscription($receipt)
+    public function validatePlaySubscription($subscriptionId, $token)
     {
+        $url = 'https://www.googleapis.com/androidpublisher/v2/applications/' .
+            config('iap.play.app') . '/purchases/subscriptions/' . $subscriptionId . '/tokens/' .
+            $token . '?access_token=' . config('iap.play.access_token');
+
+        $client = new Client();
+        $response = $client->get($url);
+
         return false;
     }
 

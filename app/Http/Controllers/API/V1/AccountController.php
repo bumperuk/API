@@ -175,7 +175,10 @@ class AccountController extends ApiController
 
         $user = $request->user();
         $receiptType = $request->input('receipt_type');
-        $receipt = $request->input('receipt');
+
+        $itunesReceipt = $request->input('receipt');
+        $playSubscriptionId = $request->input('subscription_id');
+        $playPurchaseToken = $request->input('purchase_token');
 
         if ($user->receipt_type != null && $user->receipt_type != $receiptType) {
             return $this->api_response([],
@@ -184,13 +187,20 @@ class AccountController extends ApiController
         }
 
         $validator = new ReceiptValidator();
-        $rank = $validator->validateSubscription($receipt, $receiptType);
+
+        if ($receiptType == 'itunes') {
+            $rank = $validator->validateItunesSubscription($itunesReceipt);
+        } elseif ($receiptType == 'play') {
+            $rank = $validator->validatePlaySubscription($playSubscriptionId, $playPurchaseToken);
+        } else {
+            $rank = null;
+        }
 
         if ($rank || shouldMock()) {
             if ($rank) {
                 $user->dealerRank()->associate($rank);
             }
-            $user->receipt = $receipt;
+            $user->receipt = $itunesReceipt;
             $user->receipt_type = $receiptType;
             $user->receipt_checked_at = Carbon::now();
 
