@@ -267,9 +267,11 @@ class UploadController extends ApiController
         $validator = new ReceiptValidator();
 
         if (
-            ($receiptType == 'itunes' && !$validator->validateItunesConsumable($itunesReceipt, $itunesReceiptId)) &&
-            ($receiptType == 'play' && !$validator->validatePlayConsumable($playPurchaseToken)) &&
-            !shouldMock()
+            (
+                ($receiptType == 'itunes' && !$validator->validateItunesConsumable($itunesReceipt, $itunesReceiptId)) ||
+                ($receiptType == 'play' && !$validator->validatePlayConsumable($playPurchaseToken)
+                )
+            ) && !shouldMock()
         ) {
             return $this->api_response([], 'Invalid IAP receipt.', false, 400);
         }

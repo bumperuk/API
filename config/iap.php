@@ -3,9 +3,9 @@
 return [
 
     'play' => [
-        'app' => 'uk.dreamr.bumper',
-        'access_token' => '123',
-        'product_id' => '123'
+        'app' => 'Bumper',
+        'package' => 'uk.co.bumperuk',
+        'product_id' => 'uk.co.bumperuk.advert',
     ],
 
     /*
@@ -14,7 +14,7 @@ return [
 
     'itunes' => [
         'product_id' => 'uk.co.bumper.Bumper.PrivateSellerAdvert',
-        'play' => ''
+        'play' => '',
     ]
 
 ];
