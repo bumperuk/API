@@ -108,6 +108,8 @@ $factory->define(App\Models\Size::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Mileage::class, function (Faker\Generator $faker) {
     return [
         'value' => $faker->randomNumber(5, true) . ' - ' . $faker->randomNumber(5, true),
+        'min' => $faker->numberBetween(1, 10000),
+        'max' => $faker->numberBetween(10000, 1000000),
         'category_id' => function() {
             return factory(App\Models\Category::class)->create()->id;
         },
@@ -232,9 +234,6 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'size_id' => function() {
             return factory(\App\Models\Size::class)->create()->id;
         },
-        'mileage_id' => function() {
-            return factory(\App\Models\Mileage::class)->create()->id;
-        },
         'fuel_id' => function() {
             return factory(\App\Models\Fuel::class)->create()->id;
         },
@@ -258,6 +257,7 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         },
         'price' => $faker->randomNumber(4, true),
         'year' => $faker->numberBetween(1990, 2016),
+        'mileage' => $faker->numberBetween(500, 100000),
         'lat' => $faker->latitude,
         'lon' => $faker->longitude,
         'location' => $faker->city,

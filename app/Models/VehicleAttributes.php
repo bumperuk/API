@@ -61,16 +61,6 @@ trait VehicleAttributes
     }
 
     /**
-     * Mileage range (Eg. 100000-200000, 200000-300000)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mileage()
-    {
-        return $this->belongsTo(Mileage::class);
-    }
-
-    /**
      * Fuel type (Eg. petrol, hybrid, electric)
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -143,9 +133,10 @@ trait VehicleAttributes
     {
         $details = [
             'price' => $this->price,
-            'year' => $this->year
+            'year' => $this->year,
+            'mileage' => $this->mileage,
         ];
-        $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'mileage', 'seatCount',
+        $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'seatCount',
                  'fuel', 'transmission', 'engine', 'taxBand', 'ownership', 'berth'];
 
         foreach ($keys as $key) {

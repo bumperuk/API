@@ -13,7 +13,6 @@ class UploadControllerTest extends TestCase
     {
         $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);
         $model = factory(\App\Models\Model::class)->create();
-        $price = factory(\App\Models\Price::class)->create(['value' => 123.45]);
 
         $this
             ->withToken($user)
@@ -23,14 +22,14 @@ class UploadControllerTest extends TestCase
                 'lon' => 1.5,
                 'description' => 'Good car.',
                 'email' => 'car@car.com',
-                'price' => $price->id,
+                'price' => 1234,
             ], [], [
                 'photos' => [$this->createFile('png')]
             ])
             ->seeSuccess()
             ->seeJson(['active' => false])
             ->seeJson(['user_id' => $user->id])
-            ->seeJson(['price' => 123.45]);
+            ->seeJson(['price' => 1234]);
     }
 
     public function testPrivateMultipleUpload()
@@ -210,8 +209,8 @@ class UploadControllerTest extends TestCase
     public function testEditVehicleAttributes()
     {
         $vehicle = factory(\App\Models\Vehicle::class)->create();
-        $price = factory(\App\Models\Price::class)->create(['value' => 9887]);
         $newAttributes = factory(\App\Models\Vehicle::class)->create();
+        $year = factory(\App\Models\Year::class)->create();
 
         $this
             ->withToken($vehicle->user)
@@ -219,15 +218,15 @@ class UploadControllerTest extends TestCase
                 'id' => $vehicle->id,
                 'lat' => 999.99,
                 'lon' => 999.99,
-                'price' => $price->id,
-                'year' => 2009,
+                'price' => 445,
+                'year' => $year->id,
+                'mileage' => 101,
                 'description' => 'New description',
                 'condition' => $newAttributes->condition_id,
                 'color' => $newAttributes->color_id,
                 'body_type' => $newAttributes->body_type_id,
                 'door' => $newAttributes->door_id,
                 'size' => $newAttributes->size_id,
-                'mileage' => $newAttributes->mileage_id,
                 'fuel' => $newAttributes->fuel_id,
                 'transmission' => $newAttributes->transmission_id,
                 'engine' => $newAttributes->engine_id,
@@ -245,8 +244,8 @@ class UploadControllerTest extends TestCase
             ->seeJson([
                 'lat' => 999.99,
                 'lon' => 999.99,
-                'price' => $price->value,
-                'year' => 2009,
+                'price' => 445,
+                'year' => $year->value,
                 'description' => 'New description',
                 'details' => [
                     'condition' => $newAttributes->condition->value,
@@ -254,7 +253,6 @@ class UploadControllerTest extends TestCase
                     'body_type' => $newAttributes->bodyType->value,
                     'door' => $newAttributes->door->value,
                     'size' => $newAttributes->size->value,
-                    'mileage' => $newAttributes->mileage->value,
                     'fuel' => $newAttributes->fuel->value,
                     'transmission' => $newAttributes->transmission->value,
                     'engine' => $newAttributes->engine->value,
@@ -262,8 +260,9 @@ class UploadControllerTest extends TestCase
                     'ownership' => $newAttributes->ownership->value,
                     'seat_count' => $newAttributes->seatCount->value,
                     'berth' => $newAttributes->berth->value,
-                    'price' => 9887,
-                    'year' => 2009
+                    'price' => 445,
+                    'year' => $year->value,
+                    'mileage' => 101,
                 ],
                 'sms_number' => '0987654321',
                 'call_number' => '0123456789',

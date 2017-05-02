@@ -5,6 +5,7 @@ namespace App;
 
 use App\Models\Distance;
 use App\Models\Engine;
+use App\Models\Mileage;
 use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,6 +21,7 @@ class VehicleFinder
     private $order;
 
     private $filters = [];
+    private $mileageFilter;
     private $distanceFilter;
     private $priceRangeFilter;
     private $colorFilter;
@@ -36,7 +38,7 @@ class VehicleFinder
 
     public function setOrder(string $order = null)
     {
-        if (in_array($order, ['asc', 'desc', 'distance'])) {
+        if (in_array($order, ['price-asc', 'price-desc', 'distance-asc', 'make-asc', 'year-asc', 'year-desc'])) {
             $this->order = $order;
         }
     }
@@ -54,6 +56,11 @@ class VehicleFinder
                 $this->filters[$filter] = $value;
             }
         }
+    }
+
+    public function setMileageFilter($mileage)
+    {
+        $this->mileageFilter = $mileage;
     }
 
     public function setDistanceFilter($distance)
@@ -124,7 +131,14 @@ class VehicleFinder
             ');
         }
 
+        if ($this->order == 'make-asc') {
+            $vehicles = $vehicles
+                ->join('models', 'models.id', '=', 'vehicles.model_id')
+                ->join('makes', 'makes.id', '=', 'models.make_id');
+        }
+
         $vehicles = $this->doFilter($vehicles);
+        $vehicles = $this->doMileageFilter($vehicles);
         $vehicles = $this->doDistanceFilter($vehicles);
         $vehicles = $this->doPriceRangeFilter($vehicles);
         $vehicles = $this->doColorFilter($vehicles);
@@ -167,6 +181,22 @@ class VehicleFinder
                 (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
                  cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
                  sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value);
+        }
+
+        return $builder;
+    }
+
+    private function doMileageFilter(Builder $builder): Builder
+    {
+        if ($mileage = Mileage::find($this->mileageFilter)) {
+            if (is_null($mileage->value)) {
+                $builder = $builder
+                    ->whereNull('mileage');
+            } else {
+                $builder = $builder
+                    ->where('mileage', '>=', $mileage->min)
+                    ->where('mileage', '<=', $mileage->max);
+            }
         }
 
         return $builder;
@@ -265,9 +295,12 @@ class VehicleFinder
     private function doOrder(Builder $builder): Builder
     {
         switch ($this->order) {
-            case 'asc': return $builder->orderBy('price', 'asc');
-            case 'desc': return $builder->orderBy('price', 'desc');
-            case 'distance': return $builder->orderBy('distance', 'asc');
+            case 'price-asc': return $builder->orderBy('price', 'asc');
+            case 'price-desc': return $builder->orderBy('price', 'desc');
+            case 'distance-asc': return $builder->orderBy('distance', 'asc');
+            case 'make-asc': return $builder->orderBy('makes.value', 'asc');
+            case 'year-asc': return $builder->orderBy('year', 'asc');
+            case 'year-desc': return $builder->orderBy('year', 'desc');
             default: return $builder->orderBy('paid_at', 'desc');
         }
     }

@@ -32,6 +32,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', 'API\V1\AdvertController@get');
             Route::get('/user', 'API\V1\AdvertController@getForUser');
             Route::post('/views', 'API\V1\AdvertController@addView');
+            Route::get('/{id}', 'API\V1\AdvertController@getById');
         });
 
     });

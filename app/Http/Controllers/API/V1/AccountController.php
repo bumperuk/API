@@ -204,6 +204,7 @@ class AccountController extends ApiController
                 if ($used > $user->vehicle_limit) {
                     $vehicle->deactivated_at = Carbon::now();
                 } else {
+                    $vehicle->paid_at = Carbon::now();
                     $vehicle->deactivated_at = null;
                 }
 

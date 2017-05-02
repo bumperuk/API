@@ -112,35 +112,63 @@ class AdvertControllerTest extends TestCase
     {
         $category = factory(\App\Models\Category::class)->create();
 
-        $mid = factory(\App\Models\Vehicle::class)->create([
-            'price' => 500, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'lat' => 53, 'lon' => 1,
+        $vehicle1 = factory(\App\Models\Vehicle::class)->create([
+            'price' => 500, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2014
         ]);
-        $mid->model->category()->associate($category);
-        $mid->model->save();
+        $vehicle1->model->category()->associate($category);
+        $vehicle1->model->save();
 
-        $lowest = factory(\App\Models\Vehicle::class)->create([
-            'price' => 100, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'lat' => 54, 'lon' => 1,
+        $vehicle2 = factory(\App\Models\Vehicle::class)->create([
+            'price' => 100, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2012
         ]);
-        $lowest->model->category()->associate($category);
-        $lowest->model->save();
+        $vehicle2->model->category()->associate($category);
+        $vehicle2->model->save();
 
-        $highest = factory(\App\Models\Vehicle::class)->create([
-            'price' => 1000, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'lat' => 55, 'lon' => 8,
+        $vehicle3 = factory(\App\Models\Vehicle::class)->create([
+            'price' => 1000, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2010
         ]);
-        $highest->model->category()->associate($category);
-        $highest->model->save();
+        $vehicle3->model->category()->associate($category);
+        $vehicle3->model->save();
 
         $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=price-asc')
-            ->seePaginationItemsInOrder([$lowest, $mid, $highest]);
+            ->seePaginationItemsInOrder([$vehicle2, $vehicle1, $vehicle3]);
 
         $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=price-desc')
-            ->seePaginationItemsInOrder([$highest, $mid, $lowest]);
+            ->seePaginationItemsInOrder([$vehicle3, $vehicle1, $vehicle2]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&lat=52.5&lon=1&order=distance-asc')
-            ->seePaginationItemsInOrder([$mid, $lowest, $highest]);
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=year-asc')
+            ->seePaginationItemsInOrder([$vehicle3, $vehicle2, $vehicle1]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=year-desc')
+            ->seePaginationItemsInOrder([$vehicle1, $vehicle2, $vehicle3]);
+    }
+
+    public function testOrderByMake()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+
+        $makeC = factory(\App\Models\Make::class)->create(['value' => 'C']);
+        $modelC = factory(\App\Models\Model::class)->create(['make_id' => $makeC->id, 'category_id' => $category->id]);
+        $vehicleC = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'model_id' => $modelC->id, 'description' => 'VehicleC']);
+
+        $makeA = factory(\App\Models\Make::class)->create(['value' => 'A']);
+        $modelA = factory(\App\Models\Model::class)->create(['make_id' => $makeA->id, 'category_id' => $category->id]);
+        $vehicleA = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'model_id' => $modelA->id, 'description' => 'VehicleA']);
+
+        $makeB = factory(\App\Models\Make::class)->create(['value' => 'B']);
+        $modelB = factory(\App\Models\Model::class)->create(['make_id' => $makeB->id, 'category_id' => $category->id]);
+        $vehicleB = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'model_id' => $modelB->id, 'description' => 'VehicleB']);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=make-asc')
+            ->seePaginationItemsInOrder([$vehicleA, $vehicleB, $vehicleC], 'description');
     }
 
     public function testNullFilter()
@@ -196,11 +224,6 @@ class AdvertControllerTest extends TestCase
             ->dontSeeJson(['id' => $invalid->id]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&mileage=' . $valid->mileage_id)
-            ->seeJson(['id' => $valid->id])
-            ->dontSeeJson(['id' => $invalid->id]);
-
-        $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&fuel=' . $valid->fuel_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
@@ -234,6 +257,43 @@ class AdvertControllerTest extends TestCase
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&make=' . $valid->model->make_id)
             ->seeJson(['id' => $valid->id])
             ->dontSeeJson(['id' => $invalid->id]);
+    }
+
+    public function testMileageFilter()
+    {
+        $mileage = factory(\App\Models\Mileage::class)->create(['min' => 100, 'max' => 199]);
+        $category = factory(\App\Models\Category::class)->create();
+
+        $valid1 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 199
+        ]);
+        $valid1->model->category()->associate($category);
+        $valid1->model->save();
+
+        $invalid1 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 220
+        ]);
+        $invalid1->model->category()->associate($category);
+        $invalid1->model->save();
+
+        $valid2 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 150
+        ]);
+        $valid2->model->category()->associate($category);
+        $valid2->model->save();
+
+        $invalid2 = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(), 'mileage' => 99,
+        ]);
+        $invalid2->model->category()->associate($category);
+        $invalid2->model->save();
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&mileage=' . $mileage->id)
+            ->dontSeeJson(['id' => $invalid1->id])
+            ->dontSeeJson(['id' => $invalid2->id])
+            ->seeJson(['id' => $valid1->id])
+            ->seeJson(['id' => $valid2->id]);
     }
 
     public function testPriceRangeFilter()
@@ -473,6 +533,32 @@ class AdvertControllerTest extends TestCase
             ->apiCall('POST', 'api/v1/adverts/views', ['id' => 25])
             ->seeError(400);
     }
+
+    public function testViewSingleVehicle()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'id' => 996633, 'paid_at' => Carbon::now()->subSeconds(5), 'deactivated_at' => null
+        ]);
+
+        $this
+            ->withNewToken()
+            ->apiCall('GET', 'api/v1/adverts/' . $vehicle->id)
+            ->seeSuccess()
+            ->seeJson(['id' => 996633]);
+    }
+
+    public function testViewSingleDeactivatedVehicle()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'id' => 996633, 'paid_at' => Carbon::now()->subWeek(), 'deactivated_at' => Carbon::now()->subDay()
+        ]);
+
+        $this
+            ->withNewToken()
+            ->apiCall('GET', 'api/v1/adverts/' . $vehicle->id)
+            ->seeError(400);
+    }
+
 
     public function testAddViewValid()
     {
