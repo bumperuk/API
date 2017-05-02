@@ -113,30 +113,34 @@ class AdvertControllerTest extends TestCase
         $category = factory(\App\Models\Category::class)->create();
 
         $mid = factory(\App\Models\Vehicle::class)->create([
-            'price' => 500, 'paid_at' => Carbon::now(), 'deactivated_at' => null
+            'price' => 500, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'lat' => 53, 'lon' => 1,
         ]);
         $mid->model->category()->associate($category);
         $mid->model->save();
 
         $lowest = factory(\App\Models\Vehicle::class)->create([
-            'price' => 100, 'paid_at' => Carbon::now(), 'deactivated_at' => null
+            'price' => 100, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'lat' => 54, 'lon' => 1,
         ]);
         $lowest->model->category()->associate($category);
         $lowest->model->save();
 
         $highest = factory(\App\Models\Vehicle::class)->create([
-            'price' => 1000, 'paid_at' => Carbon::now(), 'deactivated_at' => null
+            'price' => 1000, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'lat' => 55, 'lon' => 8,
         ]);
         $highest->model->category()->associate($category);
         $highest->model->save();
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=asc')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=price-asc')
             ->seePaginationItemsInOrder([$lowest, $mid, $highest]);
 
         $this
-            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=desc')
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=price-desc')
             ->seePaginationItemsInOrder([$highest, $mid, $lowest]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&lat=52.5&lon=1&order=distance-asc')
+            ->seePaginationItemsInOrder([$mid, $lowest, $highest]);
     }
 
     public function testNullFilter()
