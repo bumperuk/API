@@ -114,7 +114,7 @@ class VehicleFinder
                 $model->where('category_id', $category);
             });
 
-        if ($this->order == 'distance') {
+        if ($this->order == 'distance-asc') {
             $vehicles = $vehicles->selectRaw('
                 *, (
                      3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
