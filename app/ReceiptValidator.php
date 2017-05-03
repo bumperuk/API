@@ -5,8 +5,14 @@ namespace App;
 
 use App\Models\DealerRank;
 use App\Models\UsedReceipt;
+use Exception;
+use Google_Client;
+use Google_Service_AndroidPublisher;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
-use ReceiptValidator\iTunes\Validator;
+use ReceiptValidator\iTunes\Validator as ItunesValidator;
+use ReceiptValidator\GooglePlay\Validator as PlayValidator;
+
 
 /**
  * Created by PhpStorm.
@@ -16,22 +22,10 @@ use ReceiptValidator\iTunes\Validator;
  */
 class ReceiptValidator
 {
-    public function validateConsumable($receipt, $type, $transactionId = null): bool
+    public function validateItunesConsumable($receipt, $transactionID): bool
     {
-        switch ($type) {
-            case 'itunes':
-                return $this->validateItunesConsumable($receipt, $transactionId);
-            case 'play':
-                return $this->validatePlayConsumable($receipt);
-        }
-
-        return false;
-    }
-
-    private function validateItunesConsumable($receipt, $transactionID): bool
-    {
-        $mode = env('RECEIPT_DEBUG') ? Validator::ENDPOINT_SANDBOX :  Validator::ENDPOINT_PRODUCTION;
-        $validator = new Validator($mode);
+        $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX :  ItunesValidator::ENDPOINT_PRODUCTION;
+        $validator = new ItunesValidator($mode);
 
         try {
             $response = $validator->setReceiptData($receipt)->validate();
@@ -43,7 +37,7 @@ class ReceiptValidator
 
             foreach ($purchases as $purchase) {
                 if (
-                    $purchase['product_id'] == config('iap.consumable.itunes') &&
+                    $purchase['product_id'] == config('iap.itunes.product_id') &&
                     $purchase['original_transaction_id'] == $transactionID &&
                     !UsedReceipt::where('receipt_id', $transactionID)->where('type', 'itunes')->count()
                 ) {
@@ -64,27 +58,39 @@ class ReceiptValidator
         }
     }
 
-    private function validatePlayConsumable($receipt): bool
+    public function validatePlayConsumable($token): bool
     {
+        $client = new Google_Client();
+        $client->setApplicationName(config('iap.play.app'));
+        $client->setAuthConfig(config_path('iap.play-auth.json'));
+        $client->setScopes(['https://www.googleapis.com/auth/androidpublisher']);
 
-    }
+        $androidPublisherService = new Google_Service_AndroidPublisher($client);
+        $validator = new PlayValidator($androidPublisherService);
 
-    public function validateSubscription($receipt, $type)
-    {
-        switch ($type) {
-            case 'itunes':
-                return $this->validateItunesSubscription($receipt);
-            case 'play':
-                return $this->validatePlaySubscription($receipt);
+        try {
+            $validator
+                ->setPackageName(config('iap.play.package'))
+                ->setProductId(config('iap.play.product_id'))
+                ->setPurchaseToken($token)
+                ->validatePurchase();
+
+            $usedReceipt = new UsedReceipt();
+            $usedReceipt->receipt_id = $token;
+            $usedReceipt->type = 'play';
+            $usedReceipt->save();
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Invalid Play token: ' . $token . '. Error: ' . $e->getMessage());
+            return false;
         }
-
-        return false;
     }
 
-    private function validateItunesSubscription($receipt)
+    public function validateItunesSubscription($receipt)
     {
-        $mode = env('RECEIPT_DEBUG') ? Validator::ENDPOINT_SANDBOX :  Validator::ENDPOINT_PRODUCTION;
-        $validator = new Validator($mode);
+        $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX :  ItunesValidator::ENDPOINT_PRODUCTION;
+        $validator = new ItunesValidator($mode);
         $ranks = DealerRank::all();
         $bestRank = null;
 
@@ -115,8 +121,16 @@ class ReceiptValidator
         }
     }
 
-    private function validatePlaySubscription($receipt)
+    public function validatePlaySubscription($subscriptionId, $token)
     {
+        return false;
+        $url = 'https://www.googleapis.com/androidpublisher/v2/applications/' .
+            config('iap.play.app') . '/purchases/subscriptions/' . $subscriptionId . '/tokens/' .
+            $token . '?access_token=' . config('iap.play.access_token');
+
+        $client = new Client();
+        $response = $client->get($url);
+
         return false;
     }
 

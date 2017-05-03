@@ -252,19 +252,27 @@ class UploadController extends ApiController
     {
         $this->validate($request, [
             'vehicle_id' => 'required|exists:vehicles,id',
-            'receipt' => 'required',
-            'receipt_type' => 'required',
-            'receipt_id' => 'required_if:receipt_type,itunes'
+            'receipt_type' => 'required|in:itunes,play',
+            'receipt' => 'required_if:receipt_type,itunes',
+            'receipt_id' => 'required_if:receipt_type,itunes',
+            'purchase_token' => 'required_if:receipt_type,play',
         ]);
 
         $vehicle = Vehicle::find($request->input('vehicle_id'));
-        $receipt = $request->input('receipt');
         $receiptType = $request->input('receipt_type');
-        $receiptId = $request->input('receipt_id');
+
+        $itunesReceipt = $request->input('receipt');
+        $itunesReceiptId = $request->input('receipt_id');
+        $playPurchaseToken = $request->input('purchase_token');
 
         $validator = new ReceiptValidator();
 
-        if (!$validator->validateConsumable($receipt, $receiptType, $receiptId) && !shouldMock()) {
+        if (
+            (
+                ($receiptType == 'itunes' && !$validator->validateItunesConsumable($itunesReceipt, $itunesReceiptId)) ||
+                ($receiptType == 'play' && !$validator->validatePlayConsumable($playPurchaseToken))
+            ) && !shouldMock()
+        ) {
             return $this->api_response([], 'Invalid IAP receipt.', false, 400);
         }
 
