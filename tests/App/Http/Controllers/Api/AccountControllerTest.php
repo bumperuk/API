@@ -213,14 +213,13 @@ class AccountControllerTest extends TestCase
         $this
             ->withToken($user)
             ->apiCall('POST', 'api/v1/account/subscription', [
-                'receipt_type' => 'play',
+                'receipt_type' => 'itunes',
                 'receipt' => 'ghghghghghghghhghghghghghghghhgh',
-                'mock' => true,
             ])
             ->seeSuccess()
-            ->seeJson(['receipt_type' => 'play']);
+            ->seeJson(['receipt_type' => 'itunes']);
 
-        $this->seeInDatabase('users', ['receipt' => 'ghghghghghghghhghghghghghghghhgh', 'receipt_type' => 'play']);
+        $this->seeInDatabase('users', ['receipt' => 'ghghghghghghghhghghghghghghghhgh', 'receipt_type' => 'itunes']);
     }
 
     public function testGetSubscriptionNoSubscription()

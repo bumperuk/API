@@ -62,7 +62,7 @@ class ReceiptValidator
     {
         $client = new Google_Client();
         $client->setApplicationName(config('iap.play.app'));
-        $client->setAuthConfig(config_path('iap.play-auth2.json'));
+        $client->setAuthConfig(config_path('iap.play-auth.json'));
         $client->setScopes(['https://www.googleapis.com/auth/androidpublisher']);
 
         $androidPublisherService = new Google_Service_AndroidPublisher($client);
@@ -123,6 +123,7 @@ class ReceiptValidator
 
     public function validatePlaySubscription($subscriptionId, $token)
     {
+        return false;
         $url = 'https://www.googleapis.com/androidpublisher/v2/applications/' .
             config('iap.play.app') . '/purchases/subscriptions/' . $subscriptionId . '/tokens/' .
             $token . '?access_token=' . config('iap.play.access_token');
