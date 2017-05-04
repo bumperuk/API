@@ -45,7 +45,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'receipt_checked_at' => 'datetime'
+        'receipt_checked_at' => 'datetime',
+        'receipt' => 'array'
     ];
 
     /**
