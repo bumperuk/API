@@ -40,7 +40,7 @@ class CheckSubscriptionCommand extends Command
     public function handle()
     {
         $validator = new ReceiptValidator();
-        $checkBefore = env('RECEIPT_DEBUG') ? Carbon::now()->subMinute() : Carbon::now()->subHours(6);
+        $checkBefore = env('RECEIPT_DEBUG') ? Carbon::now()->subMinutes(5) : Carbon::now()->subHours(6);
 
         User
             ::whereNotNull('dealer_rank_id')
