@@ -210,6 +210,7 @@ class UploadControllerTest extends TestCase
     {
         $vehicle = factory(\App\Models\Vehicle::class)->create();
         $newAttributes = factory(\App\Models\Vehicle::class)->create();
+        $year = factory(\App\Models\Year::class)->create();
 
         $this
             ->withToken($vehicle->user)
@@ -218,7 +219,7 @@ class UploadControllerTest extends TestCase
                 'lat' => 999.99,
                 'lon' => 999.99,
                 'price' => 445,
-                'year' => 2009,
+                'year' => $year->id,
                 'mileage' => 101,
                 'description' => 'New description',
                 'condition' => $newAttributes->condition_id,
@@ -244,7 +245,7 @@ class UploadControllerTest extends TestCase
                 'lat' => 999.99,
                 'lon' => 999.99,
                 'price' => 445,
-                'year' => 2009,
+                'year' => $year->value,
                 'description' => 'New description',
                 'details' => [
                     'condition' => $newAttributes->condition->value,
@@ -260,7 +261,7 @@ class UploadControllerTest extends TestCase
                     'seat_count' => $newAttributes->seatCount->value,
                     'berth' => $newAttributes->berth->value,
                     'price' => 445,
-                    'year' => 2009,
+                    'year' => $year->value,
                     'mileage' => 101,
                 ],
                 'sms_number' => '0987654321',

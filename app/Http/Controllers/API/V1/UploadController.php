@@ -8,6 +8,7 @@ use App\Models\Model;
 use App\Models\Price;
 use App\Models\Vehicle;
 use App\Models\VehiclePhoto;
+use App\Models\Year;
 use App\ReceiptValidator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class UploadController extends ApiController
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
             'price' => 'required|integer|max:9999999',
-            'year' => 'integer',
+            'year' => 'exists:years,id',
             'mileage' => 'integer',
             'condition' => 'exists:conditions,id',
             'color' => 'exists:colors,id',
@@ -70,7 +71,7 @@ class UploadController extends ApiController
             $vehicle->location = (new LocationFinder($vehicle->lat, $vehicle->lon))->getName();
         }
         $vehicle->price = $request->input('price');
-        $vehicle->year = $request->input('year');
+        $vehicle->year = $request->has('year') ? Year::find($request->input('year'))->value : null;
         $vehicle->description = $request->input('description');
         $vehicle->mileage = $request->input('mileage');
 
@@ -122,7 +123,7 @@ class UploadController extends ApiController
             'lat' => 'numeric',
             'lon' => 'numeric',
             'price' => 'integer|max:9999999',
-            'year' => 'integer',
+            'year' => 'exists:years,id',
             'mileage' => 'integer',
             'condition' => 'exists:conditions,id',
             'color' => 'exists:colors,id',
@@ -159,7 +160,7 @@ class UploadController extends ApiController
         }
 
         $vehicle->price = $request->input('price', $vehicle->price);
-        $vehicle->year = $request->input('year', $vehicle->year);
+        $vehicle->year = $request->has('year') ? Year::find($request->input('year'))->value : $vehicle->year;
         $vehicle->description = $request->input('description', $vehicle->description);
         $vehicle->mileage = $request->input('mileage', $vehicle->mileage);
 
