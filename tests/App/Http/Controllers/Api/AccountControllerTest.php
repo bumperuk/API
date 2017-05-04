@@ -191,7 +191,7 @@ class AccountControllerTest extends TestCase
     public function testUpdateSubscriptionDifferentType()
     {
         $user = factory(\App\Models\User::class)->create([
-            'receipt' => 'abcdefg',
+            'receipt' => '{"receipt":"abcdefg"}',
             'receipt_type' => 'itunes',
             'dealer_rank_id' => factory(\App\Models\DealerRank::class)->create(['limit' => 11])->id
         ]);
@@ -200,7 +200,8 @@ class AccountControllerTest extends TestCase
             ->withToken($user)
             ->apiCall('POST', 'api/v1/account/subscription', [
                 'receipt_type' => 'play',
-                'receipt' => 'hghghghghghghghghghghghghghghghghghghghghghhghghghghghhghghghghghhghghghghgh'
+                'purchase_token' => 'hghghghghghghghghghghghghghghghghghghghghghhghghghghghhghghghghghhghghghghgh',
+                'product_id' => '123'
             ])
             ->seeError(400)
             ->seeText('You already have an active subscription for a different platform');
@@ -219,7 +220,7 @@ class AccountControllerTest extends TestCase
             ->seeSuccess()
             ->seeJson(['receipt_type' => 'itunes']);
 
-        $this->seeInDatabase('users', ['receipt' => 'ghghghghghghghhghghghghghghghhgh', 'receipt_type' => 'itunes']);
+        $this->seeInDatabase('users', ['receipt' => '{"receipt":"ghghghghghghghhghghghghghghghhgh"}', 'receipt_type' => 'itunes']);
     }
 
     public function testGetSubscriptionNoSubscription()

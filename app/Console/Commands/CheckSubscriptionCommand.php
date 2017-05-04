@@ -6,6 +6,7 @@ use App\Models\User;
 use App\ReceiptValidator;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class CheckSubscriptionCommand extends Command
 {
@@ -39,14 +40,19 @@ class CheckSubscriptionCommand extends Command
     public function handle()
     {
         $validator = new ReceiptValidator();
-        $checkBefore = env('RECEIPT_DEBUG') ? Carbon::now()->subMinute() : Carbon::now()->subHours(6);
+        $checkBefore = env('RECEIPT_DEBUG') ? Carbon::now()->subMinutes(5) : Carbon::now()->subHours(6);
 
         User
             ::whereNotNull('dealer_rank_id')
             ->where('receipt_checked_at', '<', $checkBefore)
             ->chunk(50, function ($users) use ($validator) {
                 foreach ($users as $user) {
-                    $this->checkUser($validator, $user);
+                    try {
+                        $this->checkUser($validator, $user);
+                    } catch(\Exception $exception) {
+                        Log::error('[Subscription cron error - ' .
+                            $exception->getFile() . '@' . $exception->getLine() . '] - ' . $exception->getMessage());
+                    }
                 }
             });
     }
@@ -60,7 +66,12 @@ class CheckSubscriptionCommand extends Command
     public function checkUser(ReceiptValidator $validator, User $user)
     {
         $this->info('Checking user ' . $user->id);
-        $rank = $validator->validateSubscription($user->receipt, $user->receipt_type);
+
+        if ($user->receipt_type == 'play') {
+            $rank = $validator->validatePlaySubscription($user->receipt['product_id'], $user->receipt['token']);
+        } else {
+            $rank = $validator->validateItunesSubscription($user->receipt['receipt']);
+        }
 
         if ($rank) {
             $user->dealerRank()->associate($rank);

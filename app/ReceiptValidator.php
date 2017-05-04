@@ -5,13 +5,12 @@ namespace App;
 
 use App\Models\DealerRank;
 use App\Models\UsedReceipt;
-use Exception;
 use Google_Client;
 use Google_Service_AndroidPublisher;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use ReceiptValidator\iTunes\Validator as ItunesValidator;
 use ReceiptValidator\GooglePlay\Validator as PlayValidator;
+use ReflectionClass;
 
 
 /**
@@ -121,17 +120,45 @@ class ReceiptValidator
         }
     }
 
-    public function validatePlaySubscription($subscriptionId, $token)
+    public function validatePlaySubscription($productId, $token)
     {
-        return false;
-        $url = 'https://www.googleapis.com/androidpublisher/v2/applications/' .
-            config('iap.play.app') . '/purchases/subscriptions/' . $subscriptionId . '/tokens/' .
-            $token . '?access_token=' . config('iap.play.access_token');
+        $client = new Google_Client();
+        $client->setApplicationName(config('iap.play.app'));
+        $client->setAuthConfig(config_path('iap.play-auth.json'));
+        $client->setScopes(['https://www.googleapis.com/auth/androidpublisher']);
 
-        $client = new Client();
-        $response = $client->get($url);
+        $androidPublisherService = new Google_Service_AndroidPublisher($client);
+        $validator = new PlayValidator($androidPublisherService);
 
-        return false;
+        try {
+            $response = $validator
+                ->setPackageName(config('iap.play.package'))
+                ->setProductId($productId)
+                ->setPurchaseToken($token)
+                ->validateSubscription();
+
+            $ranks = DealerRank::all();
+            $rank = $this->getRankForProduct($productId, 'play', $ranks);
+
+            /*
+             * There is no getStartTimeMillis method on SubscriptionResponse so using this hack to get the expiry time.
+             */
+            $reflection = new ReflectionClass($response);
+            $property = $reflection->getProperty('response');
+            $property->setAccessible(true);
+            $expiry = $property->getValue($response)->expiryTimeMillis / 1000;
+
+            if (
+                $rank && //If the rank exists
+                $expiry > time() //The subscription hasn't expired
+            ) {
+                return $rank;
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Invalid Play token: ' . $token . '. Error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     private function getRankForProduct($productId, $platform, $ranks)
