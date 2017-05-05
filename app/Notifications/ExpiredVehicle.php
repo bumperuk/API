@@ -3,11 +3,10 @@
 namespace App\Notifications;
 
 use App\Models\Vehicle;
+use App\Notifications\OneSignal\OneSignalChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
 
 class ExpiredVehicle extends Notification implements ShouldQueue
@@ -48,8 +47,11 @@ class ExpiredVehicle extends Notification implements ShouldQueue
         $photo = $this->vehicle->photos->first() ?
             $this->vehicle->photos->first()->url : null;
 
+        $name = $this->vehicle->model->value;
+
         return OneSignalMessage::create()
-            ->body('Your listing has expired.')
+            ->subject('Your ' . $name . ' listing has expired.')
+            ->body('Your ' . $name . ' listing has expired.')
             ->setData('vehicle_id', $this->vehicle->id)
             ->setData('vehicle_photo', $photo);
     }

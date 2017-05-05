@@ -3,10 +3,10 @@
 namespace App\Notifications;
 
 use App\Models\Vehicle;
+use App\Notifications\OneSignal\OneSignalChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use NotificationChannels\OneSignal\OneSignalMessage;
 
 class ExpiringVehicle extends Notification implements ShouldQueue
@@ -33,7 +33,7 @@ class ExpiringVehicle extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['onesignal'];
+        return [OneSignalChannel::class];
     }
 
     /**
@@ -47,8 +47,11 @@ class ExpiringVehicle extends Notification implements ShouldQueue
         $photo = $this->vehicle->photos->first() ?
             $this->vehicle->photos->first()->url : null;
 
+        $name = $this->vehicle->model->value;
+
         return OneSignalMessage::create()
-            ->body('Your listing will expire in 24 hours.')
+            ->subject('Your ' . $name . ' listing will expire in 24 hours.')
+            ->body('Your ' . $name . ' listing will expire in 24 hours.')
             ->setData('vehicle_id', $this->vehicle->id)
             ->setData('vehicle_photo', $photo);
     }

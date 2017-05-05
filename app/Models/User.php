@@ -117,7 +117,7 @@ class User extends Authenticatable
      */
     public function routeNotificationForOneSignal()
     {
-        return $this->push_token;
+        return $this->id;
     }
 
     /**
@@ -133,7 +133,7 @@ class User extends Authenticatable
     /**
      * Rank (name and upload limit) for the user if they are a dealer.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function dealerRank()
     {
