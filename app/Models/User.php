@@ -46,7 +46,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'receipt_checked_at' => 'datetime',
-        'receipt' => 'array'
+        'receipt' => 'array',
+        'should_send_push' => 'boolean'
     ];
 
     /**
