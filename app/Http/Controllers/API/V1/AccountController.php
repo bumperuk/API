@@ -77,22 +77,33 @@ class AccountController extends ApiController
     }
 
     /**
-     * Update the push token for the user
-     *
+     * Enable push notifications for the user
      * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function savePushToken(Request $request)
+    public function enablePushNotifications(Request $request)
     {
-        $this->validate($request, [
-            'push_token' => 'required'
-        ]);
-
         $user = $request->user();
-        $user->push_token = $request->input('push_token');
+        $user->should_send_push = true;
         $user->save();
 
-        return parent::api_response([], 'token saved');
+        return parent::api_response([], 'push notifications enabled');
+    }
+
+    /**
+     * Enable push notifications for the user
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function disablePushNotifications(Request $request)
+    {
+        $user = $request->user();
+        $user->should_send_push = false;
+        $user->save();
+
+        return parent::api_response([], 'push notifications disabled');
     }
 
     /**

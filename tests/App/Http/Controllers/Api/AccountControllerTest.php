@@ -9,6 +9,30 @@ use Carbon\Carbon;
  */
 class AccountControllerTest extends TestCase
 {
+    public function testEnablePushNotifications()
+    {
+        $user = factory(\App\Models\User::class)->create(['should_send_push' => false]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('POST', 'api/v1/account/push-notifications')
+            ->seeSuccess();
+
+        $this->seeInDatabase('users', ['should_send_push' => 1]);
+    }
+
+    public function testDisablePushNotifications()
+    {
+        $user = factory(\App\Models\User::class)->create(['should_send_push' => true]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('DELETE', 'api/v1/account/push-notifications')
+            ->seeSuccess();
+
+        $this->seeInDatabase('users', ['should_send_push' => 0]);
+    }
+
     public function testGetCurrentAccount()
     {
         $user = factory(\App\Models\User::class)->create([
