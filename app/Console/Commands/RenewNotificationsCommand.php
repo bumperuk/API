@@ -53,7 +53,9 @@ class RenewNotificationsCommand extends Command
 
         Vehicle::whereBetween('deactivated_at', [$start, $end])->chunk(50, function ($vehicles) {
             foreach ($vehicles as $vehicle) {
-                $vehicle->user->notify(new ExpiringVehicle($vehicle));
+                if ($vehicle->user->should_send_push) {
+                    $vehicle->user->notify(new ExpiringVehicle($vehicle));
+                }
             }
         });
     }
@@ -68,7 +70,9 @@ class RenewNotificationsCommand extends Command
 
         Vehicle::whereBetween('deactivated_at', [$start, $end])->chunk(50, function ($vehicles) {
             foreach ($vehicles as $vehicle) {
-                $vehicle->user->notify(new ExpiredVehicle($vehicle));
+                if ($vehicle->user->should_send_push) {
+                    $vehicle->user->notify(new ExpiredVehicle($vehicle));
+                }
             }
         });
     }
