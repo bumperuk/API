@@ -36,8 +36,11 @@
                     <li @if (Request::is('admin/reports*')) class="active" @endif>
                         <a href="{{ url('admin/reports') }}"><i class="fa fa-flag"></i> <span>Reports</span></a>
                     </li>
-                    <li @if (Request::is('admin/news*')) class="active" @endif>
-                        <a href="{{ url('admin/news') }}"><i class="fa fa-newspaper-o"></i> <span>News</span></a>
+                    <li @if (Request::is('admin/listings*')) class="active" @endif>
+                        <a href="{{ url('admin/listings') }}"><i class="fa fa-tasks"></i> <span>Listings</span></a>
+                    </li>
+                    <li @if (Request::is('admin/statistics*')) class="active" @endif>
+                        <a href="{{ url('admin/statistics') }}"><i class="fa fa-bar-chart"></i> <span>Statistics</span></a>
                     </li>
                 </ul>
             </section>
