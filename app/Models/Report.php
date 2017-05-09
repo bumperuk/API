@@ -4,6 +4,10 @@ namespace App\Models;
 
 class Report extends BaseModel
 {
+    protected $casts = [
+        'responded_at' => 'datetime'
+    ];
+
     /**
      * The user who made the report.
      *
@@ -31,6 +35,6 @@ class Report extends BaseModel
      */
     public function vehicle()
     {
-        return $this->belongsTo(User::class, 'vehicle_id');
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 }

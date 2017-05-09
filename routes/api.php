@@ -10,28 +10,28 @@
 
 Route::group(['prefix' => 'v1'], function () {
 
-    Route::get('/app-data/{id}', 'API\V1\AppDataController@get');
-    Route::get('/force-update', 'API\V1\AppDataController@update');
+    Route::get('/app-data/{id}', 'V1\AppDataController@get');
+    Route::get('/force-update', 'V1\AppDataController@update');
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('/register', 'API\V1\AuthController@register');
-        Route::post('/login', 'API\V1\AuthController@login');
-        Route::post('/password/request', 'API\V1\AuthController@requestPassword');
+        Route::post('/register', 'V1\AuthController@register');
+        Route::post('/login', 'V1\AuthController@login');
+        Route::post('/password/request', 'V1\AuthController@requestPassword');
     });
 
-    Route::get('/faqs', 'API\V1\FaqController@view');
+    Route::get('/faqs', 'V1\FaqController@view');
 
     /*
      * Optionally auth routes using JWT tokens
      */
     Route::group(['middleware' => 'optional-jwt'], function () {
 
-        Route::get('categories', 'API\V1\CategoriesController@get');
+        Route::get('categories', 'V1\CategoriesController@get');
         Route::group(['prefix' => 'adverts'], function () {
-            Route::get('/', 'API\V1\AdvertController@get');
-            Route::get('/user', 'API\V1\AdvertController@getForUser');
-            Route::post('/views', 'API\V1\AdvertController@addView');
-            Route::get('/{id}', 'API\V1\AdvertController@getById');
+            Route::get('/', 'V1\AdvertController@get');
+            Route::get('/user', 'V1\AdvertController@getForUser');
+            Route::post('/views', 'V1\AdvertController@addView');
+            Route::get('/{id}', 'V1\AdvertController@getById');
         });
 
     });
@@ -41,39 +41,39 @@ Route::group(['prefix' => 'v1'], function () {
      */
     Route::group(['middleware' => 'jwt'], function () {
 
-        Route::post('auth/logout', 'API\V1\AuthController@logout');
+        Route::post('auth/logout', 'V1\AuthController@logout');
 
         Route::group(['prefix' => 'adverts'], function () {
-            Route::delete('/', 'API\V1\UploadController@delete');
+            Route::delete('/', 'V1\UploadController@delete');
         });
 
         Route::group(['prefix' => 'upload'], function () {
-            Route::post('/', 'API\V1\UploadController@upload');
-            Route::post('/edit', 'API\V1\UploadController@edit');
-            Route::post('/renew', 'API\V1\UploadController@renew');
+            Route::post('/', 'V1\UploadController@upload');
+            Route::post('/edit', 'V1\UploadController@edit');
+            Route::post('/renew', 'V1\UploadController@renew');
         });
 
         Route::group(['prefix' => 'favourites'], function () {
-            Route::put('/', 'API\V1\FavouriteController@save');
-            Route::get('/', 'API\V1\FavouriteController@view');
+            Route::put('/', 'V1\FavouriteController@save');
+            Route::get('/', 'V1\FavouriteController@view');
         });
 
         Route::group(['prefix' => 'reports'], function () {
-            Route::post('/', 'API\V1\ReportController@create');
+            Route::post('/', 'V1\ReportController@create');
         });
 
         Route::group(['prefix' => 'account'], function () {
-            Route::get('/', 'API\V1\AccountController@view');
-            Route::get('/subscription', 'API\V1\AccountController@getSubscription');
-            Route::get('/can-upload', 'API\V1\AccountController@canUpload');
-            Route::post('/push-notifications', 'API\V1\AccountController@enablePushNotifications');
-            Route::delete('/push-notifications', 'API\V1\AccountController@disablePushNotifications');
-            Route::get('/adverts', 'API\V1\AccountController@getAdverts');
-            Route::post('/subscription', 'API\V1\AccountController@updateSubscription');
+            Route::get('/', 'V1\AccountController@view');
+            Route::get('/subscription', 'V1\AccountController@getSubscription');
+            Route::get('/can-upload', 'V1\AccountController@canUpload');
+            Route::post('/push-notifications', 'V1\AccountController@enablePushNotifications');
+            Route::delete('/push-notifications', 'V1\AccountController@disablePushNotifications');
+            Route::get('/adverts', 'V1\AccountController@getAdverts');
+            Route::post('/subscription', 'V1\AccountController@updateSubscription');
         });
 
         Route::group(['prefix' => 'users'], function () {
-            Route::post('/report', 'API\V1\UserController@report');
+            Route::post('/report', 'V1\UserController@report');
         });
 
     });

@@ -38,6 +38,16 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
         ],
+
+        'admin' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\IPLock::class
+        ]
     ];
 
     /**
@@ -58,5 +68,6 @@ class Kernel extends HttpKernel
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
         'ip-lock' => \App\Http\Middleware\IPLock::class,
         'optional-jwt' => \App\Http\Middleware\OptionalJWT::class,
+        'require.admin' => \App\Http\Middleware\RequireAdmin::class
     ];
 }

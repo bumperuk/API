@@ -1,0 +1,31 @@
+.menu-name {
+    display: inline-block;
+    color: white;
+    line-height: 5rem;
+    font-weight: bold;
+    margin-right: 2rem;
+}
+
+.content-header {
+    padding: 1.5rem;
+}
+
+.table>tbody>tr>th {
+    padding: 1.5rem 2rem;
+}
+.table>tbody>tr>td {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    line-height: 3.5rem;
+}
+
+.table-pagination {
+    float: right;
+    padding: 1rem;
+}
+
+.image-upload-form-group img {
+    float: left;
+    max-height: 4.2rem;
+    margin: 0.5rem 1rem 0.5rem 0;
+}

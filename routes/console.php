@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -26,5 +27,23 @@ Artisan::command('user:token {userId}', function ($userId) {
     $token = JWTAuth::fromUser($user);
     $this->info("Token for {$user->email}:");
     $this->info($token);
+
+})->describe('Generate a token for a user.');
+
+Artisan::command('admin:create {email} {password}', function ($email, $password) {
+
+    $existingAdmin = Admin::where('email', $email)->first();
+
+    if ($existingAdmin) {
+        $this->error('An admin already exists with that email');
+        die();
+    }
+
+    $admin = new Admin();
+    $admin->email = $email;
+    $admin->password = $password;
+    $admin->save();
+
+    $this->info('Admin account ' . $email . ' created.');
 
 })->describe('Generate a token for a user.');
