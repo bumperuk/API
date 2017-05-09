@@ -28,4 +28,12 @@ Route::group(['middleware' => 'require.admin'], function() {
         Route::post('{id}', 'ReportController@postAction');
     });
 
+    Route::group(['prefix' => 'listings'], function() {
+        Route::get('', 'VehicleController@index');
+    });
+
+    Route::group(['prefix' => 'statistics'], function() {
+        Route::get('', 'StatisticsController@index');
+    });
+
 });
