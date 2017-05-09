@@ -18,6 +18,8 @@
                                     <td>
                                         @if (is_string($value))
                                             {{ $record->$value }}
+                                        @elseif (is_object($value) && $value instanceof Closure && is_array($value($record)))
+                                            <a href="{{ $value($record)[0] }}">{{ $value($record)[1] }}</a>
                                         @elseif (is_object($value) && $value instanceof Closure)
                                             {{ $value($record) }}
                                         @else

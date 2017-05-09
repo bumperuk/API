@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\Admin;
 
 
-use App\Models\UserReport;
+use App\Models\Report;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class ReportController
      */
     public function index()
     {
-        $reports = UserReport::orderBy('created_at', 'desc')->paginate(20);
+        $reports = Report::orderBy('created_at', 'desc')->paginate(20);
 
         return view('admin.reports.index', [
             'reports' => $reports
