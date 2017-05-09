@@ -107,6 +107,11 @@ class UploadController extends ApiController
             $vehicle->paid_at = Carbon::now();
         }
 
+        if ($vehicle->call_number) {
+            $user->phone = $vehicle->call_number;
+            $user->save();
+        }
+
         $vehicle->save();
 
         return $this->api_response([
@@ -216,6 +221,11 @@ class UploadController extends ApiController
 
         if ($user->type == 'dealer') {
             $vehicle->paid_at = Carbon::now();
+        }
+
+        if ($vehicle->call_number) {
+            $user->phone = $vehicle->call_number;
+            $user->save();
         }
 
         $vehicle->save();

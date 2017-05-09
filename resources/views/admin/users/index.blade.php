@@ -10,13 +10,14 @@
     @include('admin.layout.table', [
         'records' => $users,
         'columns' => [
-            'Name' => 'name',
             'Email' => 'email',
-            'Phone' => function($user) { return ($user->phone_verified && $user->phone) ? $user->phone : '-'; },
-            'Joined' => function($user) { return $user->created_at->format('d M Y'); }
+            'Phone' => function ($user) { return $user->phone ?? '-'; },
+            'Plan' => function ($user) { return $user->dealerRank ? 'Dealer (' . $user->dealerRank->limit . ' vehicles)' : 'Private'; },
+            'Active Vehicles' => function ($user) { return $user->vehicles()->active()->count() ; },
+            'Joined' => function ($user) { return $user->created_at->format('d M Y'); }
         ],
         'buttons' => [
-            'Edit' => function($user) { return url('admin/users/' . $user->id); }
+            'Edit' => function ($user) { return url('admin/users/' . $user->id); }
         ]
     ])
 @endsection

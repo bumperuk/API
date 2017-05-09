@@ -19,11 +19,13 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $users = User::query();
+
         if ($request->has('q')) {
-            $users = User::search($request->input('q'))->paginate(20);
-        } else {
-            $users = User::paginate(20);
+            $users = User::search($request->input('q'));
         }
+
+        $users = $users->orderBy('created_at', 'desc')->paginate(3);
 
         return view('admin.users.index', [
             'users' => $users
