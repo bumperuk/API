@@ -8,7 +8,7 @@
 |
 */
 
-Route::group(['prefix' => 'v1'], function () {
+Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], function () {
 
     Route::get('/app-data/{id}', 'V1\AppDataController@get');
     Route::get('/force-update', 'V1\AppDataController@update');
@@ -27,6 +27,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'optional-jwt'], function () {
 
         Route::get('categories', 'V1\CategoriesController@get');
+
         Route::group(['prefix' => 'adverts'], function () {
             Route::get('/', 'V1\AdvertController@get');
             Route::get('/user', 'V1\AdvertController@getForUser');
