@@ -29,3 +29,13 @@
     max-height: 4.2rem;
     margin: 0.5rem 1rem 0.5rem 0;
 }
+
+.display-image-thumb {
+    display: inline-block;
+    border: 1px solid #d2d6de;
+    width: 160px;
+    height: 100px;
+    background-size: contain;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}

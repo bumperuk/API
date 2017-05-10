@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Report;
 use App\Models\User;
-use App\Models\UserReport;
+use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -40,7 +41,7 @@ class UserController extends Controller
     public function single($id)
     {
         $user = User::findOrFail($id);
-        $reports = UserReport::where('user_id', $user->id)->get();
+        $reports = Report::where('user_id', $user->id)->get();
 
         return view('admin.users.single', [
             'user' => $user,
@@ -57,21 +58,15 @@ class UserController extends Controller
     public function edit(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'username' => 'required|unique:users,username,' . $id,
             'email' => 'required|unique:users,email,' . $id,
             'phone' => 'required|unique:users,phone,' . $id,
-            'phone_verified' => '',
             'deactivated' => '',
             'password' => '',
         ]);
 
         $user = User::findOrFail($id);
-        $user->name = $request->input('name');
-        $user->username = $request->input('username');
         $user->email = $request->input('email');
         $user->phone = $request->input('phone');
-        $user->phone_verified = $request->has('phone_verified');
         $user->save();
 
         return back();

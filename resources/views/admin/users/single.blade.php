@@ -1,6 +1,6 @@
 @extends('admin.layout.page')
 
-@section('title', 'Users &#187; ' . $user->name)
+@section('title', 'Users &#187; ' . $user->email)
 
 @section('content')
     @include('admin.layout.errors')
@@ -13,14 +13,6 @@
                 <div class="box-body">
                     <form method="post">
                         {{ csrf_field() }}
-                        <div class="form-group @if ($errors->has('name')) has-error @endif">
-                            <label>Name</label>
-                            <input type="text" value="{{ old('name', $user->name) }}" name="name" class="form-control">
-                        </div>
-                        <div class="form-group @if ($errors->has('username')) has-error @endif">
-                            <label>Username</label>
-                            <input type="text" value="{{ old('username', $user->username) }}" name="username" class="form-control">
-                        </div>
                         <div class="form-group @if ($errors->has('email')) has-error @endif">
                             <label>Email</label>
                             <input type="text" value="{{ old('email', $user->email) }}" name="email" class="form-control">
@@ -29,16 +21,22 @@
                             <label>Phone</label>
                             <input type="text" value="{{ old('phone', $user->phone) }}" name="phone" class="form-control">
                         </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="phone_verified" @if (old('phone_verified', $user->phone_verified)) checked="checked" @endif>
-                                Phone Verified
-                            </label>
-                        </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary" value="Save">
                         </div>
                     </form>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Vehicles</h3>
+                </div>
+                <div class="box-body">
+                    <ul>
+                    @foreach ($user->vehicles()->orderBy('paid_at', 'desc')->limit(8)->get() as $vehicle)
+                        <li><a href="{{ url('admin/listings/' . $vehicle->id) }}">{{ $vehicle->title }}</a> - Uploaded {{ $vehicle->created_at->format('d M Y') }}</li>
+                    @endforeach
+                    </ul>
                 </div>
             </div>
         </div>

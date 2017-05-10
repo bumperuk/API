@@ -30,6 +30,8 @@ Route::group(['middleware' => 'require.admin'], function() {
 
     Route::group(['prefix' => 'listings'], function() {
         Route::get('', 'VehicleController@index');
+        Route::get('/{id}', 'VehicleController@single');
+        Route::post('/{id}/delete', 'VehicleController@delete');
     });
 
     Route::group(['prefix' => 'statistics'], function() {
