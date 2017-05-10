@@ -30,8 +30,8 @@ class ReportController
      */
     public function single($id)
     {
-        $report = UserReport::findOrFail($id);
-        $previous = UserReport
+        $report = Report::findOrFail($id);
+        $previous = Report
             ::where('user_id', $report->user->id)
             ->where('id', '<>', $report->id)
             ->orderBy('created_at', 'desc')
@@ -44,21 +44,29 @@ class ReportController
     }
 
     /**
-     * Deactivate user
+     * Remove account
      * @param Request $request
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postAction(Request $request, $id)
     {
-        $report = UserReport::findOrFail($id);
+        $report = Report::findOrFail($id);
         $report->responded_at = Carbon::now();
-        $report->save();
 
-        if ($request->has('deactivate')) {
+        if ($request->has('removed')) {
+            $report->action = 'removed';
+            $report->vehicle->delete();
+        } else if ($request->has('removed-banned')) {
+            $report->action = 'removed-banned';
+            $report->vehicle->delete();
             $report->user->deactivated_at = Carbon::now();
             $report->user->save();
+        } else if ($request->has('none')) {
+            $report->action = 'none';
         }
+
+        $report->save();
 
         return back();
     }
