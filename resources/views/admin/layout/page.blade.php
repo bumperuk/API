@@ -28,7 +28,7 @@
             <section class="sidebar">
                 <ul class="sidebar-menu">
                     <li @if (Request::is('admin/dashboard')) class="active" @endif>
-                        <a href="#"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a>
+                        <a href="{{ url('admin/dashboard') }}"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a>
                     </li>
                     <li @if (Request::is('admin/users*')) class="active" @endif>
                         <a href="{{ url('admin/users') }}"><i class="fa fa-user"></i> <span>Users</span></a>

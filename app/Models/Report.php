@@ -37,4 +37,18 @@ class Report extends BaseModel
     {
         return $this->belongsTo(Vehicle::class, 'vehicle_id')->withTrashed();
     }
+
+    /**
+     * A human readable version of action
+     */
+    public function getHumanActionAttribute()
+    {
+        switch ($this->action) {
+            case 'none': return 'None';
+            case 'removed': return 'Listing removed';
+            case 'removed-banned': return 'Listing removed & user banned';
+        }
+
+        return '-';
+    }
 }

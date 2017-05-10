@@ -41,7 +41,7 @@ class VehicleController extends Controller
      */
     public function single($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
+        $vehicle = Vehicle::withTrashed()->findOrFail($id);
         $reports = Report::where('vehicle_id', $vehicle->id)->get();
 
         return view('admin.vehicles.single', [
@@ -57,7 +57,7 @@ class VehicleController extends Controller
      */
     public function delete($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
+        $vehicle = Vehicle::withTrashed()->findOrFail($id);
         $vehicle->delete();
 
         return redirect('admin/listings');

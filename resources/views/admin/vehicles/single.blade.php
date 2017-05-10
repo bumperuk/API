@@ -12,7 +12,11 @@
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-striped">
-                        <tr><td>Status</td><td>{{ $vehicle->active ? 'Active' : 'Inactive' }}</td></tr>
+                        @if ($vehicle->deleted_at)
+                            <tr><td>Status</td><td>Removed</td></tr>
+                        @else
+                            <tr><td>Status</td><td>{{ $vehicle->active ? 'Active' : 'Inactive' }}</td></tr>
+                        @endif
                         @foreach ($vehicle->human_details as $name => $attribute)
                             <tr><td>{{ $name }}</td><td>{{ $attribute or '-' }}</td></tr>
                         @endforeach
@@ -36,11 +40,15 @@
                     <h3 class="box-title">Status</h3>
                 </div>
                 <div class="box-body">
-                    <p>Removing a listing is permanent and cannot be undone.</p>
-                    <form method="post" action="{{ url('admin/listings/' . $vehicle->id . '/delete') }}">
-                        {{ csrf_field() }}
-                        <input type="submit" class="btn btn-danger" value="Remove Listing">
-                    </form>
+                    @if (!$vehicle->deleted_at)
+                        <p>Removing a listing is permanent and cannot be undone.</p>
+                        <form method="post" action="{{ url('admin/listings/' . $vehicle->id . '/delete') }}">
+                            {{ csrf_field() }}
+                            <input type="submit" class="btn btn-danger" value="Remove Listing">
+                        </form>
+                    @else
+                        Vehicle has been removed.
+                    @endif
                 </div>
             </div>
             <div class="box">

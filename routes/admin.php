@@ -7,6 +7,7 @@ Route::group(['middleware' => 'require.admin'], function() {
 
     Route::get('logout', 'LoginController@logout');
     Route::get('dashboard', 'DashboardController@view');
+    Route::get('export', 'ExportController@export');
 
     Route::group(['prefix' => 'admins'], function() {
         Route::get('', 'AdminController@index');
