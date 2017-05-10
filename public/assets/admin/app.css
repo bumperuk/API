@@ -39,3 +39,8 @@
     margin-right: 15px;
     margin-bottom: 15px;
 }
+
+.statistics-canvas {
+    box-sizing: border-box;
+    margin: 2rem;
+}

@@ -36,7 +36,8 @@ Route::group(['middleware' => 'require.admin'], function() {
     });
 
     Route::group(['prefix' => 'statistics'], function() {
-        Route::get('', 'StatisticsController@index');
+        Route::get('/users', 'StatisticsController@users');
+        Route::get('/listings', 'StatisticsController@listings');
     });
 
 });
