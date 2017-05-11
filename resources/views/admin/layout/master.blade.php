@@ -26,6 +26,7 @@
     <script src="{{ asset('assets/admin/dist/wysihtml5x-toolbar.min.js') }}"></script>
     <script src="{{ asset('assets/admin/dist/handlebars.runtime.min.js') }}"></script>
     <script src="{{ asset('assets/admin/dist/bootstrap3-wysihtml5.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
     @stack('inline_scripts')
 </body>

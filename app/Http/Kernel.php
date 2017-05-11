@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
         'ip-lock' => \App\Http\Middleware\IPLock::class,
         'optional-jwt' => \App\Http\Middleware\OptionalJWT::class,
-        'require.admin' => \App\Http\Middleware\RequireAdmin::class
+        'require.admin' => \App\Http\Middleware\RequireAdmin::class,
+        'disallow-deactivated' => \App\Http\Middleware\DisallowDeactivatedUsers::class,
     ];
 }

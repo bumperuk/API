@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Report;
 use App\Models\User;
 use App\Models\UserReport;
 use App\Models\Vehicle;
@@ -40,10 +41,25 @@ class VehicleController extends Controller
      */
     public function single($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
+        $vehicle = Vehicle::withTrashed()->findOrFail($id);
+        $reports = Report::where('vehicle_id', $vehicle->id)->get();
 
         return view('admin.vehicles.single', [
-            'vehicle' => $vehicle
+            'vehicle' => $vehicle,
+            'reports' => $reports
         ]);
+    }
+
+    /**
+     * Delete a vehicle
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function delete($id)
+    {
+        $vehicle = Vehicle::withTrashed()->findOrFail($id);
+        $vehicle->delete();
+
+        return redirect('admin/listings');
     }
 }

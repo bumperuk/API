@@ -150,4 +150,23 @@ trait VehicleAttributes
 
         return $details;
     }
+
+    /**
+     * Put all vehicle attributes in a single array in a human readable format.
+     */
+    public function getHumanDetailsAttribute()
+    {
+        $details = $this->details;
+        $details['price'] = '£' . number_format($details['price'], 2);
+
+        $humanDetails = [];
+
+        foreach ($details as $key => $value) {
+            if ($value !== null) {
+                $humanDetails[ucfirst(str_replace('_', ' ', $key))] = $value;
+            }
+        }
+
+        return $humanDetails;
+    }
 }

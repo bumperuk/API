@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Faker\Provider\DateTime;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
+    use SoftDeletes;
     use Notifiable;
 
     /**
@@ -46,6 +48,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'receipt_checked_at' => 'datetime',
+        'deactivated_at' => 'datetime',
         'receipt' => 'array',
         'should_send_push' => 'boolean'
     ];

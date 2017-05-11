@@ -100,6 +100,17 @@ class AuthControllerTest extends TestCase
             ->seeSuccess();
     }
 
+    public function testDeactivatedResponse()
+    {
+        $user = factory(\App\Models\User::class)->create(['deactivated_at' => \Carbon\Carbon::now()]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/categories')
+            ->seeError(401)
+            ->seeText('user_deactivated');
+    }
+
     public function testRequestPasswordInvalidEmail()
     {
         Notification::fake();

@@ -25,7 +25,7 @@ class Report extends BaseModel
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
     /**
@@ -35,6 +35,20 @@ class Report extends BaseModel
      */
     public function vehicle()
     {
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsTo(Vehicle::class, 'vehicle_id')->withTrashed();
+    }
+
+    /**
+     * A human readable version of action
+     */
+    public function getHumanActionAttribute()
+    {
+        switch ($this->action) {
+            case 'none': return 'None';
+            case 'removed': return 'Listing removed';
+            case 'removed-banned': return 'Listing removed & user banned';
+        }
+
+        return '-';
     }
 }

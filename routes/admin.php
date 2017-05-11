@@ -7,6 +7,7 @@ Route::group(['middleware' => 'require.admin'], function() {
 
     Route::get('logout', 'LoginController@logout');
     Route::get('dashboard', 'DashboardController@view');
+    Route::get('export', 'ExportController@export');
 
     Route::group(['prefix' => 'admins'], function() {
         Route::get('', 'AdminController@index');
@@ -30,10 +31,13 @@ Route::group(['middleware' => 'require.admin'], function() {
 
     Route::group(['prefix' => 'listings'], function() {
         Route::get('', 'VehicleController@index');
+        Route::get('/{id}', 'VehicleController@single');
+        Route::post('/{id}/delete', 'VehicleController@delete');
     });
 
     Route::group(['prefix' => 'statistics'], function() {
-        Route::get('', 'StatisticsController@index');
+        Route::get('/users', 'StatisticsController@users');
+        Route::get('/listings', 'StatisticsController@listings');
     });
 
 });
