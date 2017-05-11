@@ -35,9 +35,6 @@ Route::group(['middleware' => 'require.admin'], function() {
         Route::post('/{id}/delete', 'VehicleController@delete');
     });
 
-    Route::group(['prefix' => 'statistics'], function() {
-        Route::get('/users', 'StatisticsController@users');
-        Route::get('/listings', 'StatisticsController@listings');
-    });
+    Route::get('/statistics/{page}', 'StatisticsController@get');
 
 });

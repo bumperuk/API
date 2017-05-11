@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Faker\Provider\DateTime;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
