@@ -6,6 +6,7 @@ use App\Console\Commands\ApiControllerCreatorCommand;
 use App\Console\Commands\BubbleDealerAdvertsCommand;
 use App\Console\Commands\CheckSubscriptionCommand;
 use App\Console\Commands\RenewNotificationsCommand;
+use App\Console\Commands\ReportActiveVehicles;
 use App\Console\Commands\StartSocketCommand;
 use App\Console\Commands\ImportVehiclesCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
         ImportVehiclesCommand::class,
         CheckSubscriptionCommand::class,
         BubbleDealerAdvertsCommand::class,
+        ReportActiveVehicles::class,
     ];
 
     /**
@@ -37,6 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('notifications:renew')->hourly();
         $schedule->command('subscriptions:check')->everyMinute()->withoutOverlapping();
         $schedule->command('vehicles:bubble')->everyMinute();
+        $schedule->command('statistics:active-vehicles')->dailyAt('01:00');
     }
 
     /**

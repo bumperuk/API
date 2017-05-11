@@ -10,10 +10,12 @@ class GraphFactory
     private $model;
     private $interval;
     private $yValue;
+    private $formatter;
 
     public function __construct($model)
     {
         $this->model = $model;
+        $this->formatter = new Formatter();
     }
 
     public function getDaily(Carbon $from, Carbon $to, $yValue = null): Graph
@@ -55,8 +57,8 @@ class GraphFactory
             ->get()
             ->toArray();
 
-        $results = $this->convertToKeyValue($results);
-        $results = $this->fillMissingKeys($results, $from, $to);
+        $results = $this->formatter->convertToKeyValue($results);
+        $results = $this->formatter->fillMissingKeys($results, $from, $to, $this->interval);
         ksort($results);
 
         return new Graph($results);
@@ -78,44 +80,5 @@ class GraphFactory
         }
 
         return $this->yValue;
-    }
-
-    private function convertToKeyValue(array $results): array
-    {
-        $keyValueResults = [];
-
-        foreach ($results as $result) {
-            $keyValueResults[$result->x] = $result->y;
-        }
-
-        return $keyValueResults;
-    }
-
-    private function fillMissingKeys(array $results, Carbon $from, Carbon $to): array
-    {
-        switch ($this->interval) {
-            case 'weekly': $from->startOfWeek();
-                break;
-            case 'monthly': $from->startOfMonth();
-                break;
-        }
-
-        while ($from->lte($to)) {
-            $key = $from->format('Y-m-d');
-            if (!isset($results[$key])) {
-                $results[$key] = 0;
-            }
-
-            switch ($this->interval) {
-                case 'daily': $from->addDay();
-                    break;
-                case 'weekly': $from->addWeek();
-                    break;
-                case 'monthly': $from->addMonth();
-                    break;
-            }
-        }
-
-        return $results;
     }
 }
