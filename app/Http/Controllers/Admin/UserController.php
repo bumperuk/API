@@ -23,10 +23,10 @@ class UserController extends Controller
         $users = User::query();
 
         if ($request->has('q')) {
-            $users = User::search($request->input('q'));
+            $users = User::where('email', 'LIKE', '%' . $request->input('q') . '%');
         }
 
-        $users = $users->orderBy('created_at', 'desc')->paginate(3);
+        $users = $users->orderBy('created_at', 'desc')->paginate(20);
 
         return view('admin.users.index', [
             'users' => $users

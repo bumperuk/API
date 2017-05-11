@@ -3,7 +3,7 @@
 @section('title', 'Users')
 
 @section('header')
-    @include('admin.layout.search')
+    @include('admin.layout.search', ['placeholder' => 'Search'])
 @endsection
 
 @section('content')

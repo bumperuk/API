@@ -142,6 +142,12 @@ class Vehicle extends BaseModel
 
     public function getTitleAttribute()
     {
-        return $this->model->make->value . ' ' . $this->model->value . ' (' . $this->year . ')';
+        $name = $this->model->make->value . ' ' . $this->model->value;
+
+        if ($this->year) {
+            $name .= ' (' . $this->year . ')';
+        }
+
+        return $name;
     }
 }

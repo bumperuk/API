@@ -24,10 +24,13 @@ class VehicleController extends Controller
         $vehicles = Vehicle::query();
 
         if ($request->has('q')) {
-            $vehicles = User::search($request->input('q'));
+            $query = '%' . $request->input('q') . '%';
+            $vehicles = Vehicle::whereHas('user', function($user) use ($query) {
+                $user->where('email', 'LIKE', $query);
+            });
         }
 
-        $vehicles = $vehicles->orderBy('created_at', 'desc')->paginate(3);
+        $vehicles = $vehicles->orderBy('created_at', 'desc')->paginate(20);
 
         return view('admin.vehicles.index', [
             'vehicles' => $vehicles

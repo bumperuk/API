@@ -39,11 +39,11 @@
                     <li @if (Request::is('admin/listings*')) class="active" @endif>
                         <a href="{{ url('admin/listings') }}"><i class="fa fa-tasks"></i> <span>Listings</span></a>
                     </li>
-                    <li class="treeview">
+                    <li class="treeview @if (Request::is('admin/statistics*')) active @endif">
                         <a href="{{ url('admin/statistics') }}"><i class="fa fa-bar-chart"></i> <span>Statistics</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                         <ul class="treeview-menu">
-                            <li><a href="{{ url('admin/statistics/users') }}"><i class="fa fa-bar-chart"></i> <span>Users</span></a></li>
-                            <li><a href="{{ url('admin/statistics/listings') }}"><i class="fa fa-bar-chart"></i> <span>Listings</span></a></li>
+                            <li @if (Request::is('admin/statistics/user*')) class="active" @endif><a href="{{ url('admin/statistics/users') }}"><i class="fa fa-circle-o"></i> <span>Users</span></a></li>
+                            <li @if (Request::is('admin/statistics/listings*')) class="active" @endif><a href="{{ url('admin/statistics/listings') }}"><i class="fa fa-circle-o"></i> <span>Listings</span></a></li>
                         </ul>
                     </li>
                 </ul>
