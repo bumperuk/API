@@ -38,7 +38,7 @@ class CheckPromotionsCommand extends Command
      */
     public function handle()
     {
-        Vehicle::where('payment_method', 'promotion')->whereNull('expired_at')->chunk(30, function($vehicles) {
+        Vehicle::where('payment_method', 'promotion')->whereNull('deactivated_at')->chunk(30, function($vehicles) {
             foreach ($vehicles as $vehicle) {
                 $this->checkUser($vehicle->user);
             }
@@ -55,7 +55,7 @@ class CheckPromotionsCommand extends Command
         $promotions = $user->total_promotions;
 
         foreach ($vehicles as $i => $vehicle) {
-            if ($i > $promotions) {
+            if ($i >= $promotions) {
                 $vehicle->deactivated_at = Carbon::now();
                 $vehicle->save();
             }
