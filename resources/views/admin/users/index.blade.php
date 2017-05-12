@@ -18,6 +18,7 @@
         ],
         'buttons' => [
             'Edit' => function ($user) { return url('admin/users/' . $user->id); }
-        ]
+        ],
+        'empty' => 'No users were found.'
     ])
 @endsection

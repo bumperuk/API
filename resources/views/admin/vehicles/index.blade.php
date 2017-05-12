@@ -18,6 +18,7 @@
         ],
         'buttons' => [
             'View' => function ($vehicle) { return url('admin/listings/' . $vehicle->id); }
-        ]
+        ],
+        'empty' => 'No vehicles were found.'
     ])
 @endsection
