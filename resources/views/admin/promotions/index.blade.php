@@ -12,11 +12,12 @@
                     'User' => function($promotion) { return ['users/' . $promotion->user->id, $promotion->user->email]; },
                     'Listings' => 'listings',
                     'Valid Until' => function($promotion) { return $promotion->created_at->format('d M Y'); },
-                    'Created' => function($promotion) { return $promotion->created_at->format('d M Y H:i'); }
+                    'Created' => function($promotion) { return $promotion->created_at->format('d M Y H:i'); },
                 ],
                 'buttons' => [
                     'Delete' => ['post', function($promotion) { return url('admin/promotions/' . $promotion->id) . '/delete'; }]
-                ]
+                ],
+                'empty' => 'No promotions were found.'
             ])
         </div>
         <div class="col-sm-4">

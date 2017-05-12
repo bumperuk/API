@@ -18,6 +18,7 @@
         ],
         'buttons' => [
             'View Report' => function($report) { return url('admin/reports/' . $report->id); }
-        ]
+        ],
+        'empty' => 'No reports have been made.'
     ])
 @endsection
