@@ -6,17 +6,41 @@
     @include('admin.layout.errors')
     <div class="row">
         <div class="col-sm-8">
-            @include('admin.layout.table', [
-                'records' => $admins,
-                'columns' => [
-                    'Email' => 'email',
-                    'Name' => 'name',
-                    'Created' => function($admin) { return $admin->created_at->format('d M Y H:i'); }
-                ],
-                'buttons' => [
-                    'Delete' => ['post', function($admins) { return url('admin/admins/' . $admins->id) . '/delete'; }]
-                ]
-            ])
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body table-responsive no-padding">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Name</th>
+                                        <th>Created</th>
+                                        <th></th>
+                                    </tr>
+                                    @foreach ($admins as $admin)
+                                        <tr>
+                                            <td>{{ $admin->email }}</td>
+                                            <td>{{ $admin->name ?? '-' }}</td>
+                                            <td>{{ $admin->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                @if ($admin->id != Auth::guard('admin')->user()->id)
+                                                    <div class="pull-right">
+                                                        <form action="http://bumper.app/admin/admins/{{ $admin->id }}/delete" method="post">
+                                                            {{ csrf_field() }}
+                                                            <input type="submit" value="Delete" class="btn btn-sm btn-default btn-flat">
+                                                        </form>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-sm-4">
             <div class="box">

@@ -29,15 +29,25 @@
             </div>
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Vehicles</h3>
+                    <h3 class="box-title">Listings</h3>
                 </div>
-                <div class="box-body">
-                    <ul>
-                    @foreach ($user->vehicles()->orderBy('paid_at', 'desc')->limit(8)->get() as $vehicle)
-                        <li><a href="{{ url('admin/listings/' . $vehicle->id) }}">{{ $vehicle->title }}</a> - Uploaded {{ $vehicle->created_at->format('d M Y') }}</li>
-                    @endforeach
-                    </ul>
-                </div>
+                @if ($user->vehicles->isEmpty())
+                    <div class="box-body">
+                        <p>This user has no listings.</p>
+                    </div>
+                @else
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-striped">
+                            @foreach ($user->vehicles()->orderBy('paid_at', 'desc')->limit(8)->get() as $vehicle)
+                                <tr>
+                                    <td><a href="{{ url('admin/listings/' . $vehicle->id) }}">{{ $vehicle->title }}</a></td>
+                                    <td>{{ $vehicle->active ? 'Active' : 'Inactive' }}</td>
+                                    <td>{{ $vehicle->created_at->format('d M Y') }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="col-xs-12 col-sm-4">
@@ -77,20 +87,22 @@
                     </form>
                 </div>
             </div>
-            @if (!$reports->isEmpty())
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Reports</h3>
-                    </div>
-                    <div class="box-body">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Reports</h3>
+                </div>
+                <div class="box-body">
+                    @if ($reports->isEmpty())
+                        <p>No reports have been made against this user.</p>
+                    @else
                         <ul>
                             @foreach ($reports as $report)
                                 <li><a href="{{ url('admin/reports/' . $report->id) }}">{{ $report->created_at->format('d M Y') }}</a></li>
                             @endforeach
                         </ul>
-                    </div>
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 @endsection

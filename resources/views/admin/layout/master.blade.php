@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/dist/admin-lte.blue-skin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/dist/bootstrap-glyphicons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/dist/bootstrap3-wysiwyg.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/dist/pickaday.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/app.css') }}">
 </head>
 <body class="hold-transition skin-blue sidebar-mini @yield('body_class')">
@@ -26,7 +27,8 @@
     <script src="{{ asset('assets/admin/dist/wysihtml5x-toolbar.min.js') }}"></script>
     <script src="{{ asset('assets/admin/dist/handlebars.runtime.min.js') }}"></script>
     <script src="{{ asset('assets/admin/dist/bootstrap3-wysihtml5.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="{{ asset('assets/admin/dist/pickaday.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/dist/chart.min.js') }}"></script>
 
     @stack('inline_scripts')
 </body>
