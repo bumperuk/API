@@ -42,7 +42,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
      */
     Route::group(['middleware' => 'jwt'], function () {
 
-        Route::post('auth/logout', 'V1\AuthController@logout');
+        Route::post('auth/logout', 'V1\AuthController@logout')->name('logout');
 
         Route::group(['prefix' => 'adverts'], function () {
             Route::delete('/', 'V1\UploadController@delete');

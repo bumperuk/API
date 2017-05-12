@@ -53,6 +53,29 @@ class AccountControllerTest extends TestCase
             ->seeJson(['phone' => '08787878787']);
     }
 
+    public function testCanUploadWithPromotions()
+    {
+
+        $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);
+        factory(\App\Models\Promotion::class)->create([
+            'user_id' => $user->id,
+            'listings' => 5,
+        ]);
+        factory(\App\Models\Vehicle::class, 4)->create([
+            'user_id' => $user->id,
+            'paid_at' => Carbon::now(),
+            'deactivated_at' => Carbon::now()->addWeek()
+        ]);
+
+        $this
+            ->withToken($user)
+            ->apiCall('GET', 'api/v1/account/can-upload')
+            ->seeJson(['user_type' => 'private'])
+            ->seeJson(['can_upload' => true])
+            ->seeJson(['active' => 4])
+            ->seeJson(['limit' => 8]);
+    }
+
     public function testCanUploadPrivate()
     {
         $user = factory(\App\Models\User::class)->create(['dealer_rank_id' => null]);

@@ -108,7 +108,7 @@ class AuthControllerTest extends TestCase
             ->withToken($user)
             ->apiCall('GET', 'api/v1/categories')
             ->seeError(401)
-            ->seeText('user_deactivated');
+            ->seeText('Your account has been deactivated');
     }
 
     public function testRequestPasswordInvalidEmail()

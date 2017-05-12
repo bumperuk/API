@@ -154,17 +154,51 @@ class User extends Authenticatable
     }
 
     /**
+     * Promotions associated with the user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function promotions()
+    {
+        return $this->hasMany(Promotion::class);
+    }
+
+    /**
+     * Total promotions.
+     *
+     * @return int
+     */
+    public function getTotalPromotionsAttribute()
+    {
+        return $this->promotions()->active()->sum('listings');
+    }
+    /**
+     * Promotions remaining.
+     *
+     * @return int
+     */
+    public function getPromotionsRemainingAttribute()
+    {
+        $promotions = $this->total_promotions;
+        $vehicles = $this->vehicles()->where('payment_method', 'promotion')->count();
+
+        return $promotions - $vehicles;
+    }
+
+    /**
      * The maximum amount of vehicles that can be active at once.
      *
      * @return int
      */
     public function getVehicleLimitAttribute()
     {
+        $promotions = $this->total_promotions;
+
         if ($this->type == 'private') {
-            return 3;
+            return 3 + $promotions;
         }
 
-        return $this->dealerRank->limit;
+        return $this->dealerRank->limit + $promotions;
     }
 
     /**

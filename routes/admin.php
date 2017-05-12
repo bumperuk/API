@@ -35,6 +35,12 @@ Route::group(['middleware' => 'require.admin'], function() {
         Route::post('/{id}/delete', 'VehicleController@delete');
     });
 
+    Route::group(['prefix' => 'promotions'], function() {
+        Route::get('', 'PromotionController@index');
+        Route::post('', 'PromotionController@create');
+        Route::post('{id}/delete', 'PromotionController@delete');
+    });
+
     Route::get('/statistics/{page}', 'StatisticsController@get');
 
 });

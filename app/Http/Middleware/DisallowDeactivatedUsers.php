@@ -17,13 +17,14 @@ class DisallowDeactivatedUsers
      */
     public function handle($request, Closure $next)
     {
-        $response =  $next($request);
+        $response = $next($request);
 
         if (
             Auth::check() &&
-            Auth::user()->deactivated_at !== null
+            Auth::user()->deactivated_at !== null &&
+            $request->route()->getName() != 'logout'
         ) {
-            return $this->jsonResponse('user_deactivated', 401);
+            return $this->jsonResponse('Your account has been deactivated. Please contact ' . config('mail.contact') . ' for more information.', 401);
         }
 
         return $response;
