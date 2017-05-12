@@ -112,4 +112,6 @@ return [
 
     'sendmail' => '/usr/sbin/sendmail -bs',
 
+    'contact' => 'info@bumperuk.co.uk',
+
 ];

@@ -322,3 +322,13 @@ $factory->define(App\Models\PasswordReset::class, function (Faker\Generator $fak
         }
     ];
 });
+
+$factory->define(App\Models\Promotion::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => function() {
+            return factory(\App\Models\User::class)->create()->id;
+        },
+        'listings' => $faker->numberBetween(1, 10),
+        'valid_until' => $faker->dateTimeBetween('now', '+ 2 months'),
+    ];
+});
