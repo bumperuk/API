@@ -84,10 +84,10 @@ class CheckSubscriptionCommand extends Command
 
             //Downgrade vehicles
             
-            $vehicles = $user->vehicles()->get();
+            $vehicles = $user->vehicles()->where('payment_method', 'dealer')->get();
 
             foreach ($vehicles as $vehicle) {
-                $vehicle->deactivated_at = $vehicle->paid_at->addWeek();
+                $vehicle->deactivated_at = Carbon::now();
                 $vehicle->save();
             }
         }

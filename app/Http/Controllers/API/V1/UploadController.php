@@ -105,6 +105,10 @@ class UploadController extends ApiController
 
         if ($user->type == 'dealer') {
             $vehicle->paid_at = Carbon::now();
+            $vehicle->payment_method = 'dealer';
+        } elseif ($user->promotions_remaining > 0) {
+            $vehicle->paid_at = Carbon::now();
+            $vehicle->payment_method = 'promotion';
         }
 
         if ($vehicle->call_number) {
@@ -291,7 +295,8 @@ class UploadController extends ApiController
         } else {
             $vehicle->deactivated_at = $vehicle->deactivated_at->addWeek();
         }
-        
+
+        $vehicle->payment_method = 'private';
         $vehicle->paid_at = Carbon::now();
         $vehicle->save();
 

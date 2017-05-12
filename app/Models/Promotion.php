@@ -20,7 +20,7 @@ class Promotion extends Model
      */
     public function scopeActive(Builder $builder)
     {
-        return $builder->where('valid_until', '>', Carbon::now());
+        return $builder->where('valid_until', '>', Carbon::now()->addDay());
     }
 
     /**

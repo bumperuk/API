@@ -164,13 +164,35 @@ class User extends Authenticatable
     }
 
     /**
+     * Total promotions.
+     *
+     * @return int
+     */
+    public function getTotalPromotionsAttribute()
+    {
+        return $this->promotions()->active()->sum('listings');
+    }
+    /**
+     * Promotions remaining.
+     *
+     * @return int
+     */
+    public function getPromotionsRemainingAttribute()
+    {
+        $promotions = $this->total_promotions;
+        $vehicles = $this->vehicles()->where('payment_method', 'promotion')->count();
+
+        return $promotions - $vehicles;
+    }
+
+    /**
      * The maximum amount of vehicles that can be active at once.
      *
      * @return int
      */
     public function getVehicleLimitAttribute()
     {
-        $promotions = $this->promotions()->active()->sum('listings');
+        $promotions = $this->total_promotions;
 
         if ($this->type == 'private') {
             return 3 + $promotions;
