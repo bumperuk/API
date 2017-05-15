@@ -52,7 +52,7 @@
                     </table>
                 @endif
             </div>
-            @if ($records->hasMorePages())
+            @if ($records->lastPage() !== 1)
                 <div class="box-footer clearfix">
                     <div class="table-pagination">
                         {{ $records->appends(['q' => Request::input('q')])->links() }}
