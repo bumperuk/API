@@ -11,9 +11,8 @@ stages:
 unit_test:
   type: test
   image: laradock/workspace:latest
-  services:
-    - mysql:latest
   script:
+    - docker run --name=mysql mysql:latest
     - composer install --no-progress --no-interaction
     - mkdir -p public/uploads
     - chmod -R 777 public/uploads
