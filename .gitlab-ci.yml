@@ -10,9 +10,9 @@ stages:
 
 unit_test:
   type: test
-  image: laradock/workspace:1.3
+  image: laradock/workspace:latest
   services:
-    - mysql/mysql-server:8.0
+    - mysql:latest
   script:
     - composer install --no-progress --no-interaction
     - mkdir -p public/uploads
