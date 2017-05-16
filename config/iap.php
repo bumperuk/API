@@ -14,7 +14,6 @@ return [
 
     'itunes' => [
         'product_id' => 'uk.co.bumper.Bumper.PrivateSellerAdvert',
-        'play' => '',
     ]
 
 ];
