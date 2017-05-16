@@ -49,10 +49,10 @@ class AppDataTransformer {
 
         if ($filter->order_property && $filter->order_direction) {
             //Always put null last
-            $options = $options->orderByRaw('CASE WHEN ? IS NULL THEN 1 ELSE 0 END, ? ' . $filter->order_direction,[
-                $filter->order_property,
-                $filter->order_property,
-            ]);
+            $options = $options->orderByRaw(
+                'CASE WHEN ' . $filter->order_property . ' IS NULL THEN 1 ELSE 0 END, ' .
+                    $filter->order_property.' ' . $filter->order_direction
+            );
         }
 
         $options = $options->get();
