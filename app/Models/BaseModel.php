@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: eg
- * Date: 14/09/16
- * Time: 15:43
- */
 
 namespace App\Models;
-
 
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
