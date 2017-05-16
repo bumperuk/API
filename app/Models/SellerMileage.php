@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class SellerMileage extends Model
+class SellerMileage extends BaseModel
 {
     //
 }
