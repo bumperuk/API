@@ -14,7 +14,7 @@ class ImportVehiclesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'import:vehicles {category_id} {file}';
+    protected $signature = 'import:vehicles {category_id} {image_category_id} {file}';
 
     /**
      * The console command description.
@@ -106,12 +106,20 @@ class ImportVehiclesCommand extends Command
 
     private function findLogo($makeName)
     {
-        $fileName = strtolower($makeName) . '.png';
+        $imageCategory = $this->argument('image_category_id');
+        $match = null;
 
-        if (file_exists(public_path('assets/makes/' . $fileName))) {
-            return $fileName;
+        foreach (glob(public_path('assets/makes/' . $imageCategory . '/*')) as $file) {
+            $matchFile =  basename(str_replace(' ', '', strtolower($file)));
+            foreach (['png', 'jpg'] as $extension) {
+                $makeNameMatch = strtolower($makeName) . '.' . $extension;
+                similar_text($makeNameMatch, $matchFile, $percentage);
+                if ($percentage > 90) {
+                    $match = $imageCategory . '/' . basename($file);
+                }
+            }
         }
 
-        return null;
+        return $match;
     }
 }
