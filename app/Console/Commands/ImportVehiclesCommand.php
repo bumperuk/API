@@ -54,6 +54,7 @@ class ImportVehiclesCommand extends Command
                     'value' => $makeValue,
                 ]);
             $make->category_id = $category->id;
+            $make->logo = $this->findLogo($makeValue);
             $make->save();
 
             $model = new Model();
@@ -101,5 +102,16 @@ class ImportVehiclesCommand extends Command
         }
 
         return $data;
+    }
+
+    private function findLogo($makeName)
+    {
+        $fileName = strtolower($makeName) . '.png';
+
+        if (file_exists(public_path('assets/makes/' . $fileName))) {
+            return $fileName;
+        }
+
+        return null;
     }
 }
