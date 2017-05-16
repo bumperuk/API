@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Models\Extensions\UnlistedValueAttribute;
-use Illuminate\Database\Eloquent\Model;
 
-class Berth extends Model
+class Berth extends BaseModel
 {
     use UnlistedValueAttribute;
 

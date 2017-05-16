@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
-class Promotion extends Model
+class Promotion extends BaseModel
 {
     protected $casts = [
         'valid_until' => 'timestamp'

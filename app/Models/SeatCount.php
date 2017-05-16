@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Models\Extensions\UnlistedValueAttribute;
-use Illuminate\Database\Eloquent\Model;
 
-class SeatCount extends Model
+class SeatCount extends BaseModel
 {
     use UnlistedValueAttribute;
 

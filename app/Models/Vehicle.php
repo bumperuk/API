@@ -3,11 +3,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+
 
 class Vehicle extends BaseModel
 {
