@@ -48,7 +48,11 @@ class AppDataTransformer {
         $options = $model::where('category_id', $this->category->id);
 
         if ($filter->order_property && $filter->order_direction) {
-            $options = $options->orderBy($filter->order_property, $filter->order_direction);
+            //Always put null last
+            $options = $options->orderByRaw('CASE WHEN ? IS NULL THEN 1 ELSE 0 END, ? ' . $filter->order_direction,[
+                $filter->order_property,
+                $filter->order_property,
+            ]);
         }
 
         $options = $options->get();
