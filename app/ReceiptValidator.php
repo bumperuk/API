@@ -23,11 +23,11 @@ class ReceiptValidator
 {
     public function validateItunesConsumable($receipt, $transactionID): bool
     {
-        $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX :  ItunesValidator::ENDPOINT_PRODUCTION;
+        $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX : ItunesValidator::ENDPOINT_PRODUCTION;
         $validator = new ItunesValidator($mode);
 
         try {
-            $response = $validator->setReceiptData($receipt)->validate();
+            $response = $validator->setReceiptData($receipt)->setSharedSecret(env('RECEIPT_ITUNES_SECRET'))->validate();
             $purchases = $response->getPurchases();
 
             if (!$response->isValid()) {
@@ -74,6 +74,11 @@ class ReceiptValidator
                 ->setProductId(config('iap.play.product_id'))
                 ->setPurchaseToken($token)
                 ->validatePurchase();
+
+            if (UsedReceipt::where('receipt_id', $token)->where('type', 'play')->count()) {
+                Log::error('Invalid Play token: ' . $token . '. Error: Already used');
+                return false;
+            }
 
             $usedReceipt = new UsedReceipt();
             $usedReceipt->receipt_id = $token;
