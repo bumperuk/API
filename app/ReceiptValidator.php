@@ -31,6 +31,7 @@ class ReceiptValidator
             $purchases = $response->getPurchases();
 
             if (!$response->isValid()) {
+                Log::error('Invalid iTunes receipt: ' . $receipt);
                 return false;
             }
 
