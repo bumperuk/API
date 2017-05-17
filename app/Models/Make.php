@@ -10,6 +10,10 @@ class Make extends BaseModel
 
     public function getLogoAttribute()
     {
+        if ($this->attributes['logo'] == null) {
+            return null;
+        }
+
         return url('assets/makes/' . $this->attributes['logo']);
     }
 }
