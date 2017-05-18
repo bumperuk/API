@@ -9,7 +9,7 @@
 
         <div class="login-box-body">
             <div class="login-logo">
-                <a href="{{ url('admin') }}">{{ config('app.name') }}</a>
+                <a href="{{ url('admin') }}">{{ config('app.name') }} Admin</a>
             </div>
             <form action="{{ url('admin') }}" method="post">
                 @if (!$errors->isEmpty())
