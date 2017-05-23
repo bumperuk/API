@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -59,15 +60,18 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'email' => 'required|unique:users,email,' . $id,
-            'phone' => 'required|unique:users,phone,' . $id,
             'deactivated' => '',
             'password' => '',
         ]);
 
+        $phone = $request->input('phone');
+
         $user = User::findOrFail($id);
         $user->email = $request->input('email');
-        $user->phone = $request->input('phone');
+        $user->phone = $phone != '' ? $phone : null;
         $user->save();
+
+        Session::put('success_message', 'The user details were updated.');
 
         return back();
     }
@@ -83,6 +87,12 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->deactivated_at = $request->has('deactivate') ? Carbon::now() : null;
         $user->save();
+
+        Session::put('success_message', (
+            $request->has('deactivate') ?
+                'The user was deactivated.' :
+                'The user was reactivated.'
+        ));
 
         return redirect('admin/users/' . $id);
     }
@@ -102,6 +112,8 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->password = $request->input('password');
         $user->save();
+
+        Session::put('success_message', 'The users password was changed.');
 
         return back();
     }
