@@ -1,6 +1,6 @@
 @extends('admin.layout.page')
 
-@section('title', 'Users &#187; ' . $user->email)
+@section('title', 'Users &#187; ' . str_limit($user->email, 30))
 
 @section('content')
     @include('admin.layout.errors')
