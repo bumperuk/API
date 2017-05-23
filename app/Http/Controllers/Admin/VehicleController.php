@@ -11,6 +11,7 @@ use App\Models\UserReport;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class VehicleController extends Controller
 {
@@ -25,9 +26,17 @@ class VehicleController extends Controller
 
         if ($request->has('q')) {
             $query = '%' . $request->input('q') . '%';
-            $vehicles = Vehicle::whereHas('user', function($user) use ($query) {
-                $user->where('email', 'LIKE', $query);
-            });
+            $vehicles = Vehicle
+                ::whereHas('user', function ($user) use ($query) {
+                    $user->where('email', 'LIKE', $query);
+                })
+                ->orWhereHas('model', function ($model) use ($query) {
+                    $model
+                        ->whereHas('make', function ($make) use ($query) {
+                            $make->where('value', 'LIKE', $query);
+                        })
+                        ->orWhere('value', 'LIKE', $query);
+                });
         }
 
         $vehicles = $vehicles->orderBy('created_at', 'desc')->paginate(20);
@@ -62,6 +71,8 @@ class VehicleController extends Controller
     {
         $vehicle = Vehicle::withTrashed()->findOrFail($id);
         $vehicle->delete();
+
+        Session::put('The vehicle was deleted.');
 
         return redirect('admin/listings');
     }

@@ -76,6 +76,15 @@
                         line: {
                             tension: 0
                         }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                callback: function (value) { if (Number.isInteger(value)) { return value; } },
+                                stepSize: 1
+                            }
+                        }]
                     }
                 }
             });

@@ -35,9 +35,10 @@
     border: 1px solid #d2d6de;
     width: 160px;
     height: 100px;
-    background-size: contain;
     margin-right: 15px;
     margin-bottom: 15px;
+    background: #222d32 no-repeat center;
+    background-size: cover;
 }
 
 .statistics-box {
