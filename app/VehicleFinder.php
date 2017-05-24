@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VehicleFinder
 {
@@ -116,19 +117,24 @@ class VehicleFinder
         $category = $this->category;
 
         $vehicles = Vehicle
-            ::active()
-            ->whereHas('model', function($model) use ($category) {
+            ::select('vehicles.*')
+            ->active()
+            ->whereHas('model', function ($model) use ($category) {
                 $model->where('category_id', $category);
             });
 
-        if ($this->order == 'distance-asc') {
+        if ($this->order == 'distance-asc' && !is_null($this->lat) && !is_null($this->lon)) {
+            $lat = floatval($this->lat);
+            $lon = floatval($this->lon);
             $vehicles = $vehicles->selectRaw('
-                *, (
-                     3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
-                     cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
+                vehicles.*, (
+                     3959 * acos(cos(radians(' . $lat . ')) * cos(radians(vehicles.lat)) *
+                     cos(radians(vehicles.lon) - radians(' . $lon . ')) + sin(radians(' . $lat . ')) *
                      sin(radians(vehicles.lat)))
                 ) AS distance
             ');
+        } elseif ($this->order == 'distance-asc') {
+            throw new VehicleFinderException('Cannot order by distance without the parameters lat and lon.');
         }
 
         if ($this->order == 'make-asc') {
@@ -148,8 +154,27 @@ class VehicleFinder
         $vehicles = $this->doEngineFilter($vehicles);
         $vehicles = $this->doOrder($vehicles);
 
-        $results = $vehicles->paginate($perPage);
+        $results = $this->fetchResults($vehicles, $perPage);
         $results->appends($this->request->except('page'));
+
+        return $results;
+    }
+
+    private function fetchResults(Builder $vehicles, $perPage)
+    {
+        $results = $vehicles->paginate($perPage);
+
+        if ($results->getCollection()->count() == 0) {
+            return $results;
+        }
+
+        //Using joins breaks laravel relationships so the models must be reloaded
+        $ids = $results->pluck('id')->toArray();
+        $newVehicles = Vehicle
+            ::whereIn('id', $ids)
+            ->orderByRaw(DB::raw('FIELD(id, ' . implode(',', $ids) . ')'))
+            ->get();
+        $results->setCollection($newVehicles);
 
         return $results;
     }
