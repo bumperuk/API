@@ -226,22 +226,18 @@ class AccountController extends ApiController
             $user->receipt_type = $receiptType;
             $user->receipt_checked_at = Carbon::now();
 
-            $used = 0;
-            $vehicles = $user->vehicles()->orderBy('paid_at', 'desc')->get();
+            $vehicles = $user
+                ->vehicles()
+                ->inactive()
+                ->orderBy('paid_at', 'desc')
+                ->take($rank->limit)
+                ->get();
 
             foreach ($vehicles as $vehicle) {
-
-                $used += (int) $vehicle->active;
-
-                if ($used > $user->vehicle_limit) {
-                    $vehicle->deactivated_at = Carbon::now();
-                } else {
-                    $vehicle->paid_at = Carbon::now();
-                    $vehicle->deactivated_at = null;
-                }
-
+                $vehicle->payment_method = 'dealer';
+                $vehicle->paid_at = Carbon::now();
+                $vehicle->deactivated_at = null;
                 $vehicle->save();
-
             }
 
         } else {

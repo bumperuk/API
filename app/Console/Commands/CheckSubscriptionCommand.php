@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\DealerRank;
 use App\Models\User;
 use App\ReceiptValidator;
 use Carbon\Carbon;
@@ -73,10 +74,10 @@ class CheckSubscriptionCommand extends Command
             $rank = $validator->validateItunesSubscription($user->receipt['receipt']);
         }
 
-        if ($rank) {
+        if ($rank === false) {
             $user->dealerRank()->associate($rank);
             $user->receipt_checked_at = Carbon::now();
-        } else {
+        } elseif ($rank instanceof DealerRank) {
             $user->dealerRank()->dissociate();
             $user->receipt = null;
             $user->receipt_type = null;
