@@ -290,14 +290,15 @@ class UploadController extends ApiController
             return $this->api_response([], 'Invalid IAP receipt.', false, 400);
         }
 
+        $vehicle->payment_method = 'private';
+        $vehicle->paid_at = Carbon::now();
+
         if (!$vehicle->deactivated_at || Carbon::now()->gt($vehicle->deactivated_at)) {
             $vehicle->deactivated_at = Carbon::now()->addWeek();
         } else {
             $vehicle->deactivated_at = $vehicle->deactivated_at->addWeek();
         }
 
-        $vehicle->payment_method = 'private';
-        $vehicle->paid_at = Carbon::now();
         $vehicle->save();
 
         return $this->api_response($vehicle);

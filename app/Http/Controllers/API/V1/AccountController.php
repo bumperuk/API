@@ -218,7 +218,7 @@ class AccountController extends ApiController
             $receipt = null;
         }
 
-        if ($rank || shouldMock()) {
+        if ($rank) {
             if ($rank) {
                 $user->dealerRank()->associate($rank);
             }
@@ -226,24 +226,23 @@ class AccountController extends ApiController
             $user->receipt_type = $receiptType;
             $user->receipt_checked_at = Carbon::now();
 
-            $used = 0;
-            $vehicles = $user->vehicles()->orderBy('paid_at', 'desc')->get();
+            $limit = $rank->limit - $user->vehicles()->active()->where('payment_method', 'dealer')->count();
 
-            foreach ($vehicles as $vehicle) {
+            if ($limit > 0) {
+                $vehicles = $user
+                    ->vehicles()
+                    ->inactive()
+                    ->orderBy('paid_at', 'desc')
+                    ->take($rank->limit)
+                    ->get();
 
-                $used += (int) $vehicle->active;
-
-                if ($used > $user->vehicle_limit) {
-                    $vehicle->deactivated_at = Carbon::now();
-                } else {
+                foreach ($vehicles as $vehicle) {
+                    $vehicle->payment_method = 'dealer';
                     $vehicle->paid_at = Carbon::now();
                     $vehicle->deactivated_at = null;
+                    $vehicle->save();
                 }
-
-                $vehicle->save();
-
             }
-
         } else {
             $user->dealerRank()->dissociate();
             $user->receipt = null;

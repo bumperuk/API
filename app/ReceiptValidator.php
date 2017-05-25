@@ -92,8 +92,21 @@ class ReceiptValidator
         }
     }
 
+    /**
+     * Validate an itunes store subscription
+     *
+     * @param $receipt
+     * @return bool|null|DealerRank
+     *          false If the user subscription is invalid
+     *          null If it could't be determined
+     *          DealerRank If the user does have a subscription
+     */
     public function validateItunesSubscription($receipt)
     {
+        if (shouldMock()) {
+            return DealerRank::first();
+        }
+
         $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX :  ItunesValidator::ENDPOINT_PRODUCTION;
         $validator = new ItunesValidator($mode);
         $ranks = DealerRank::all();
@@ -103,31 +116,47 @@ class ReceiptValidator
             $response = $validator->setSharedSecret(env('RECEIPT_ITUNES_SECRET'))->setReceiptData($receipt)->validate();
             $purchases = $response->getPurchases();
 
+            if ($response->getResultCode() != 0) {
+                return null;
+            }
+
             foreach ($purchases as $purchase) {
 
                 $rank = $this->getRankForProduct($purchase['product_id'], 'itunes', $ranks);
 
                 if (
-                    !isset($purchase['expires_date_ms']) || //Not subscription
-                    $purchase['expires_date_ms'] < time()*1000  || // Purchase expired
-                    !$rank || // Product not in database
-                    ($bestRank && $bestRank->limit < $rank->limit) //Already has a subscription for a larger number of vehicles
+                    isset($purchase['expires_date_ms']) && //Is a subscription
+                    $purchase['expires_date_ms'] > time()*1000  && // Purchase not expired
+                    $rank && // Product in database
+                    (!$bestRank || $bestRank->limit <= $rank->limit) //If there isn't already a subscription or the new subscription has a bigger limit
                 ) {
-                    continue;
+                    $bestRank = $rank;
                 }
-
-                $bestRank = $rank;
             }
 
-            return $bestRank;
+            return $bestRank ?? false;
         } catch (\Exception $e) {
             Log::error('Invalid iTunes subscription receipt: ' . $receipt . '. Error: ' . $e->getMessage());
-            return false;
+            return null;
         }
     }
 
+    /**
+     * Validate an play store subscription
+     *
+     * @param $productId
+     * @param $token
+     * @return bool|null|DealerRank
+     *          false If the user subscription is invalid
+     *          null If it could't be determined
+     *          DealerRank If the user does have a subscription
+     */
     public function validatePlaySubscription($productId, $token)
     {
+        if (shouldMock()) {
+            return DealerRank::first();
+        }
+
         $client = new Google_Client();
         $client->setApplicationName(config('iap.play.app'));
         $client->setAuthConfig(config_path('iap.play-auth.json'));
@@ -155,15 +184,17 @@ class ReceiptValidator
             $expiry = $property->getValue($response)->expiryTimeMillis / 1000;
 
             if (
-                $rank && //If the rank exists
+                $rank  && //If the rank exists
                 $expiry > time() //The subscription hasn't expired
             ) {
                 return $rank;
             }
 
+            return false;
+
         } catch (\Exception $e) {
             Log::error('Invalid Play token: ' . $token . '. Error: ' . $e->getMessage());
-            return false;
+            return null;
         }
     }
 

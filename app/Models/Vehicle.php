@@ -86,6 +86,24 @@ class Vehicle extends BaseModel
     }
 
     /**
+     * Only select inactive vehicles.
+     *
+     * @param Builder $builder
+     */
+    public function scopeInactive(Builder $builder)
+    {
+        $builder->where(function (Builder $builder) {
+            $builder
+                ->whereNull('paid_at')
+                ->orWhere(function(Builder $builder) {
+                    $builder
+                        ->whereNotNull('deactivated_at')
+                        ->where('deactivated_at', '<=', Carbon::now());
+                });
+        });
+    }
+
+    /**
      * Boolean to determine if the vehicle is viewable at the moment
      *
      * @return bool
