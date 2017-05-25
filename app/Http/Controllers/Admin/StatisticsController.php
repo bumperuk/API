@@ -64,6 +64,8 @@ class StatisticsController
         return view('admin.statistics.index', [
             'page' => $page,
             'report' => $report,
+            'xLabel' => $graph['xLabel'],
+            'yLabel' => $graph['yLabel'],
             'x' => $graph['x'],
             'y' => $graph['y'],
             'type' => $graph['type'],
@@ -90,6 +92,8 @@ class StatisticsController
         $graph = new Graph($values);
 
         return [
+            'xLabel' => 'Day',
+            'yLabel' => 'Active Listings',
             'x' => $graph->getXDateValues('d/m/Y'),
             'y' => $graph->getYValues(),
             'type' => 'line',
@@ -116,6 +120,8 @@ class StatisticsController
         $graph = new Graph($values);
 
         return [
+            'xLabel' => 'Month',
+            'yLabel' => 'Active Listings',
             'x' => $graph->getXDateValues('M Y'),
             'y' => $graph->getYValues(),
             'type' => 'line',
@@ -137,6 +143,8 @@ class StatisticsController
         }
 
         return [
+            'xLabel' => 'Month',
+            'yLabel' => 'Cumulative Total Listings',
             'x' => $graph->getXDateValues('M Y'),
             'y' => $yVals,
             'type' => 'line',
@@ -158,6 +166,8 @@ class StatisticsController
         }
 
         return [
+            'xLabel' => 'Month',
+            'yLabel' => 'Registrations',
             'x' => $graph->getXDateValues('M Y'),
             'y' => $yVals,
             'type' => 'line',
@@ -170,6 +180,8 @@ class StatisticsController
         $factory = new GraphFactory(User::class);
         $graph = $factory->getDaily(Carbon::now()->subMonth(), Carbon::now());
         return [
+            'xLabel' => 'Day',
+            'yLabel' => 'Registrations',
             'x' => $graph->getXDateValues('d/m/Y'),
             'y' => $graph->getYValues(),
             'type' => 'line',
@@ -182,6 +194,8 @@ class StatisticsController
         $factory = new GraphFactory(User::class);
         $graph = $factory->getMonthly(Carbon::now()->subYear(), Carbon::now());
         return [
+            'xLabel' => 'Month',
+            'yLabel' => 'Registrations',
             'x' => $graph->getXDateValues('M Y'),
             'y' => $graph->getYValues(),
             'type' => 'line',
@@ -213,10 +227,12 @@ class StatisticsController
         }
 
         return [
+            'xLabel' => 'Category',
+            'yLabel' => 'Number of Listings',
             'x' => $xVals,
             'y' => $yVals,
             'type' => 'bar',
-            'description' => 'A breakdown of the categories which each listing is posted in.'
+            'description' => 'A breakdown of the categories that each listing is posted in.'
         ];
     }
 
@@ -240,6 +256,8 @@ class StatisticsController
         }
 
         return [
+            'xLabel' => 'Category',
+            'yLabel' => 'Number of Listings',
             'x' => $xVals,
             'y' => $yVals,
             'type' => 'bar',
@@ -278,6 +296,8 @@ class StatisticsController
         }
 
         return [
+            'xLabel' => 'Number of Listings Active',
+            'yLabel' => 'Users',
             'x' => $xVals,
             'y' => $yVals,
             'type' => 'bar',
@@ -312,6 +332,8 @@ class StatisticsController
         }
 
         return [
+            'xLabel' => 'Number of Listings',
+            'yLabel' => 'Users',
             'x' => $xVals,
             'y' => $yVals,
             'type' => 'bar',
