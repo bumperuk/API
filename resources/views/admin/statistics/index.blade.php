@@ -79,9 +79,19 @@
                     },
                     scales: {
                         yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{ $yLabel }}'
+                            },
                             ticks: {
                                 beginAtZero: true,
                                 callback: function (value) { if (Number.isInteger(value)) { return value; } },
+                            }
+                        }],
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{ $xLabel }}'
                             }
                         }]
                     }
