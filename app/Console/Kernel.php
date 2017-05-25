@@ -39,9 +39,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('notifications:renew')->hourly();
-        $schedule->command('subscriptions:check')->twiceDaily()->withoutOverlapping();
+        $schedule->command('subscriptions:check')->everyMinute()->withoutOverlapping();
         $schedule->command('promotions:check')->twiceDaily()->withoutOverlapping();
-        $schedule->command('vehicles:bubble')->everyMinute();
+        $schedule->command('vehicles:bubble')->everyMinute()->withoutOverlapping();
         $schedule->command('statistics:active-vehicles')->dailyAt('01:00');
     }
 

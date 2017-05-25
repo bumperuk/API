@@ -98,7 +98,7 @@ class Vehicle extends BaseModel
                 ->orWhere(function(Builder $builder) {
                     $builder
                         ->whereNotNull('deactivated_at')
-                        ->where('deactivated_at', '>', Carbon::now());
+                        ->where('deactivated_at', '<=', Carbon::now());
                 });
         });
     }

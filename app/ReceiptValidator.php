@@ -103,6 +103,10 @@ class ReceiptValidator
      */
     public function validateItunesSubscription($receipt)
     {
+        if (shouldMock()) {
+            return DealerRank::first();
+        }
+
         $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX :  ItunesValidator::ENDPOINT_PRODUCTION;
         $validator = new ItunesValidator($mode);
         $ranks = DealerRank::all();
@@ -121,9 +125,9 @@ class ReceiptValidator
                 $rank = $this->getRankForProduct($purchase['product_id'], 'itunes', $ranks);
 
                 if (
-                    isset($purchase['expires_date_ms']) || //Is a subscription
-                    $purchase['expires_date_ms'] > time()*1000  || // Purchase not expired
-                    !$rank || // Product in database
+                    isset($purchase['expires_date_ms']) && //Is a subscription
+                    $purchase['expires_date_ms'] > time()*1000  && // Purchase not expired
+                    $rank && // Product in database
                     (!$bestRank || $bestRank->limit <= $rank->limit) //If there isn't already a subscription or the new subscription has a bigger limit
                 ) {
                     $bestRank = $rank;
@@ -149,6 +153,10 @@ class ReceiptValidator
      */
     public function validatePlaySubscription($productId, $token)
     {
+        if (shouldMock()) {
+            return DealerRank::first();
+        }
+
         $client = new Google_Client();
         $client->setApplicationName(config('iap.play.app'));
         $client->setAuthConfig(config_path('iap.play-auth.json'));
@@ -176,7 +184,7 @@ class ReceiptValidator
             $expiry = $property->getValue($response)->expiryTimeMillis / 1000;
 
             if (
-                $rank && //If the rank exists
+                $rank  && //If the rank exists
                 $expiry > time() //The subscription hasn't expired
             ) {
                 return $rank;
