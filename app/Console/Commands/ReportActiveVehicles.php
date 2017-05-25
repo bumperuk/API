@@ -46,7 +46,7 @@ class ReportActiveVehicles extends Command
         $statistic->value = $active;
         $statistic->save();
 
-        $startOfMonth = Carbon::now()->startOfMonth();
+        $startOfMonth = Carbon::now()->startOfDay()->startOfMonth();
         $statistic = Statistic::firstOrNew(['date' => $startOfMonth, 'statistic' => 'active_vehicles_monthly']);
         $statistic->value = $active;
         $statistic->save();
