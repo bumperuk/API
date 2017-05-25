@@ -12,7 +12,7 @@
                     'User' => function($promotion) { return ['users/' . $promotion->user->id, $promotion->user->email]; },
                     'Listings' => 'listings',
                     'Used' => function($promotion) { return $promotion->user->vehicles()->active()->where('payment_method', 'promotion')->count(); },
-                    'Valid Until' => function($promotion) { return $promotion->created_at->format('d M Y'); },
+                    'Valid Until' => function($promotion) { return $promotion->valid_until->format('d M Y'); },
                     'Created' => function($promotion) { return $promotion->created_at->format('d M Y H:i'); },
                 ],
                 'buttons' => [
@@ -49,7 +49,7 @@
                             </div>
                         </form>
                     @else
-                        <p>Search for the user who you wish add a promotional code to.</p>
+                        <p>Search for the user who you wish to add promotional credit to.</p>
                         <form method="get" action="{{ url('admin/promotions') }}">
                             <div class="input-group">
                                 <input type="text" name="email" value="{{ $email or '' }}" placeholder="Email" class="form-control">
