@@ -12,6 +12,7 @@ use App\Models\Year;
 use App\ReceiptValidator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -96,6 +97,7 @@ class UploadController extends ApiController
 
         $photoFiles = $request->file('photos');
 
+        Log::error($_FILES);
         foreach ($photoFiles as $file) {
             $file = Image::make($file);
             $photo = new VehiclePhoto();
