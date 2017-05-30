@@ -97,10 +97,10 @@ class UploadController extends ApiController
 
         $photoFiles = $request->file('photos');
 
-        Log::error($_FILES);
-        foreach ($photoFiles as $file) {
+        foreach ($photoFiles as $i => $file) {
             $file = Image::make($file);
             $photo = new VehiclePhoto();
+            $photo->index = $i;
             $photo->upload($file);
             $vehicle->photos()->save($photo);
         }
@@ -199,7 +199,7 @@ class UploadController extends ApiController
         $existingPhotos = VehiclePhoto::where('vehicle_id', $vehicle->id)->get()->pluck('id');
 
         if ($request->has('photos')) {
-            foreach ($request->input('photos') as $photoId) {
+            foreach ($request->input('photos') as $i => $photoId) {
 
                 $photo = new VehiclePhoto();
                 $existingPhoto = VehiclePhoto::find($photoId);
@@ -209,14 +209,16 @@ class UploadController extends ApiController
                 }
 
                 $photo->url = $existingPhoto->name;
+                $photo->index = $i;
                 $vehicle->photos()->save($photo);
             }
         }
 
         if ($request->hasFile('photos')) {
-            foreach ($request->file('photos') as $photoFile) {
+            foreach ($request->file('photos') as $i => $photoFile) {
                 $photo = new VehiclePhoto();
                 $file = Image::make($photoFile);
+                $photo->index = $i;
                 $photo->upload($file);
 
                 $vehicle->photos()->save($photo);

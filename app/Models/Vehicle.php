@@ -122,7 +122,7 @@ class Vehicle extends BaseModel
      */
     public function photos()
     {
-        return $this->hasMany(VehiclePhoto::class);
+        return $this->hasMany(VehiclePhoto::class)->orderBy('index', 'asc');
     }
 
     /**
