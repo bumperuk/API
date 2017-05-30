@@ -79,7 +79,7 @@ class UploadController extends ApiController
         $vehicle->condition_id = $request->input('condition');
         $vehicle->color_id = $request->input('color');
         $vehicle->body_type_id = $request->input('body_type');
-        $vehicle->door_id = $request->input('doors');
+        $vehicle->door_id = $request->input('door');
         $vehicle->size_id = $request->input('size');
         $vehicle->fuel_id = $request->input('fuel');
         $vehicle->transmission_id = $request->input('transmission');
