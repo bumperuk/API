@@ -6,6 +6,7 @@ namespace App;
 use App\Models\Distance;
 use App\Models\Engine;
 use App\Models\Mileage;
+use App\Models\Price;
 use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
@@ -242,16 +243,12 @@ class VehicleFinder
 
     private function doPriceRangeFilter(Builder $builder): Builder
     {
-        if ($priceRange = $this->priceRangeFilter) {
+        if ($this->priceRangeFilter && $minPrice = Price::find($this->priceRangeFilter[0])) {
+            $builder = $builder->where('price', '>=', $minPrice->value);
+        }
 
-            if ($priceRange[0]) {
-                $builder = $builder->where('price', '>=', $priceRange[0]);
-            }
-
-            if ($priceRange[1]) {
-                $builder = $builder->where('price', '<=', $priceRange[1]);
-            }
-
+        if ($this->priceRangeFilter && $maxPrice = Price::find($this->priceRangeFilter[1])) {
+            $builder = $builder->where('price', '<=', $maxPrice->value);
         }
 
         return $builder;
