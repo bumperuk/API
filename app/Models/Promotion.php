@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Promotion extends BaseModel
 {
     protected $casts = [
-        'valid_until' => 'timestamp'
+        'valid_until' => 'datetime'
     ];
 
     /**
