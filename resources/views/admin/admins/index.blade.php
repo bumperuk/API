@@ -26,7 +26,7 @@
                                             <td>
                                                 @if ($admin->id != Auth::guard('admin')->user()->id)
                                                     <div class="pull-right">
-                                                        <form action="http://bumper.app/admin/admins/{{ $admin->id }}/delete" method="post">
+                                                        <form action="{{ url('admin/admins/' . $admin->id) }}/delete" method="post">
                                                             {{ csrf_field() }}
                                                             <input type="submit" value="Delete" class="btn btn-sm btn-default btn-flat">
                                                         </form>
