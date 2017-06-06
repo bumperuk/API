@@ -7,6 +7,7 @@ use App\Models\Distance;
 use App\Models\Engine;
 use App\Models\Mileage;
 use App\Models\Price;
+use App\Models\Seller;
 use App\Models\Vehicle;
 use App\Models\Year;
 use Illuminate\Database\Eloquent\Builder;
@@ -107,9 +108,7 @@ class VehicleFinder
 
     public function setSellerFilter($seller)
     {
-        if (in_array($seller, ['private', 'dealer'])) {
-            $this->sellerFilter = $seller;
-        }
+        $this->sellerFilter = $seller;
     }
 
     public function paginate(int $perPage)
@@ -278,8 +277,8 @@ class VehicleFinder
 
     private function doSellerFilter(Builder $builder): Builder
     {
-        if ($this->sellerFilter) {
-            $dealer = $this->sellerFilter == 'dealer';
+        if ($this->sellerFilter && $seller = Seller::find($this->sellerFilter)) {
+            $dealer = strtolower($seller->value) == 'dealer';
             $builder = $builder->whereHas('user', function ($user) use ($dealer) {
                 if ($dealer) {
                     $user->whereNotNull('dealer_rank_id');
