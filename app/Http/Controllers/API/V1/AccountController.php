@@ -123,7 +123,8 @@ class AccountController extends ApiController
             'user_type' => $user->type,
             'can_upload' => $user->canUpload(),
             'active' => $active,
-            'limit' => $limit
+            'limit' => $limit,
+            'promotion_limit' => $user->promotions_remaining,
         ]);
     }
 
