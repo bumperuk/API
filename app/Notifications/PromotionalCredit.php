@@ -42,8 +42,8 @@ class PromotionalCredit extends Notification
      */
     public function toOneSignal($notifiable)
     {
-        $text = 'You have received ' . $this->promotion->limit . ' ' .
-            str_plural('listing', $this->promotion->limit) . '! They will expire on ' .
+        $text = 'You have received ' . $this->promotion->listings . ' ' .
+            str_plural('listing', $this->promotion->listings) . '! They will expire on ' .
             $this->promotion->valid_until->format('d/m/Y') . '.';
 
         return OneSignalMessage::create()
