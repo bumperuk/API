@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Promotion;
 use App\Models\User;
+use App\Notifications\PromotionalCredit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -52,6 +53,8 @@ class PromotionController extends Controller
         $promotion->listings = $request->input('listings');
         $promotion->valid_until = $validUntil;
         $promotion->save();
+
+        $user->notify(new PromotionalCredit($promotion));
 
         return redirect('admin/promotions');
     }
