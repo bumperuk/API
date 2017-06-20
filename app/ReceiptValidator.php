@@ -21,14 +21,22 @@ use ReflectionClass;
  */
 class ReceiptValidator
 {
-    public function validateItunesConsumable($receipt, $transactionID): bool
+    public function validateItunesConsumable($receipt, $transactionID, $debugMode = null): bool
     {
-        $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX : ItunesValidator::ENDPOINT_PRODUCTION;
-        $validator = new ItunesValidator($mode);
+        if ($debugMode !== null) {
+            $mode = $debugMode ? ItunesValidator::ENDPOINT_SANDBOX : ItunesValidator::ENDPOINT_PRODUCTION;
+        } else {
+            $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX : ItunesValidator::ENDPOINT_PRODUCTION;
+        }
 
         try {
+            $validator = new ItunesValidator($mode);
             $response = $validator->setReceiptData($receipt)->setSharedSecret(env('RECEIPT_ITUNES_SECRET'))->validate();
             $purchases = $response->getPurchases();
+
+            if ($response->getResultCode() == 21007 && $debugMode == null) {
+                return $this->validateItunesConsumable($receipt, $transactionID, true);
+            }
 
             if (!$response->isValid()) {
                 Log::error('Invalid iTunes receipt: ' . $receipt);
@@ -96,18 +104,24 @@ class ReceiptValidator
      * Validate an itunes store subscription
      *
      * @param $receipt
-     * @return bool|null|DealerRank
+     * @param null $debugMode
+     * @return DealerRank|bool|null false If the user subscription is invalid
      *          false If the user subscription is invalid
      *          null If it could't be determined
      *          DealerRank If the user does have a subscription
      */
-    public function validateItunesSubscription($receipt)
+    public function validateItunesSubscription($receipt, $debugMode = null)
     {
         if (shouldMock()) {
             return DealerRank::first();
         }
 
-        $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX :  ItunesValidator::ENDPOINT_PRODUCTION;
+        if ($debugMode !== null) {
+            $mode = $debugMode ? ItunesValidator::ENDPOINT_SANDBOX : ItunesValidator::ENDPOINT_PRODUCTION;
+        } else {
+            $mode = env('RECEIPT_DEBUG') ? ItunesValidator::ENDPOINT_SANDBOX : ItunesValidator::ENDPOINT_PRODUCTION;
+        }
+
         $validator = new ItunesValidator($mode);
         $ranks = DealerRank::all();
         $bestRank = null;
@@ -116,7 +130,10 @@ class ReceiptValidator
             $response = $validator->setSharedSecret(env('RECEIPT_ITUNES_SECRET'))->setReceiptData($receipt)->validate();
             $purchases = $response->getPurchases();
 
-            if ($response->getResultCode() != 0) {
+            if ($response->getResultCode() == 21007 && $debugMode == null) {
+                return $this->validateItunesSubscription($receipt, true);
+            }
+            else if ($response->getResultCode() != 0) {
                 return null;
             }
 
