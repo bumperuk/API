@@ -37,9 +37,6 @@ class ReceiptValidator
             if ($response->getResultCode() == 21007 && $debugMode == null) {
                 return $this->validateItunesConsumable($receipt, $transactionID, true);
             }
-            else if ($response->getResultCode() != 0) {
-                return null;
-            }
 
             if (!$response->isValid()) {
                 Log::error('Invalid iTunes receipt: ' . $receipt);
