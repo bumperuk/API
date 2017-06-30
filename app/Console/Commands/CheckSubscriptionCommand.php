@@ -79,7 +79,6 @@ class CheckSubscriptionCommand extends Command
             $user->receipt_checked_at = Carbon::now();
         } elseif ($rank === false) {
             $user->dealerRank()->dissociate();
-            $user->receipt_type = null;
             $user->receipt_checked_at = null;
 
             //Downgrade vehicles
