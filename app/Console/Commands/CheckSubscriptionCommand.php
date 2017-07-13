@@ -89,6 +89,8 @@ class CheckSubscriptionCommand extends Command
                 $vehicle->deactivated_at = Carbon::now();
                 $vehicle->save();
             }
+        } else {
+            Log::error('[Subscription error] Could not validate receipt: ' . json_encode($user->receipt));
         }
 
         $user->save();
