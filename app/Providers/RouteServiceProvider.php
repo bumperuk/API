@@ -36,10 +36,9 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         $this->mapApiRoutes();
-
         $this->mapWebRoutes();
-
         $this->mapAdminRoutes();
+        $this->mapDealerRoutes();
     }
 
     /**
@@ -90,6 +89,22 @@ class RouteServiceProvider extends ServiceProvider
             'prefix' => 'admin'
         ], function () {
             require base_path('routes/admin.php');
+        });
+    }
+
+    /**
+     * Define the admin routes for the application.
+     *
+     * @return void
+     */
+    protected function mapDealerRoutes()
+    {
+        Route::group([
+            'middleware' => 'dealer',
+            'namespace' => $this->namespace . '\Dealer',
+            'prefix' => 'dealer'
+        ], function () {
+            require base_path('routes/dealer.php');
         });
     }
 }
