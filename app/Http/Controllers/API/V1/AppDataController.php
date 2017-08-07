@@ -8,24 +8,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
-
-use App\Models\BodyType;
 use App\Models\Category;
-use App\Models\Distance;
-use App\Models\Make;
-use App\Models\Model;
-use App\Models\Color;
-use App\Models\Condition;
-use App\Models\Door;
-use App\Models\Engine;
-use App\Models\Fuel;
-use App\Models\Mileage;
-use App\Models\Ownership;
-use App\Models\SeatCount;
-use App\Models\Size;
-use App\Models\TaxBand;
-use App\Models\Transmission;
-use App\Models\Year;
 use App\Transformers\AppDataTransformer;
 use Illuminate\Http\Request;
 
@@ -53,5 +36,19 @@ class AppDataController extends ApiController
         $transformer = new AppDataTransformer($category);
 
         return $this->api_response(['category' => $transformer->toArray()]);
+    }
+
+    public function getAll()
+    {
+        $categories = Category::all();
+
+        $categoryData = [];
+
+        foreach ($categories as $category) {
+            $transformer = new AppDataTransformer($category);
+            $categoryData[$category->id] = $transformer->toArray();
+        }
+
+        return $this->api_response(['categories' => $categoryData]);
     }
 }

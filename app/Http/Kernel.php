@@ -50,7 +50,13 @@ class Kernel extends HttpKernel
         ],
 
         'dealer' => [
-
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\IPLock::class
         ]
     ];
 
@@ -73,6 +79,7 @@ class Kernel extends HttpKernel
         'ip-lock' => \App\Http\Middleware\IPLock::class,
         'optional-jwt' => \App\Http\Middleware\OptionalJWT::class,
         'require.admin' => \App\Http\Middleware\RequireAdmin::class,
+        'require.dealer' => \App\Http\Middleware\RequireDealer::class,
         'disallow-deactivated' => \App\Http\Middleware\DisallowDeactivatedUsers::class,
     ];
 }

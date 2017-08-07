@@ -11,6 +11,7 @@
 Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], function () {
 
     Route::get('/app-data/{id}', 'V1\AppDataController@get');
+    Route::get('/app-data', 'V1\AppDataController@getAll');
     Route::get('/force-update', 'V1\AppDataController@update');
 
     Route::group(['prefix' => 'auth'], function () {
