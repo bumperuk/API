@@ -162,7 +162,10 @@ class UploadController extends ApiController
         $model = Model::findOrFail($request->input('model', $vehicle->model_id));
         $vehicle->model()->associate($model);
 
-        if ($request->input('lat') != $vehicle->lat || $request->input('lon') != $vehicle->lon) {
+        if (
+            ($request->input('lat') != $vehicle->lat || $request->input('lon') != $vehicle->lon) &&
+            $request->has(['lat', 'lon'])
+        ) {
             $vehicle->lat = $request->input('lat');
             $vehicle->lon = $request->input('lon');
             if (!shouldMock()) {
