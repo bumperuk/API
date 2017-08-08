@@ -176,13 +176,19 @@ function refresh()
             refreshVehicle(state.vehicles[i], row);
         }
 
-        $(".vehicle-input-with-placeholder").change(function () {
-            if ($(this).find('option:selected').val() === '-1') {
-                $(this).addClass('empty');
+        var updateDropDownState = function (el) {
+            if ($(el).find('option:selected').val() === '-1') {
+                $(el).addClass('empty');
             }
-            else $(this).removeClass('empty');
+            else $(el).removeClass('empty');
+        };
+
+        $('.vehicle-input-with-placeholder').change(function () {
+            updateDropDownState(this);
         });
-        $(".vehicle-input-with-placeholder").change();
+        $('.vehicle-input-with-placeholder').each(function(){
+            updateDropDownState(this);
+        });
     }
 }
 
@@ -190,7 +196,7 @@ function refreshVehicle(vehicle, el)
 {
     el.attr('data-vehicle-id', vehicle.id);
 
-    el.find('.model-selector input').keyup(function(e) {
+    el.find('.make-input').change(function(e) {
         alert('test');
     });
 
@@ -270,7 +276,7 @@ function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
     input.change(function() {
         var value = $(this).find('option:selected').val();
         var text = $(this).find('option:selected').text();
-        if (parseInt(value) !== -1 && vehicle.details[filter.key] !== text) {
+        if (vehicle.details[filter.key] !== text) {
             updateVehicle(vehicle.id, filter.key, value);
         }
     });
