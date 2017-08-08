@@ -7,6 +7,8 @@
         </div>
         <div class="col-xs-3 col-no-padding">
             <div class="model-selector">
+                <input type="text" placeholder="Make/Model" disabled="" class="vehicle-input">
+                <a href="#" class="pull-right">Change</a>
                 <input type="text" placeholder="Make/Model" class="vehicle-input">
                 <ul class="vehicle-input">
                     <li>Audi A4</li>
@@ -37,13 +39,13 @@
     </div>
 </div>
 
-<div id="template-vehicle-image">
+<div id="template-vehicle-image" class="template">
     <div class="vehicle-input existing-image-input">
         <div class="existing-image-delete">X</div>
     </div>
 </div>
 
-<div id="template-vehicle-detail-select">
+<div id="template-vehicle-detail-select" class="template">
     <select class="vehicle-input vehicle-input-with-placeholder">
     </select>
 </div>

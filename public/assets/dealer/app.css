@@ -8,6 +8,10 @@ body {
     display: none !important;
 }
 
+.no-click {
+    pointer-events: none;
+}
+
 /* Fonts */
 
 @font-face {
@@ -62,6 +66,10 @@ body {
     height: 6rem;
     line-height: 6rem;
     padding: 2rem;
+}
+
+.content-container-body {
+    display: none;
 }
 
 .content-container-grid {
@@ -129,6 +137,10 @@ body {
     border-bottom: 1px solid #C5C5C5;
     margin: 1rem 2rem;
     padding-bottom: 1rem;
+}
+
+.vehicle:last-child {
+    border-bottom: none;
 }
 
 .vehicle .col-no-padding {

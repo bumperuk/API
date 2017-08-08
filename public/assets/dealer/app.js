@@ -1,10 +1,39 @@
 
 var state = {
     error: false,
-    appData: null,
+    appData: [],
     vehicles: [],
     vehiclesModified: [],
-    selectedVehicle: 0
+    selectedVehicle: 0,
+    defaultVehicle: {
+        'id': null,
+        'price': null,
+        'lat': null,
+        'lon': null,
+        'description': null,
+        'details': {
+            'price': null,
+            'year': null,
+            'mileage': null,
+            'condition': null,
+            'color': null,
+            'body_type': null,
+            'door': null,
+            'size': null,
+            'seat_count': null,
+            'fuel': null,
+            'transmission': null,
+            'engine': null,
+            'tax_band': null,
+            'ownership': null,
+            'berth': null
+        },
+        'photos': [],
+        'model': null,
+        'call_number': null,
+        'sms_number': null,
+        'email': null
+    }
 };
 
 function setState(property, data)
@@ -104,7 +133,11 @@ function saveVehicle(id)
 
 function deleteVehicle(id)
 {
-
+    apiFetch('DELETE', 'adverts', {id: id}, function() {
+        var index = getVehicleIndex(id);
+        state.vehicles.splice(index, 1);
+        refresh();
+    });
 }
 
 function updateVehicle(id, attribute, value)
@@ -123,10 +156,17 @@ function updateVehicle(id, attribute, value)
 
 function refresh()
 {
-    $('.loading').toggle(!state.appData || !state.vehicles);
-    //$('.content-container-body').toggle(state.appData && state.vehicles);
+    $('.loading').toggle(state.appData.length === 0 || state.vehicles.length === 0);
+    $('.content-container-body').toggle(state.appData.length !== 0 && state.vehicles.length !== 0);
 
-    if (state.appData && state.vehicles && !state.error) {
+    if (state.appData.length !== 0 && state.vehicles.length !== 0 && !state.error) {
+
+        $('#add-vehicle').click(function() {
+            var row = template('vehicle');
+            row.prependTo($('.content-container-grid'));
+            state.vehicles.unshift($.extend({}, state.defaultVehicle));
+            refreshVehicle(state.vehicles[0], row);
+        });
 
         $('.content-container-grid').empty();
 
@@ -194,6 +234,7 @@ function refreshVehicle(vehicle, el)
         saveVehicle(vehicle.id);
     });
     el.find('.vehicle-delete-input').click(function() {
+        $(this).text('Deleting...').addClass('no-click');
         deleteVehicle(vehicle.id);
     });
 }

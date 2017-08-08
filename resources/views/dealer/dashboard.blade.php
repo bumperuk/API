@@ -11,7 +11,7 @@
     <div class="loading"><h1>Loading</h1></div>
     <div class="content-container-body">
         <div class="content-container-header">
-            <a href="#" class="btn btn-primary pull-right">Add Vehicle</a>
+            <a href="#" id="add-vehicle" class="btn btn-primary pull-right">Add Vehicle</a>
         </div>
         <div class="content-container">
             @include('dealer.partials.grid')
