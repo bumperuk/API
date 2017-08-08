@@ -6,17 +6,12 @@
             <div class="vehicle-input add-image-input">+</div>
         </div>
         <div class="col-xs-3 col-no-padding">
-            <div class="model-selector">
-                <input type="text" placeholder="Make/Model" disabled="" class="vehicle-input">
-                <a href="#" class="pull-right">Change</a>
-                <input type="text" placeholder="Make/Model" class="vehicle-input">
-                <ul class="vehicle-input">
-                    <li>Audi A4</li>
-                    <li>Audi A4</li>
-                    <li>Audi A4</li>
-                    <li>Audi A4</li>
-                </ul>
-            </div>
+            <select class="vehicle-input make-input vehicle-input-with-placeholder">
+                <option value="-1">Make</option>
+            </select>
+            <select class="vehicle-input model-input vehicle-input-with-placeholder">
+                <option value="-1">Model</option>
+            </select>
             <textarea placeholder="Description" class="vehicle-input description-input"></textarea>
         </div>
         <div class="col-xs-2 col-no-padding">

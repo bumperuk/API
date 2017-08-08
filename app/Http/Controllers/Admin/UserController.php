@@ -85,14 +85,22 @@ class UserController extends Controller
     public function delete(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
+        if ($request->has('delete')) {
+            $user->delete();
+            Vehicle::where('user_id', $user->id)->update(['deactivated_at' => Carbon::now()]);
+            return redirect('admin/users');
+        }
+
         $user->deactivated_at = $request->has('deactivate') ? Carbon::now() : null;
-        $user->save();
 
         Session::put('success_message', (
             $request->has('deactivate') ?
                 'The user was deactivated.' :
                 'The user was reactivated.'
         ));
+
+        $user->save();
 
         return redirect('admin/users/' . $id);
     }
