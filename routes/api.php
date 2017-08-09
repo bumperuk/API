@@ -53,6 +53,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
             Route::post('/', 'V1\UploadController@upload');
             Route::post('/edit', 'V1\UploadController@edit');
             Route::post('/renew', 'V1\UploadController@renew');
+            Route::post('/photo', 'V1\UploadController@photo');
         });
 
         Route::group(['prefix' => 'favourites'], function () {

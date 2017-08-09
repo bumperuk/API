@@ -174,8 +174,10 @@ function saveVehicle(id)
 function transformVehicleForSave(vehicle)
 {
     var newVehicle = $.extend({}, vehicle);
-console.log(vehicle);
-    newVehicle.model = vehicle.model_id;
+
+    if (vehicle.model_id) {
+        newVehicle.model = vehicle.model_id;
+    }
 
     return newVehicle;
 }
