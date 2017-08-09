@@ -220,3 +220,14 @@ body {
 .existing-image-input:hover .existing-image-delete {
     display: block;
 }
+
+.details-input-1, .details-input-2 {
+    display: none;
+}
+
+.details-hidden p {
+    color: gray;
+    width: 50%;
+    text-align: center;
+    margin: 0.5rem auto;
+}
