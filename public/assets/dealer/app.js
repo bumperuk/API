@@ -172,7 +172,7 @@ function fetchAppData()
 
 function saveVehicle(id)
 {
-    var data = transformVehicleForSave(getState('vehiclesModified.' + id));
+    var data = transformVehicleForSave(getState('vehicles.' + getVehicleIndex(id)), getState('vehiclesModified.' + id));
 
     var row = $('.vehicle[data-vehicle-id=' + id + ']');
     row.find('.vehicle-save-input').hide();
@@ -190,14 +190,55 @@ function saveImage(data, success) {
     });
 }
 
-function transformVehicleForSave(vehicle)
+function transformVehicleForSave(vehicle, modifiedVehicle)
 {
-    var newVehicle = $.extend({}, vehicle);
+    var getDetail = function(detail, property) {
+        if (typeof modifiedVehicle[property] !== 'undefined') {
+            return modifiedVehicle[property];
+        }
+        if (typeof vehicle[detail][property] !== 'undefined') {
+            return vehicle[detail][property];
+        }
+    };
 
-    if (vehicle.model_id) {
-        newVehicle.model = vehicle.model_id;
-    }
+    var get = function(property) {
+        if (typeof modifiedVehicle[property] !== 'undefined') {
+            return modifiedVehicle[property];
+        }
+        if (typeof vehicle[property] !== 'undefined') {
+            return vehicle[property];
+        }
+    };
 
+    var newVehicle = {};
+
+    newVehicle.id = vehicle.id;
+    newVehicle.model = vehicle.model_id;
+    newVehicle.photos = []; //todo
+    newVehicle.lat = 1; //todo
+    newVehicle.lon = 0; //todo
+    newVehicle.price = vehicle.details.price;
+    if (getDetail('details', 'year')) newVehicle.year = getDetail('details', 'year');
+    if (getDetail('details', 'mileage')) newVehicle.mileage = getDetail('details', 'mileage');
+    if (getDetail('detail_ids', 'condition')) newVehicle.condition = getDetail('detail_ids', 'condition');
+    if (getDetail('detail_ids', 'color')) newVehicle.color = getDetail('detail_ids', 'color');
+    if (getDetail('detail_ids', 'body_type')) newVehicle.body_type = getDetail('detail_ids', 'body_type');
+    if (getDetail('detail_ids', 'condition')) newVehicle.year = getDetail('detail_ids', 'condition');
+    if (getDetail('detail_ids', 'doors')) newVehicle.doors = getDetail('detail_ids', 'doors');
+    if (getDetail('detail_ids', 'size')) newVehicle.size = getDetail('detail_ids', 'size');
+    if (getDetail('detail_ids', 'fuel')) newVehicle.fuel = getDetail('detail_ids', 'fuel');
+    if (getDetail('detail_ids', 'transmission')) newVehicle.transmission = getDetail('detail_ids', 'transmission');
+    if (getDetail('detail_ids', 'engine')) newVehicle.engine = getDetail('detail_ids', 'engine');
+    if (getDetail('detail_ids', 'tax_band')) newVehicle.tax_band = getDetail('detail_ids', 'tax_band');
+    if (getDetail('detail_ids', 'ownership')) newVehicle.ownership = getDetail('detail_ids', 'ownership');
+    if (getDetail('detail_ids', 'seat_count')) newVehicle.seat_count = getDetail('detail_ids', 'seat_count');
+    if (getDetail('detail_ids', 'berth')) newVehicle.berth = getDetail('detail_ids', 'berth');
+    if (get('description')) newVehicle.description = get('description');
+    if (get('call_number')) newVehicle.call_number = get('call_number');
+    if (get('sms_number')) newVehicle.call_number = get('sms_number');
+    if (get('email')) newVehicle.email = get('email');
+
+console.log(newVehicle);
     return newVehicle;
 }
 
@@ -428,7 +469,7 @@ function refreshVehicleDetails(vehicle, el1, el2, elHidden)
 function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
 {
     var col1 = ['condition', 'year', 'engine', 'fuel', 'transmission'];
-    var col2 = ['mileages', 'body_type', 'door', 'sear_count', 'color', 'tax_band', 'ownership', 'seller', 'berth', 'size'];
+    var col2 = ['body_type', 'door', 'sear_count', 'color', 'tax_band', 'ownership', 'seller', 'berth', 'size'];
 
     var input = template('vehicle-detail-select');
     input.append('<option value="-1">' + filter.name + '</option>');
@@ -436,7 +477,8 @@ function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
         var item = filter.values[i];
         var itemId = Object.keys(item)[0];
         var itemValue = item[itemId];
-        var selected = vehicle.details[filter.key] === itemValue ? 'selected="selected"' : '';
+        var stringVehicleValue = '' + vehicle.details[filter.key];
+        var selected = stringVehicleValue === itemValue ? 'selected="selected"' : '';
         input.append('<option value="' + itemId +'" ' + selected + '>' + itemValue + '</option>');
     }
     input.change(function() {

@@ -152,6 +152,27 @@ trait VehicleAttributes
     }
 
     /**
+     * Put all vehicle attributes ids in a single array.
+     */
+    public function getDetailIdsAttribute()
+    {
+        $details = [];
+        $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'seatCount',
+            'fuel', 'transmission', 'engine', 'taxBand', 'ownership', 'berth'];
+
+        foreach ($keys as $key) {
+            $newKey = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $key));
+            if ($this->$key) {
+                $details[$newKey] = $this->$key->id;
+            } else {
+                $details[$newKey] = null;
+            }
+        }
+
+        return $details;
+    }
+
+    /**
      * Put all vehicle attributes in a single array in a human readable format.
      */
     public function getHumanDetailsAttribute()

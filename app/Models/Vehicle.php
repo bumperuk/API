@@ -26,7 +26,7 @@ class Vehicle extends BaseModel
     ];
 
     protected $appends = [
-        'details', 'has_reported', 'has_favourited', 'active'
+        'details', 'detail_ids', 'has_reported', 'has_favourited', 'active'
     ];
 
     protected $casts = [
