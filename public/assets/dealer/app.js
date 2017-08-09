@@ -175,6 +175,10 @@ function saveVehicle(id)
 {
     var data = transformVehicleForSave(getState('vehicles.' + getVehicleIndex(id)), getState('vehiclesModified.' + id));
 
+    if (!validateVehicleForSave(data)) {
+        return;
+    }
+
     var row = $('.vehicle[data-vehicle-id=' + id + ']');
     row.find('.vehicle-save-input').hide();
     row.find('.vehicle-saved-input').text('Saving...').show();
@@ -191,6 +195,27 @@ function saveImage(data, success) {
     apiFetch('POST', 'upload/photo', {'file': data}, function(data) {
         success(data.photo);
     });
+}
+
+function validateVehicleForSave(vehicle)
+{
+    //todo check for uploading images
+
+    if (vehicle.photos.length < 1) {
+        createError('Please upload at least one photo.');
+    }
+    else if (typeof vehicle.sms_number === 'undefined' && typeof vehicle.call_number === 'undefined' && typeof vehicle.sms_number === 'undefined') {
+        createError('Please provide at least one contact detail (email, sms number or phone number).');
+    }
+    else if (typeof vehicle.price === 'undefined') {
+        createError('Please provide the vehicles price.');
+    }
+    else if (typeof vehicle.mileage === 'undefined') {
+        createError('Please provide the vehicles mileage.');
+    }
+    else if (typeof vehicle.description === 'undefined' || vehicle.description === '' || vehicle.description === ' ') {
+        createError('Please provide a description for the vehicle.');
+    }
 }
 
 function transformVehicleForSave(vehicle, modifiedVehicle)
@@ -584,3 +609,11 @@ function refreshVehiclePhotos(vehicle, el)
     }
 }
 
+function createError(message)
+{
+    var error = $('<div class="popup-error">' + message + '</div>');
+    $(document.body).append(error);
+    window.setTimeout(function() {
+        error.hide();
+    }, 5000)
+}

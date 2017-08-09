@@ -243,3 +243,16 @@ body {
     text-align: center;
     margin: 0.5rem auto;
 }
+
+.popup-error {
+    position: fixed;
+    width: 40rem;
+    top: 3rem;
+    left: 50%;
+    margin-left: -20rem;
+    background: #d9534f;
+    padding: 1rem;
+    color: white;
+    border-radius: 0.25rem;
+    text-align: center;
+}
