@@ -199,12 +199,12 @@ body {
 .existing-image-input {
     background: black no-repeat center;
     background-size: contain;
-    height: 10rem;
+    height: 4rem;
     border: none !important;
     padding: 0 !important;
 }
 
-.existing-image-input .existing-image-delete {
+.existing-image-input .existing-image-delete, .existing-image-input .existing-image-loading {
     display: none;
     background: rgba(0, 0, 0, 0.5);
     width: 100%;
@@ -213,12 +213,16 @@ body {
     font-weight: bold;
     cursor: pointer;
     text-align: center;
-    line-height: 10rem;
+    line-height: 4rem;
     text-shadow: 0 0 3px #343434;
 }
 
 .existing-image-input:hover .existing-image-delete {
     display: block;
+}
+
+.existing-image-input:hover .existing-image-loading {
+    display: none !important;
 }
 
 .details-input-1, .details-input-2 {

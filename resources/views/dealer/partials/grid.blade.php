@@ -2,8 +2,9 @@
 
 <div id="template-vehicle" class="template">
     <div class="row vehicle">
-        <div class="col-xs-2 col-no-padding images-input">
+        <div class="col-xs-1 col-no-padding images-input">
             <div class="vehicle-input add-image-input">+</div>
+            <input type="file" class="add-image-file-input hidden" accept="image/x-png,image/gif,image/jpeg" />
         </div>
         <div class="col-xs-3 col-no-padding">
             <select class="vehicle-input category-input vehicle-input-with-placeholder">
@@ -17,7 +18,7 @@
             </select>
             <textarea placeholder="Description" class="vehicle-input description-input"></textarea>
         </div>
-        <div class="col-xs-2 col-no-padding">
+        <div class="col-xs-3 col-no-padding">
             <input type="text" placeholder="Email" class="vehicle-input email-input">
             <input type="text" placeholder="Call Number" class="vehicle-input call-input">
             <input type="text" placeholder="SMS Number" class="vehicle-input sms-input">
@@ -41,6 +42,7 @@
 
 <div id="template-vehicle-image" class="template">
     <div class="vehicle-input existing-image-input">
+        <div class="existing-image-loading">...</div>
         <div class="existing-image-delete">X</div>
     </div>
 </div>

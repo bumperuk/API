@@ -1,10 +1,23 @@
 
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
+
 var state = {
     error: false,
     categories: [],
     appData: [],
     vehicles: [],
     vehiclesModified: [],
+    vehiclesModifiedPhotos: [],
+    vehiclesPendingPhotos: [],
     selectedVehicle: 0,
     defaultVehicle: {
         'id': null,
@@ -171,6 +184,12 @@ function saveVehicle(id)
     });
 }
 
+function saveImage(data, success) {
+    apiFetch('POST', 'upload/photo', {'file': data}, function(data) {
+        success(data.photo);
+    });
+}
+
 function transformVehicleForSave(vehicle)
 {
     var newVehicle = $.extend({}, vehicle);
@@ -197,11 +216,16 @@ function updateVehicle(id, attribute, value)
         if (state.vehicles[i].id === id) {
             setState('vehiclesModified.' + id + '.id', id);
             setState('vehiclesModified.' + id + '.' + attribute, value);
-            var row = $('.vehicle[data-vehicle-id=' + id + ']');
-            row.find('.vehicle-save-input').show();
-            row.find('.vehicle-saved-input').hide();
+            markVehicleUnsaved(id);
         }
     }
+}
+
+function markVehicleUnsaved(vehicleId)
+{
+    var row = $('.vehicle[data-vehicle-id=' + vehicleId + ']');
+    row.find('.vehicle-save-input').show();
+    row.find('.vehicle-saved-input').hide();
 }
 
 function refresh()
@@ -280,7 +304,7 @@ function refreshVehicle(vehicle, el)
         updateVehicle(vehicle.id, 'mileage', $(this).val());
     });
 
-    refreshVehiclePhotos(vehicle.photos, el.find('.images-input'));
+    refreshVehiclePhotos(vehicle, el.find('.images-input'));
     refreshVehicleDetails(vehicle, el.find('.details-input-1'), el.find('.details-input-2'), el.find('.details-hidden'));
 
     el.find('.vehicle-save-input').hide();
@@ -429,14 +453,64 @@ function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
     }
 }
 
-function refreshVehiclePhotos(vehiclePhotos, el)
+function refreshVehiclePhotos(vehicle, el)
 {
+    var vehiclePhotos = vehicle.photos;
     var addButton = el.find('.add-image-input');
+    var addInput = el.find('.add-image-file-input');
+
+    var imageDeleteClick = function(el) {
+        $(el).remove();
+    };
+
+    addButton.click(function() {
+        addInput.click();
+    });
+
+    addInput.click(function() {
+        this.value = null;
+    });
+
+    addInput.change(function() {
+        if (typeof this.files[0] === 'undefined') {
+            return;
+        }
+
+        var el = $(template('vehicle-image'));
+
+        var file = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            markVehicleUnsaved(vehicle.id);
+            state.vehiclesPendingPhotos.push(vehicle.id);
+            el.css('background-image', 'url(' + e.target.result + ')');
+            el.insertBefore(addButton);
+            el.find('.existing-image-loading').show();
+            el.click(function() {
+                imageDeleteClick(el);
+                state.vehiclesPendingPhotos.remove(vehicle.id);
+            });
+
+            saveImage(e.target.result, function(data) {
+                state.vehiclesPendingPhotos.remove(vehicle.id);
+                if (typeof state.vehiclesModifiedPhotos[vehicle.id] === 'undefined') {
+                    state.vehiclesModifiedPhotos[vehicle.id] = [];
+                }
+                state.vehiclesModifiedPhotos[vehicle.id].push(data.id);
+                el.find('.existing-image-loading').hide();
+            });
+        };
+        reader.readAsDataURL(file);
+    });
 
     for(var i=0; i<vehiclePhotos.length; i++) {
         var image = vehiclePhotos[i];
         var imageElement = template('vehicle-image');
         imageElement.css('background-image', 'url(' + image.url + ')');
-        imageElement.insertBefore(addButton)
+        imageElement.click(function() {
+            imageDeleteClick(el);
+        });
+        imageElement.insertBefore(addButton);
     }
 }
+
