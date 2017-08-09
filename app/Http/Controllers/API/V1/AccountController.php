@@ -140,8 +140,10 @@ class AccountController extends ApiController
 
         $vehicles = Vehicle
             ::where('user_id', $user->id)
-            ->orderBy('paid_at', 'desc')
-            ->paginate(16);
+            ->orderBy('created_at', 'desc')
+            ->paginate(
+                $request->input('per_page', 16)
+            );
 
         return $this->api_response($vehicles);
     }

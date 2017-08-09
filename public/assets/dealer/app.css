@@ -204,6 +204,11 @@ body {
     padding: 0 !important;
 }
 
+@keyframes loading-animation {
+    0% {opacity: 0.5;}
+    100% {opacity: 1;}
+}
+
 .existing-image-input .existing-image-delete, .existing-image-input .existing-image-loading {
     display: none;
     background: rgba(0, 0, 0, 0.5);
@@ -215,6 +220,9 @@ body {
     text-align: center;
     line-height: 4rem;
     text-shadow: 0 0 3px #343434;
+}
+.existing-image-input .existing-image-loading {
+    animation: loading-animation 0.7s alternate infinite;
 }
 
 .existing-image-input:hover .existing-image-delete {

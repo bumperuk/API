@@ -126,6 +126,11 @@ trait VehicleAttributes
         return $this->belongsTo(Berth::class);
     }
 
+    public function yearRelation()
+    {
+        return $this->belongsTo(Year::class, 'year', 'value')->where('category_id', $this->model->category_id);
+    }
+
     /**
      * Put all vehicle attributes in a single array.
      */
@@ -156,7 +161,10 @@ trait VehicleAttributes
      */
     public function getDetailIdsAttribute()
     {
-        $details = [];
+        $details = [
+            'year' => $this->yearRelation ? $this->yearRelation->id : null,
+        ];
+
         $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'seatCount',
             'fuel', 'transmission', 'engine', 'taxBand', 'ownership', 'berth'];
 

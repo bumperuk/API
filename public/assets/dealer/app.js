@@ -16,8 +16,9 @@ var state = {
     appData: [],
     vehicles: [],
     vehiclesModified: [],
-    vehiclesModifiedPhotos: [],
+    vehiclesModifiedPhotos: {},
     vehiclesPendingPhotos: [],
+    vehiclesRemovedPhotos: [],
     selectedVehicle: 0,
     defaultVehicle: {
         'id': null,
@@ -160,7 +161,7 @@ function fetchAppData()
         refresh();
     });
 
-    apiFetch('GET', 'account/adverts', {}, function(data) {
+    apiFetch('GET', 'account/adverts', {'per_page': 1000}, function(data) {
         for (var i=0; i<data.length; i++) {
             data[i].category_id = data[i].model.category_id;
             data[i].make_id = data[i].model.make_id;
@@ -179,8 +180,10 @@ function saveVehicle(id)
     row.find('.vehicle-saved-input').text('Saving...').show();
 
     apiFetch('POST', 'upload/edit', data, function(data) {
-        setState('vehicles.' + getVehicleIndex(id), data.vehicle)
-        row.find('.vehicle-saved-input').text('Saved')
+        setState('vehicles.' + getVehicleIndex(id), data.vehicle);
+        delete state.vehiclesModifiedPhotos[id];
+        delete state.vehiclesModified[id];
+        row.find('.vehicle-saved-input').text('Saved');
     });
 }
 
@@ -214,16 +217,15 @@ function transformVehicleForSave(vehicle, modifiedVehicle)
 
     newVehicle.id = vehicle.id;
     newVehicle.model = vehicle.model_id;
-    newVehicle.photos = []; //todo
     newVehicle.lat = 1; //todo
     newVehicle.lon = 0; //todo
     newVehicle.price = vehicle.details.price;
-    if (getDetail('details', 'year')) newVehicle.year = getDetail('details', 'year');
+    if (getDetail('details', 'year')) newVehicle.year = getDetail('detail_ids', 'year');
     if (getDetail('details', 'mileage')) newVehicle.mileage = getDetail('details', 'mileage');
     if (getDetail('detail_ids', 'condition')) newVehicle.condition = getDetail('detail_ids', 'condition');
     if (getDetail('detail_ids', 'color')) newVehicle.color = getDetail('detail_ids', 'color');
     if (getDetail('detail_ids', 'body_type')) newVehicle.body_type = getDetail('detail_ids', 'body_type');
-    if (getDetail('detail_ids', 'condition')) newVehicle.year = getDetail('detail_ids', 'condition');
+    if (getDetail('detail_ids', 'condition')) newVehicle.condition = getDetail('detail_ids', 'condition');
     if (getDetail('detail_ids', 'doors')) newVehicle.doors = getDetail('detail_ids', 'doors');
     if (getDetail('detail_ids', 'size')) newVehicle.size = getDetail('detail_ids', 'size');
     if (getDetail('detail_ids', 'fuel')) newVehicle.fuel = getDetail('detail_ids', 'fuel');
@@ -238,7 +240,22 @@ function transformVehicleForSave(vehicle, modifiedVehicle)
     if (get('sms_number')) newVehicle.call_number = get('sms_number');
     if (get('email')) newVehicle.email = get('email');
 
-console.log(newVehicle);
+    newVehicle.photos = [];
+    var newPhotos = getItemWhereKey(state.vehiclesModifiedPhotos, vehicle.id.toString());
+
+    if (typeof newPhotos === 'undefined') {
+        newPhotos = [];
+    }
+
+    for (var i=0; i<vehicle.photos.length; i++) {
+        if (state.vehiclesRemovedPhotos.indexOf(vehicle.photos[i].id) === -1) {
+            newVehicle.photos.push(vehicle.photos[i].id);
+        }
+    }
+    for (var i=0; i<newPhotos.length; i++) {
+        newVehicle.photos.push(newPhotos[i]);
+    }
+
     return newVehicle;
 }
 
@@ -264,6 +281,10 @@ function updateVehicle(id, attribute, value)
 
 function markVehicleUnsaved(vehicleId)
 {
+    if (typeof state.vehiclesModified[vehicleId] === 'undefined') {
+        state.vehiclesModified[vehicleId] = {};
+    }
+
     var row = $('.vehicle[data-vehicle-id=' + vehicleId + ']');
     row.find('.vehicle-save-input').show();
     row.find('.vehicle-saved-input').hide();
@@ -503,6 +524,10 @@ function refreshVehiclePhotos(vehicle, el)
 
     var imageDeleteClick = function(el) {
         $(el).remove();
+        if ($(el).data('image-id')) {
+            state.vehiclesRemovedPhotos.push(parseInt($(el).data('image-id')));
+        }
+        markVehicleUnsaved(vehicle.id);
     };
 
     addButton.click(function() {
@@ -547,12 +572,15 @@ function refreshVehiclePhotos(vehicle, el)
 
     for(var i=0; i<vehiclePhotos.length; i++) {
         var image = vehiclePhotos[i];
-        var imageElement = template('vehicle-image');
-        imageElement.css('background-image', 'url(' + image.url + ')');
-        imageElement.click(function() {
-            imageDeleteClick(el);
-        });
-        imageElement.insertBefore(addButton);
+        (function(image) {
+            var imageElement = template('vehicle-image');
+            imageElement.attr('data-image-id', image.id);
+            imageElement.css('background-image', 'url(' + image.url + ')');
+            imageElement.click(function() {
+                imageDeleteClick(imageElement);
+            });
+            imageElement.insertBefore(addButton);
+        })(image);
     }
 }
 
