@@ -26,7 +26,7 @@ class LoginController
             return back()->withInput()->with('login_error', 'Invalid email or password.');
         }
 
-        if (Auth::guard('dealer')->user()->dealer_rank_id === null) {
+        if (Auth::guard('dealer')->user()->dealer_rank_id === null && !config('app.debug')) {
             return back()->withInput()->with('login_error', 'You must be a dealer to login to this panel.');
         }
 
