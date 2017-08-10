@@ -24,7 +24,8 @@ var state = {
     vehiclesPendingPhotos: [],
     vehiclesRemovedPhotos: [],
     defaultVehicle: {
-        'id': null,
+        '_is_new': true,
+        'id': -1,
         'make_id': null,
         'model_id': null,
         'category_id': null,
@@ -34,6 +35,22 @@ var state = {
         'description': null,
         'details': {
             'price': null,
+            'year': null,
+            'mileage': null,
+            'condition': null,
+            'color': null,
+            'body_type': null,
+            'door': null,
+            'size': null,
+            'seat_count': null,
+            'fuel': null,
+            'transmission': null,
+            'engine': null,
+            'tax_band': null,
+            'ownership': null,
+            'berth': null
+        },
+        'detail_ids': {
             'year': null,
             'mileage': null,
             'condition': null,
@@ -171,8 +188,7 @@ function fetchAppData()
 
     apiFetch('GET', 'account/adverts', {'per_page': 1000}, function(data) {
         for (var i=0; i<data.length; i++) {
-            data[i].category_id = data[i].model.category_id;
-            data[i].make_id = data[i].model.make_id;
+            data[i] = transformVehicleForArray(data[i]);
         }
         setState('vehicles', data);
         refresh();
@@ -190,7 +206,8 @@ function locatePostcode(postcode, result)
 
 function saveVehicle(id)
 {
-    var data = transformVehicleForSave(getState('vehicles.' + getVehicleIndex(id)));
+    var vehicle = getState('vehicles.' + getVehicleIndex(id));
+    var data = transformVehicleForSave(vehicle);
 
     if (!validateVehicleForSave(data)) {
         return;
@@ -200,10 +217,22 @@ function saveVehicle(id)
     row.find('.vehicle-save-input').hide();
     row.find('.vehicle-saved-input').text('Saving...').show();
 
-    apiFetch('POST', 'upload/edit', data, function(data) {
-        setState('vehicles.' + getVehicleIndex(id), data.vehicle);
+    var isNew = vehicle._is_new;
+    var url = isNew ? 'upload' : 'upload/edit';
+
+    apiFetch('POST', url, data, function(data) {
+        var vehicle = transformVehicleForArray(data.vehicle);
+        setState('vehicles.' + getVehicleIndex(id), vehicle);
         delete state.vehiclesModifiedPhotos[id];
         row.find('.vehicle-saved-input').text('Saved');
+        row.attr('data-vehicle-id', vehicle.id);
+
+        if (isNew) {
+            row.remove();
+            var newRow = template('vehicle');
+            newRow.prependTo($('.content-container-grid'))
+            refreshVehicle(vehicle, newRow);
+        }
     });
 }
 
@@ -241,6 +270,16 @@ function validateVehicleForSave(vehicle)
     }
 
     return true;
+}
+
+function transformVehicleForArray(vehicle)
+{
+    var newVehicle = $.extend({}, vehicle);
+    newVehicle._is_new = false;
+    newVehicle.category_id = vehicle.model.category_id;
+    newVehicle.make_id = vehicle.model.make_id;
+
+    return newVehicle;
 }
 
 function transformVehicleForSave(vehicle)
@@ -337,7 +376,11 @@ function refresh()
         $('#add-vehicle').click(function() {
             var row = template('vehicle');
             row.prependTo($('.content-container-grid'));
-            state.vehicles.unshift($.extend({}, state.defaultVehicle));
+
+            var newVehicle = $.extend({}, state.defaultVehicle);
+            newVehicle.id = Math.floor(Math.random() * 1000000) * -1;
+            state.vehicles.unshift(newVehicle);
+
             refreshVehicle(state.vehicles[0], row);
         });
 
@@ -433,10 +476,15 @@ function refreshVehicle(vehicle, el)
     el.find('.vehicle-save-input').click(function() {
         saveVehicle(vehicle.id);
     });
+
     el.find('.vehicle-delete-input').click(function() {
         $(this).text('Deleting...').addClass('no-click');
         deleteVehicle(vehicle.id);
     });
+    if (vehicle._is_new) {
+        el.find('.vehicle-delete-input').hide();
+        markVehicleUnsaved(-1);
+    }
 }
 
 function refreshCategorySelector(vehicle, el)

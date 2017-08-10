@@ -27,8 +27,7 @@ class UploadController extends ApiController
     {
         $this->validate($request, [
             'model' => 'required|exists:models,id',
-            'photos' => 'required|array|min:1',
-            'photos.*' => 'image',
+            'photos' => 'array|min:1',
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
             'price' => 'required|integer|max:9999999',
@@ -97,12 +96,29 @@ class UploadController extends ApiController
 
         $photoFiles = $request->file('photos');
 
-        foreach ($photoFiles as $i => $file) {
-            $file = Image::make($file);
-            $photo = new VehiclePhoto();
-            $photo->index = $i;
-            $photo->upload($file);
-            $vehicle->photos()->save($photo);
+        if ($request->hasFile('photos')) {
+            foreach ($photoFiles as $i => $file) {
+                $file = Image::make($file);
+                $photo = new VehiclePhoto();
+                $photo->index = $i;
+                $photo->upload($file);
+                $vehicle->photos()->save($photo);
+            }
+        }
+
+        if ($request->has('photos')) {
+            foreach ($request->input('photos') as $i => $photoId) {
+                $photo = new VehiclePhoto();
+                $existingPhoto = VehiclePhoto::find($photoId);
+
+                if (!$existingPhoto) {
+                    return $this->api_response([], 'Invalid image (id ' . $photoId . ')', false, 400);
+                }
+
+                $photo->url = $existingPhoto->name;
+                $photo->index = $i;
+                $vehicle->photos()->save($photo);
+            }
         }
 
         if ($user->type == 'dealer') {
