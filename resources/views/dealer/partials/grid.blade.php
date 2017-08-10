@@ -22,8 +22,8 @@
             <input type="text" placeholder="Email" class="vehicle-input email-input">
             <input type="text" placeholder="Call Number" class="vehicle-input call-input">
             <input type="text" placeholder="SMS Number" class="vehicle-input sms-input">
-            <input type="number" placeholder="Price (£)" class="vehicle-input price-input">
-            <input type="text" placeholder="Mileage" class="vehicle-input mileage-input">
+            <input type="number" placeholder="Price (£)" min="1" max="9999998" class="vehicle-input price-input">
+            <input type="number" placeholder="Mileage" min="1" max="9999998" class="vehicle-input mileage-input">
             <input type="text" placeholder="Location" readonly class="vehicle-input location-input">
         </div>
         <div class="col-xs-2 col-no-padding details-input-1">

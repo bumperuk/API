@@ -107,6 +107,7 @@ $(function() {
     $.fx.off = true;
     refresh();
     fetchAppData();
+    canUpload()
 });
 
 function template(name)
@@ -193,7 +194,7 @@ function fetchAppData()
         }
         setState('vehicles', data);
         refresh();
-    })
+    });
 }
 
 function locatePostcode(postcode, result)
@@ -202,6 +203,16 @@ function locatePostcode(postcode, result)
         result(data);
     }, function() {
         result(false);
+    });
+}
+
+function canUpload(result)
+{
+    apiFetch('GET', 'account/can-upload', {}, function(data) {
+        $('#vehicle-stats').text(data.active + '/' + data.limit + ' vehicles');
+        if (typeof result !== 'undefined') {
+            result(data);
+        }
     });
 }
 
@@ -221,19 +232,27 @@ function saveVehicle(id)
     var isNew = vehicle._is_new;
     var url = isNew ? 'upload' : 'upload/edit';
 
-    apiFetch('POST', url, data, function(data) {
-        var vehicle = transformVehicleForArray(data.vehicle);
-        setState('vehicles.' + getVehicleIndex(id), vehicle);
-        delete state.vehiclesModifiedPhotos[id];
-        row.find('.vehicle-saved-input').text('Saved');
-        row.attr('data-vehicle-id', vehicle.id);
-
-        if (isNew) {
-            row.remove();
-            var newRow = template('vehicle');
-            newRow.prependTo($('.content-container-grid'))
-            refreshVehicle(vehicle, newRow);
+    canUpload(function(limits) {
+        if (limits.active >= limits.limit) {
+            row.find('.vehicle-save-input').show();
+            row.find('.vehicle-saved-input').text('Saved').hide();
+            return createError('You have reached the maximum number of vehicles for your subscription level.');
         }
+
+        apiFetch('POST', url, data, function(data) {
+            var vehicle = transformVehicleForArray(data.vehicle);
+            setState('vehicles.' + getVehicleIndex(id), vehicle);
+            delete state.vehiclesModifiedPhotos[id];
+            row.find('.vehicle-saved-input').text('Saved');
+            row.attr('data-vehicle-id', vehicle.id);
+
+            if (isNew) {
+                row.remove();
+                var newRow = template('vehicle');
+                newRow.prependTo($('.content-container-grid'))
+                refreshVehicle(vehicle, newRow);
+            }
+        });
     });
 }
 
@@ -382,14 +401,25 @@ function refresh()
     if (state.appData.length !== 0 && state.vehicles.length !== 0 && state.categories.length !== 0 && !state.error) {
 
         $('#add-vehicle').click(function() {
-            var row = template('vehicle');
-            row.prependTo($('.content-container-grid'));
+            $(this).text('Adding...');
+            $(this).addClass('no-click');
+            canUpload(function(limits) {
+                $('#add-vehicle').text('Add Vehicle');
+                $('#add-vehicle').removeClass('no-click');
 
-            var newVehicle = $.extend({}, state.defaultVehicle);
-            newVehicle.id = Math.floor(Math.random() * 1000000) * -1;
-            state.vehicles.unshift(newVehicle);
+                if (limits.active >= limits.limit) {
+                    return createError('You have reached the maximum number of vehicles for your subscription level.');
+                }
 
-            refreshVehicle(state.vehicles[0], row);
+                var row = template('vehicle');
+                row.prependTo($('.content-container-grid'));
+
+                var newVehicle = $.extend({}, state.defaultVehicle);
+                newVehicle.id = Math.floor(Math.random() * 1000000) * -1;
+                state.vehicles.unshift(newVehicle);
+
+                refreshVehicle(state.vehicles[0], row);
+            });
         });
 
         $('.content-container-grid').empty();
@@ -404,8 +434,14 @@ function refresh()
 
 function refreshVehicle(vehicle, el)
 {
-    el.find('.vehicle-info-status').text(vehicle.active ? 'Active' : 'Unlisted');
-    el.find('.vehicle-info-created').text(typeof vehicle.created_at !== 'undefined' ? vehicle.created_at.split(' ')[0] : '-');
+    el.find('.vehicle-info-status').text(
+        vehicle.active ?
+            'Active' : 'Unlisted'
+    );
+    el.find('.vehicle-info-created').text(
+        typeof vehicle.created_at !== 'undefined' ?
+            vehicle.created_at.split(' ')[0] : '-'
+    );
 
     el.attr('data-vehicle-id', vehicle.id);
 

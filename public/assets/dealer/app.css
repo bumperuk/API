@@ -185,6 +185,10 @@ body {
     color: #b6b6b6;
 }
 
+#vehicle-stats {
+    font-size: 1.3rem;
+}
+
 .vehicle-info {
     border-radius: 0.25rem;
     background: #f7f7f7;

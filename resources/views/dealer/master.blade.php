@@ -13,6 +13,7 @@
         @if (Auth::guard('dealer')->check())
             <div class="pull-right">
                 <span>{{ Auth::guard('dealer')->user()->email }}</span>
+                <span id="vehicle-stats"></span>
                 <a href="{{ url('/dealer/logout') }}">Logout</a>
             </div>
         @endif
