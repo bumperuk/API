@@ -10,6 +10,12 @@ Array.prototype.remove = function() {
     return this;
 };
 
+$(function() {
+    $('body').on('hidden.bs.popover', function (e) {
+        $(e.target).data("bs.popover").inState.click = false;
+    });
+});
+
 var state = {
     error: false,
     categories: [],
@@ -129,7 +135,7 @@ function getItemWhereKey(object, value)
     }
 }
 
-function apiFetch(method, path, params, success)
+function apiFetch(method, path, params, success, failure)
 {
     return $
         .ajax({
@@ -144,9 +150,14 @@ function apiFetch(method, path, params, success)
             var payload = data.response_payload.data;
             success(payload);
         })
-        .fail(function() {
-            setState('error', true);
-        })
+        .fail(function(xhr) {
+            if(typeof failure === 'undefined') {
+                createError('Oops, looks like something went wrong.');
+            } else {
+                var data = JSON.parse(xhr.responseText);
+                failure(data.result.message, data.response_payload.data)
+            }
+        });
 }
 
 function fetchAppData()
@@ -169,6 +180,15 @@ function fetchAppData()
         setState('vehicles', data);
         refresh();
     })
+}
+
+function locatePostcode(postcode, result)
+{
+    apiFetch('GET', 'postcodes', {'postcode': postcode}, function(data) {
+        result(data);
+    }, function() {
+        result(false);
+    });
 }
 
 function saveVehicle(id)
@@ -199,23 +219,29 @@ function saveImage(data, success) {
 
 function validateVehicleForSave(vehicle)
 {
-    //todo check for uploading images
-
-    if (vehicle.photos.length < 1) {
-        createError('Please upload at least one photo.');
+    if (state.vehiclesPendingPhotos.indexOf(vehicle.id) !== -1) {
+        return createError('Please wait for all images to finish uploading before saving.')
+    }
+    else if (vehicle.photos.length < 1) {
+        return createError('Please upload at least one photo.');
     }
     else if (typeof vehicle.sms_number === 'undefined' && typeof vehicle.call_number === 'undefined' && typeof vehicle.email === 'undefined') {
-        createError('Please provide at least one contact detail (email, sms number or phone number).');
+        return createError('Please provide at least one contact detail (email, sms number or phone number).');
     }
     else if (typeof vehicle.price === 'undefined') {
-        createError('Please provide the vehicles price.');
+        return createError('Please provide the vehicles price.');
     }
     else if (typeof vehicle.mileage === 'undefined') {
-        createError('Please provide the vehicles mileage.');
+        return createError('Please provide the vehicles mileage.');
     }
     else if (typeof vehicle.description === 'undefined' || vehicle.description === '' || vehicle.description === ' ') {
-        createError('Please provide a description for the vehicle.');
+        return createError('Please provide a description for the vehicle.');
     }
+    else if (typeof vehicle.lat === 'undefined' || typeof vehicle.lon === 'undefined' || vehicle.lat === null || vehicle.lon === null) {
+        return createError('Please provide the location of the vehicle.')
+    }
+
+    return true;
 }
 
 function transformVehicleForSave(vehicle, modifiedVehicle)
@@ -242,9 +268,9 @@ function transformVehicleForSave(vehicle, modifiedVehicle)
 
     newVehicle.id = vehicle.id;
     newVehicle.model = vehicle.model_id;
-    newVehicle.lat = 1; //todo
-    newVehicle.lon = 0; //todo
-    newVehicle.price = vehicle.details.price;
+    newVehicle.lat = get('lat');
+    newVehicle.lon = get('lon');
+    newVehicle.price = get('price');
     if (getDetail('details', 'year')) newVehicle.year = getDetail('detail_ids', 'year');
     if (getDetail('details', 'mileage')) newVehicle.mileage = getDetail('details', 'mileage');
     if (getDetail('detail_ids', 'condition')) newVehicle.condition = getDetail('detail_ids', 'condition');
@@ -364,6 +390,7 @@ function refreshVehicle(vehicle, el)
     el.find('.description-input').text(vehicle.description);
     el.find('.price-input').val(vehicle.details.price);
     el.find('.mileage-input').val(vehicle.details.mileage);
+    el.find('.location-input').val(vehicle.location);
 
     el.find('.description-input').keyup(function() {
         updateVehicle(vehicle.id, 'description', $(this).val());
@@ -375,6 +402,42 @@ function refreshVehicle(vehicle, el)
 
     el.find('.mileage-input').keyup(function() {
         updateVehicle(vehicle.id, 'mileage', $(this).val());
+    });
+
+    var locationInput = el.find('.location-input');
+
+    locationInput.popover({
+        html : true,
+        content: function() {
+            var panel = template('vehicle-location');
+            var closeButton = panel.find('a.location-close-button');
+            var findButton = panel.find('a.location-find-button');
+
+            closeButton.click(function(e) {
+                locationInput.popover('hide');
+                e.preventDefault();
+            });
+
+            findButton.click(function(e) {
+                findButton.addClass('no-click');
+                findButton.text('Locating...');
+                locatePostcode(panel.find('input').val(), function(result) {
+                    if (!result) {
+                        createError('The postcode you entered could not be located.');
+                    } else {
+                        locationInput.val(result.name);
+                        locationInput.popover('hide');
+                        updateVehicle(vehicle.id, 'lat', result.lat);
+                        updateVehicle(vehicle.id, 'lon', result.lon);
+                    }
+                    findButton.removeClass('no-click');
+                    findButton.text('Use');
+                });
+                e.preventDefault();
+            });
+
+            return panel;
+        }
     });
 
     refreshVehiclePhotos(vehicle, el.find('.images-input'));
@@ -612,5 +675,7 @@ function createError(message)
     $(document.body).append(error);
     window.setTimeout(function() {
         error.hide();
-    }, 5000)
+    }, 5000);
+
+    return false;
 }

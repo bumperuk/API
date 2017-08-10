@@ -24,6 +24,7 @@
             <input type="text" placeholder="SMS Number" class="vehicle-input sms-input">
             <input type="number" placeholder="Price (£)" class="vehicle-input price-input">
             <input type="text" placeholder="Mileage" class="vehicle-input mileage-input">
+            <input type="text" placeholder="Location" readonly class="vehicle-input location-input">
         </div>
         <div class="col-xs-2 col-no-padding details-input-1">
         </div>
@@ -50,4 +51,18 @@
 <div id="template-vehicle-detail-select" class="template">
     <select class="vehicle-input vehicle-input-with-placeholder">
     </select>
+</div>
+
+<div id="template-vehicle-location" class="template">
+    <div class="row location-popover">
+        <div class="col-xs-12">
+            <input type="text" class="vehicle-input location-postcode-input" placeholder="Postcode">
+        </div>
+        <div class="col-xs-6">
+            <a class="btn btn-sm btn-primary location-find-button">Use</a>
+        </div>
+        <div class="col-xs-6">
+            <a href="#" class="pull-right location-close-button">Cancel</a>
+        </div>
+    </div>
 </div>

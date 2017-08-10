@@ -233,6 +233,19 @@ body {
     display: none !important;
 }
 
+.location-popover {
+    width: 20rem;
+}
+
+.location-popover a {
+    margin-top: 1rem;
+}
+
+.location-postcode-input {
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
 .details-input-1, .details-input-2 {
     display: none;
 }

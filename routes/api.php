@@ -65,6 +65,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
             Route::post('/', 'V1\ReportController@create');
         });
 
+        Route::group(['prefix' => 'postcodes'], function () {
+            Route::get('/', 'V1\PostcodeController@get');
+        });
+
         Route::group(['prefix' => 'account'], function () {
             Route::get('/', 'V1\AccountController@view');
             Route::get('/subscription', 'V1\AccountController@getSubscription');
