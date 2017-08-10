@@ -204,7 +204,7 @@ function validateVehicleForSave(vehicle)
     if (vehicle.photos.length < 1) {
         createError('Please upload at least one photo.');
     }
-    else if (typeof vehicle.sms_number === 'undefined' && typeof vehicle.call_number === 'undefined' && typeof vehicle.sms_number === 'undefined') {
+    else if (typeof vehicle.sms_number === 'undefined' && typeof vehicle.call_number === 'undefined' && typeof vehicle.email === 'undefined') {
         createError('Please provide at least one contact detail (email, sms number or phone number).');
     }
     else if (typeof vehicle.price === 'undefined') {
@@ -336,20 +336,6 @@ function refresh()
             row.appendTo($('.content-container-grid'));
             refreshVehicle(state.vehicles[i], row);
         }
-
-        var updateDropDownState = function (el) {
-            if ($(el).find('option:selected').val() === '-1') {
-                $(el).addClass('empty');
-            }
-            else $(el).removeClass('empty');
-        };
-
-        $('.vehicle-input-with-placeholder').change(function () {
-            updateDropDownState(this);
-        });
-        $('.vehicle-input-with-placeholder').each(function(){
-            updateDropDownState(this);
-        });
     }
 }
 
@@ -419,11 +405,12 @@ function refreshCategorySelector(vehicle, el)
         categoryInput.append('<option value="' + category.id +'" ' + selected + '>' + category.name + '</option>');
     }
 
-    var categoryInputChange = function (el, triggerUpdate) {
+    var categoryInputChange = function (selectEl, triggerUpdate) {
         makeInput.empty();
         makeInput.append('<option value="-1">Make</option>');
-        var categoryId = parseInt(el.find('option:selected').val());
+        var categoryId = parseInt(selectEl.find('option:selected').val());
         if (triggerUpdate) {
+            state.vehicles[getVehicleIndex(vehicle.id)].category_id = categoryId;
             updateVehicle(vehicle.id, 'category_id', categoryId);
             updateVehicle(vehicle.id, 'make_id', null);
             updateVehicle(vehicle.id, 'model_id', null);
@@ -443,12 +430,12 @@ function refreshCategorySelector(vehicle, el)
         refreshVehicleDetails(vehicle, el.find('.details-input-1'), el.find('.details-input-2'), el.find('.details-hidden'));
     };
 
-    var makeInputChange = function(el, triggerUpdate) {
+    var makeInputChange = function(selectEl, triggerUpdate) {
         modelInput.empty();
         modelInput.append('<option value="-1">Model</option>');
         var categoryId = parseInt(categoryInput.find('option:selected').val());
         var category = state.appData[getCategoryIndex(categoryId)];
-        var makeId = el.find('option:selected').val();
+        var makeId = selectEl.find('option:selected').val();
         if (triggerUpdate) {
             updateVehicle(vehicle.id, 'make_id', makeId);
             updateVehicle(vehicle.id, 'model_id', null);
@@ -468,9 +455,9 @@ function refreshCategorySelector(vehicle, el)
         }
     };
 
-    var modelInputChange = function(el, triggerUpdate) {
+    var modelInputChange = function(selectEl, triggerUpdate) {
         if (triggerUpdate) {
-            updateVehicle(vehicle.id, 'model_id', parseInt(el.find('option:selected').val()));
+            updateVehicle(vehicle.id, 'model_id', parseInt(selectEl.find('option:selected').val()));
         }
     };
 
@@ -495,7 +482,7 @@ function refreshVehicleDetails(vehicle, el1, el2, elHidden)
     el1.empty();
     el2.empty();
 
-    if (categoryId) {
+    if (categoryId !== null && categoryId !== -1) {
         el1.show();
         el2.show();
         elHidden.hide();
@@ -517,6 +504,13 @@ function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
     var col1 = ['condition', 'year', 'engine', 'fuel', 'transmission'];
     var col2 = ['body_type', 'door', 'sear_count', 'color', 'tax_band', 'ownership', 'seller', 'berth', 'size'];
 
+    var updateDropDownState = function (el) {
+        if ($(el).find('option:selected').val() === '-1') {
+            $(el).addClass('empty');
+        }
+        else $(el).removeClass('empty');
+    };
+
     var input = template('vehicle-detail-select');
     input.append('<option value="-1">' + filter.name + '</option>');
     for (var i=0; i<filter.values.length; i++) {
@@ -528,6 +522,7 @@ function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
         input.append('<option value="' + itemId +'" ' + selected + '>' + itemValue + '</option>');
     }
     input.change(function() {
+        updateDropDownState(this);
         var value = $(this).find('option:selected').val();
         var text = $(this).find('option:selected').text();
         if (vehicle.details[filter.key] !== text) {
@@ -539,6 +534,8 @@ function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
     } else if (col2.indexOf(filter.key) !== -1) {
         el2.append(input);
     }
+
+    updateDropDownState(input);
 }
 
 function refreshVehiclePhotos(vehicle, el)
