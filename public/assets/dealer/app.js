@@ -19,7 +19,7 @@ $(function() {
 var state = {
     categories: [],
     appData: [],
-    vehicles: [],
+    vehicles: null,
     vehiclesModifiedPhotos: {},
     vehiclesPendingPhotos: [],
     vehiclesRemovedPhotos: [],
@@ -395,10 +395,12 @@ function markVehicleUnsaved(vehicleId)
 
 function refresh()
 {
-    $('.loading').toggle(state.appData.length === 0 || state.vehicles.length === 0 || state.categories.length === 0);
-    $('.content-container-body').toggle(state.appData.length !== 0 && state.vehicles.length !== 0 && state.categories.length !== 0);
+    $('.loading').toggle(state.appData.length === 0 || state.vehicles === null || state.categories.length === 0);
+    $('.content-container-body').toggle(state.appData.length !== 0 && state.vehicles !== null && state.categories.length !== 0);
 
-    if (state.appData.length !== 0 && state.vehicles.length !== 0 && state.categories.length !== 0 && !state.error) {
+    if (state.appData.length !== 0 && state.vehicles !== null && state.categories.length !== 0 && !state.error) {
+
+        $('.no-vehicles').remove();
 
         $('#add-vehicle').click(function() {
             $(this).text('Adding...');
@@ -419,10 +421,15 @@ function refresh()
                 state.vehicles.unshift(newVehicle);
 
                 refreshVehicle(state.vehicles[0], row);
+                $('.no-vehicles').remove();
             });
         });
 
         $('.content-container-grid').empty();
+
+        if (state.vehicles.length === 0) {
+            $('.content-container-grid').append('<div class="no-vehicles">No vehicles</div>');
+        }
 
         for (var i = 0; i < state.vehicles.length; i++) {
             var row = template('vehicle');

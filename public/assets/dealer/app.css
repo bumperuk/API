@@ -293,3 +293,10 @@ body {
     border-radius: 0.25rem;
     text-align: center;
 }
+
+.no-vehicles {
+    color: gray;
+    margin: 5rem;
+    font-size: 2rem;
+    text-align: center;
+}
