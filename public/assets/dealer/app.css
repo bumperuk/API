@@ -185,6 +185,26 @@ body {
     color: #b6b6b6;
 }
 
+.vehicle-info {
+    border-radius: 0.25rem;
+    background: #f7f7f7;
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    text-align: center;
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.vehicle-info div {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.vehicle-info strong
+{
+    display: block;
+}
+
 .add-image-input {
     cursor: pointer;
     height: 3rem;

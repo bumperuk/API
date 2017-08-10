@@ -37,6 +37,16 @@
             <a class="btn btn-save btn-primary vehicle-save-input">Save</a>
             <a class="btn btn-save btn-disabled vehicle-saved-input">Saved</a>
             <a class="btn btn-save btn-danger btn-sm vehicle-delete-input">Delete</a>
+            <div class="vehicle-info">
+                <div>
+                    <strong>Status</strong>
+                    <span class="vehicle-info-status"></span>
+                </div>
+                <div>
+                    <strong>Created</strong>
+                    <span class="vehicle-info-created"></span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -25,7 +25,8 @@ var state = {
     vehiclesRemovedPhotos: [],
     defaultVehicle: {
         '_is_new': true,
-        'id': -1,
+        'id': null,
+        'active': false,
         'make_id': null,
         'model_id': null,
         'category_id': null,
@@ -244,6 +245,11 @@ function saveImage(data, success) {
 
 function validateVehicleForSave(vehicle)
 {
+    var validateEmail = function(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    };
+
     if (typeof vehicle.model === 'undefined' || vehicle.model === null) {
         return createError('Please select a vehicle category, make and model.');
     }
@@ -266,7 +272,10 @@ function validateVehicleForSave(vehicle)
         return createError('Please provide a description for the vehicle.');
     }
     else if (typeof vehicle.lat === 'undefined' || typeof vehicle.lon === 'undefined' || vehicle.lat === null || vehicle.lon === null) {
-        return createError('Please provide the location of the vehicle.')
+        return createError('Please provide the location of the vehicle.');
+    }
+    else if (typeof vehicle.email !== 'undefined' && validateEmail(vehicle.email)) {
+        return createError('Please enter a valid email.');
     }
 
     return true;
@@ -309,7 +318,7 @@ function transformVehicleForSave(vehicle)
     if (getDetail('detail_ids', 'color')) newVehicle.color = getDetail('detail_ids', 'color');
     if (getDetail('detail_ids', 'body_type')) newVehicle.body_type = getDetail('detail_ids', 'body_type');
     if (getDetail('detail_ids', 'condition')) newVehicle.condition = getDetail('detail_ids', 'condition');
-    if (getDetail('detail_ids', 'doors')) newVehicle.doors = getDetail('detail_ids', 'doors');
+    if (getDetail('detail_ids', 'door')) newVehicle.door = getDetail('detail_ids', 'door');
     if (getDetail('detail_ids', 'size')) newVehicle.size = getDetail('detail_ids', 'size');
     if (getDetail('detail_ids', 'fuel')) newVehicle.fuel = getDetail('detail_ids', 'fuel');
     if (getDetail('detail_ids', 'transmission')) newVehicle.transmission = getDetail('detail_ids', 'transmission');
@@ -320,7 +329,7 @@ function transformVehicleForSave(vehicle)
     if (getDetail('detail_ids', 'berth')) newVehicle.berth = getDetail('detail_ids', 'berth');
     if (get('description')) newVehicle.description = get('description');
     if (get('call_number')) newVehicle.call_number = get('call_number');
-    if (get('sms_number')) newVehicle.call_number = get('sms_number');
+    if (get('sms_number')) newVehicle.sms_number = get('sms_number');
     if (get('email')) newVehicle.email = get('email');
 
     newVehicle.photos = [];
@@ -355,7 +364,6 @@ function updateVehicle(id, attribute, value)
 {
     var index = getVehicleIndex(id);
     setState('vehicles.' + index + '.' + attribute, value);
-    console.log('vehicles.' + index + '.' + attribute);
     markVehicleUnsaved(id);
 }
 
@@ -396,6 +404,9 @@ function refresh()
 
 function refreshVehicle(vehicle, el)
 {
+    el.find('.vehicle-info-status').text(vehicle.active ? 'Active' : 'Unlisted');
+    el.find('.vehicle-info-created').text(typeof vehicle.created_at !== 'undefined' ? vehicle.created_at.split(' ')[0] : '-');
+
     el.attr('data-vehicle-id', vehicle.id);
 
     refreshCategorySelector(vehicle, el);
@@ -553,8 +564,9 @@ function refreshCategorySelector(vehicle, el)
     };
 
     var modelInputChange = function(selectEl, triggerUpdate) {
-        if (triggerUpdate) {
-            updateVehicle(vehicle.id, 'model_id', parseInt(selectEl.find('option:selected').val()));
+        var modelId = parseInt(selectEl.find('option:selected').val());
+        if (triggerUpdate && modelId !== -1) {
+            updateVehicle(vehicle.id, 'model_id', modelId);
         }
     };
 
@@ -599,7 +611,7 @@ function refreshVehicleDetails(vehicle, el1, el2, elHidden)
 function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
 {
     var col1 = ['condition', 'year', 'engine', 'fuel', 'transmission'];
-    var col2 = ['body_type', 'door', 'sear_count', 'color', 'tax_band', 'ownership', 'seller', 'berth', 'size'];
+    var col2 = ['body_type', 'door', 'sear_count', 'color', 'tax_band', 'ownership', 'berth', 'size'];
 
     var updateDropDownState = function (el) {
         if ($(el).find('option:selected').val() === '-1') {
