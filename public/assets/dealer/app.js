@@ -17,15 +17,12 @@ $(function() {
 });
 
 var state = {
-    error: false,
     categories: [],
     appData: [],
     vehicles: [],
-    vehiclesModified: [],
     vehiclesModifiedPhotos: {},
     vehiclesPendingPhotos: [],
     vehiclesRemovedPhotos: [],
-    selectedVehicle: 0,
     defaultVehicle: {
         'id': null,
         'make_id': null,
@@ -193,7 +190,7 @@ function locatePostcode(postcode, result)
 
 function saveVehicle(id)
 {
-    var data = transformVehicleForSave(getState('vehicles.' + getVehicleIndex(id)), getState('vehiclesModified.' + id));
+    var data = transformVehicleForSave(getState('vehicles.' + getVehicleIndex(id)));
 
     if (!validateVehicleForSave(data)) {
         return;
@@ -206,7 +203,6 @@ function saveVehicle(id)
     apiFetch('POST', 'upload/edit', data, function(data) {
         setState('vehicles.' + getVehicleIndex(id), data.vehicle);
         delete state.vehiclesModifiedPhotos[id];
-        delete state.vehiclesModified[id];
         row.find('.vehicle-saved-input').text('Saved');
     });
 }
@@ -219,8 +215,11 @@ function saveImage(data, success) {
 
 function validateVehicleForSave(vehicle)
 {
-    if (state.vehiclesPendingPhotos.indexOf(vehicle.id) !== -1) {
-        return createError('Please wait for all images to finish uploading before saving.')
+    if (typeof vehicle.model === 'undefined' || vehicle.model === null) {
+        return createError('Please select a vehicle category, make and model.');
+    }
+    else if (state.vehiclesPendingPhotos.indexOf(vehicle.id) !== -1) {
+        return createError('Please wait for all images to finish uploading before saving.');
     }
     else if (vehicle.photos.length < 1) {
         return createError('Please upload at least one photo.');
@@ -244,21 +243,15 @@ function validateVehicleForSave(vehicle)
     return true;
 }
 
-function transformVehicleForSave(vehicle, modifiedVehicle)
+function transformVehicleForSave(vehicle)
 {
     var getDetail = function(detail, property) {
-        if (typeof modifiedVehicle[property] !== 'undefined') {
-            return modifiedVehicle[property];
-        }
         if (typeof vehicle[detail][property] !== 'undefined') {
             return vehicle[detail][property];
         }
     };
 
     var get = function(property) {
-        if (typeof modifiedVehicle[property] !== 'undefined') {
-            return modifiedVehicle[property];
-        }
         if (typeof vehicle[property] !== 'undefined') {
             return vehicle[property];
         }
@@ -321,21 +314,14 @@ function deleteVehicle(id)
 
 function updateVehicle(id, attribute, value)
 {
-    for (var i=0; i<state.vehicles.length; i++) {
-        if (state.vehicles[i].id === id) {
-            setState('vehiclesModified.' + id + '.id', id);
-            setState('vehiclesModified.' + id + '.' + attribute, value);
-            markVehicleUnsaved(id);
-        }
-    }
+    var index = getVehicleIndex(id);
+    setState('vehicles.' + index + '.' + attribute, value);
+    console.log('vehicles.' + index + '.' + attribute);
+    markVehicleUnsaved(id);
 }
 
 function markVehicleUnsaved(vehicleId)
 {
-    if (typeof state.vehiclesModified[vehicleId] === 'undefined') {
-        state.vehiclesModified[vehicleId] = {};
-    }
-
     var row = $('.vehicle[data-vehicle-id=' + vehicleId + ']');
     row.find('.vehicle-save-input').show();
     row.find('.vehicle-saved-input').hide();
@@ -401,7 +387,7 @@ function refreshVehicle(vehicle, el)
     });
 
     el.find('.mileage-input').keyup(function() {
-        updateVehicle(vehicle.id, 'mileage', $(this).val());
+        updateVehicle(vehicle.id, 'details.mileage', $(this).val());
     });
 
     var locationInput = el.find('.location-input');
@@ -589,7 +575,8 @@ function refreshVehicleDetailsFilter(vehicle, filter, el1, el2)
         var value = $(this).find('option:selected').val();
         var text = $(this).find('option:selected').text();
         if (vehicle.details[filter.key] !== text) {
-            updateVehicle(vehicle.id, filter.key, value);
+            updateVehicle(vehicle.id, 'details.' + filter.key, text);
+            updateVehicle(vehicle.id, 'detail_ids.' + filter.key, value);
         }
     });
     if (col1.indexOf(filter.key) !== -1) {
