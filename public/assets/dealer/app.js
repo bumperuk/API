@@ -293,7 +293,7 @@ function validateVehicleForSave(vehicle)
     else if (typeof vehicle.lat === 'undefined' || typeof vehicle.lon === 'undefined' || vehicle.lat === null || vehicle.lon === null) {
         return createError('Please provide the location of the vehicle.');
     }
-    else if (typeof vehicle.email !== 'undefined' && validateEmail(vehicle.email)) {
+    else if (typeof vehicle.email !== 'undefined' && !validateEmail(vehicle.email)) {
         return createError('Please enter a valid email.');
     }
 
