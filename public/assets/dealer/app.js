@@ -274,8 +274,24 @@ function saveVehicle(id)
 }
 
 function saveImage(data, success) {
-    apiFetch('POST', 'upload/photo', {'file': data}, function(data) {
-        success(data.photo);
+    var formData = new FormData();
+    formData.append('file', data);
+    $.ajax({
+        url: API_BASE + '/upload/photo',
+        type: 'POST',
+        data: formData,
+        cache: false,
+        processData: false,
+        beforeSend: function(request) {
+            request.setRequestHeader("Authorization", 'Bearer ' + API_TOKEN);
+        },
+        contentType: false,
+        success: function(data) {
+            success(data.response_payload.data.photo);
+        },
+        error: function(xhr) {
+            createError('The file you uploaded was not an image, please try again.');
+        }
     });
 }
 
@@ -740,8 +756,8 @@ function refreshVehiclePhotos(vehicle, el)
         var file = this.files[0];
         var reader = new FileReader();
 
-        if (file.size/1024/2014 > 15) {
-            return createError('The vehicle photo must be smaller than 15Mb.');
+        if (file.size/1024/2014 > 20) {
+            return createError('The vehicle photo must be smaller than 20Mb.');
         }
 
         reader.onload = function (e) {
@@ -755,7 +771,7 @@ function refreshVehiclePhotos(vehicle, el)
                 state.vehiclesPendingPhotos.remove(vehicle.id);
             });
 
-            saveImage(e.target.result, function(data) {
+            saveImage(file, function(data) {
                 state.vehiclesPendingPhotos.remove(vehicle.id);
                 if (typeof state.vehiclesModifiedPhotos[vehicle.id] === 'undefined') {
                     state.vehiclesModifiedPhotos[vehicle.id] = [];

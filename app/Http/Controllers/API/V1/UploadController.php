@@ -330,14 +330,11 @@ class UploadController extends ApiController
     public function photo(Request $request)
     {
         $this->validate($request, [
-            'file' => 'required'
+            'file' => 'required|image'
         ]);
 
-        $photoFile = $request->input('file');
-        $photoFile = base64_decode(substr($photoFile, strpos($photoFile, ',') + 1));
-
         $photo = new VehiclePhoto();
-        $file = Image::make($photoFile);
+        $file = Image::make($request->file('file'));
         $photo->upload($file);
         $photo->save();
 
