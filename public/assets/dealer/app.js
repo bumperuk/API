@@ -24,7 +24,10 @@ $.fn.extend({
     safariFocusBlur: function() {
         return this.each(function() {
             if (isSafari) {
+                var x = window.scrollX;
+                var y = window.scrollY;
                 $(this).focus().blur();
+                window.scrollTo(x, y);
             }
         });
     }
