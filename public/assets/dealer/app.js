@@ -24,7 +24,7 @@ $.fn.extend({
     safariFocusBlur: function() {
         return this.each(function() {
             if (isSafari) {
-                this.focus().blur();
+                $(this).focus().blur();
             }
         });
     }
