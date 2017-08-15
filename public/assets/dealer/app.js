@@ -723,6 +723,11 @@ function refreshVehiclePhotos(vehicle, el)
 
         var file = this.files[0];
         var reader = new FileReader();
+
+        if (file.size/1024/2014 > 15) {
+            return createError('The vehicle photo must be smaller than 15Mb.');
+        }
+
         reader.onload = function (e) {
             markVehicleUnsaved(vehicle.id);
             state.vehiclesPendingPhotos.push(vehicle.id);
