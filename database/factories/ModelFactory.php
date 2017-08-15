@@ -265,6 +265,7 @@ $factory->define(App\Models\Vehicle::class, function (Faker\Generator $faker) {
         'call_number' => $faker->randomElement([null, $faker->phoneNumber]),
         'sms_number' => $faker->randomElement([null, $faker->phoneNumber]),
         'email' => $faker->randomElement([null, $faker->email]),
+        'website' => $faker->randomElement([null, $faker->url]),
         'paid_at' => $faker->randomElement([null, $faker->dateTimeBetween('now', '+2 weeks')]),
         'deactivated_at' => $faker->randomElement([null, $faker->dateTimeBetween('now', '+10 weeks')])
     ];
