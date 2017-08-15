@@ -16,6 +16,20 @@ $(function() {
     });
 });
 
+var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+$.fn.extend({
+    //Safari doesn't clear placeholders so do this until it does
+    //TODO: remove this when safari fix the bug
+    safariFocusBlur: function() {
+        return this.each(function() {
+            if (isSafari) {
+                this.focus().blur();
+            }
+        });
+    }
+});
+
 var state = {
     categories: [],
     appData: [],
@@ -455,9 +469,9 @@ function refreshVehicle(vehicle, el)
 
     refreshCategorySelector(vehicle, el);
 
-    el.find('.email-input').val(vehicle.email);
-    el.find('.call-input').val(vehicle.call_number);
-    el.find('.sms-input').val(vehicle.sms_number);
+    el.find('.email-input').val(vehicle.email).safariFocusBlur();
+    el.find('.call-input').val(vehicle.call_number).safariFocusBlur();
+    el.find('.sms-input').val(vehicle.sms_number).safariFocusBlur();
 
     el.find('.email-input').keyup(function() {
         updateVehicle(vehicle.id, 'email', $(this).val());
@@ -471,10 +485,10 @@ function refreshVehicle(vehicle, el)
         updateVehicle(vehicle.id, 'sms_number', $(this).val());
     });
 
-    el.find('.description-input').text(vehicle.description);
-    el.find('.price-input').val(vehicle.details.price);
-    el.find('.mileage-input').val(vehicle.details.mileage);
-    el.find('.location-input').val(vehicle.location);
+    el.find('.description-input').text(vehicle.description).safariFocusBlur();
+    el.find('.price-input').val(vehicle.details.price).safariFocusBlur();
+    el.find('.mileage-input').val(vehicle.details.mileage).safariFocusBlur();
+    el.find('.location-input').val(vehicle.location).safariFocusBlur();
 
     el.find('.description-input').keyup(function() {
         updateVehicle(vehicle.id, 'description', $(this).val());
@@ -509,7 +523,7 @@ function refreshVehicle(vehicle, el)
                     if (!result) {
                         createError('The postcode you entered could not be located.');
                     } else {
-                        locationInput.val(result.name);
+                        locationInput.val(result.name).safariFocusBlur();
                         locationInput.popover('hide');
                         updateVehicle(vehicle.id, 'lat', result.lat);
                         updateVehicle(vehicle.id, 'lon', result.lon);
