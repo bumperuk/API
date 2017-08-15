@@ -278,7 +278,6 @@ function saveImage(data, success) {
 
 function validateVehicleForSave(vehicle)
 {
-    console.log(vehicle);
     var validateEmail = function(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
@@ -576,10 +575,10 @@ function refreshCategorySelector(vehicle, el)
         makeInput.append('<option value="-1">Make</option>');
         var categoryId = parseInt(selectEl.find('option:selected').val());
         if (triggerUpdate) {
-            state.vehicles[getVehicleIndex(vehicle.id)].category_id = categoryId;
             updateVehicle(vehicle.id, 'category_id', categoryId);
             updateVehicle(vehicle.id, 'make_id', null);
             updateVehicle(vehicle.id, 'model_id', null);
+            vehicle = state.vehicles[getVehicleIndex(vehicle.id)];
         }
         var category = state.appData[getCategoryIndex(categoryId)];
         if (categoryId !== -1) {
