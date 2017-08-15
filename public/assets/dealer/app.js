@@ -264,6 +264,7 @@ function saveImage(data, success) {
 
 function validateVehicleForSave(vehicle)
 {
+    console.log(vehicle);
     var validateEmail = function(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
@@ -328,9 +329,9 @@ function transformVehicleForSave(vehicle)
 
     newVehicle.id = vehicle.id;
     newVehicle.model = vehicle.model_id;
-    newVehicle.lat = get('lat');
-    newVehicle.lon = get('lon');
-    newVehicle.price = get('price');
+    if (get('lat')) newVehicle.lat = get('lat');
+    if (get('lon')) newVehicle.lon = get('lon');
+    if (get('price')) newVehicle.price = get('price');
     if (getDetail('details', 'year')) newVehicle.year = getDetail('detail_ids', 'year');
     if (getDetail('details', 'mileage')) newVehicle.mileage = getDetail('details', 'mileage');
     if (getDetail('detail_ids', 'condition')) newVehicle.condition = getDetail('detail_ids', 'condition');
