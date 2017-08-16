@@ -30,10 +30,16 @@ class VehiclePhoto extends BaseModel
 
     /**
      * Add base for url attribute
+     * @param $value
+     * @return string
      */
-    public function getUrlAttribute()
+    public function getUrlAttribute($value)
     {
-        return url('uploads/' . $this->attributes['url']);
+        if ($this->type == 'local') {
+            return url('uploads/' . $value);
+        }
+
+        return $value;
     }
 
     public function getNameAttribute()

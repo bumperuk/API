@@ -8,8 +8,8 @@ use App\Console\Commands\CheckPromotionsCommand;
 use App\Console\Commands\CheckSubscriptionCommand;
 use App\Console\Commands\RenewNotificationsCommand;
 use App\Console\Commands\ReportActiveVehicles;
-use App\Console\Commands\StartSocketCommand;
 use App\Console\Commands\ImportVehiclesCommand;
+use App\Console\Commands\VehicleImportCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         CheckPromotionsCommand::class,
         BubbleDealerAdvertsCommand::class,
         ReportActiveVehicles::class,
+        VehicleImportCommand::class,
     ];
 
     /**
@@ -43,6 +44,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('promotions:check')->twiceDaily()->withoutOverlapping();
         $schedule->command('vehicles:bubble')->everyMinute()->withoutOverlapping();
         $schedule->command('statistics:active-vehicles')->dailyAt('01:00');
+        $schedule->command('vehicles:import')->dailyAt(3);
     }
 
     /**

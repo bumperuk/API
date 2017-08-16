@@ -53,8 +53,8 @@ return [
             'database' => env('DB_DATABASE'),
             'username' => env('DB_USERNAME'),
             'password' => env('DB_PASSWORD'),
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'strict' => true,
             'engine' => null,
@@ -88,6 +88,16 @@ return [
     */
 
     'migrations' => 'migrations',
+
+    /*
+     *-------------------------------------------------------------------------
+     * Map columns in Doctrine.
+     *-------------------------------------------------------------------------
+     */
+
+    'mappings' => [
+        'enum' => 'string'
+    ],
 
     /*
     |--------------------------------------------------------------------------

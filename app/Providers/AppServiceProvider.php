@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Stripe\Stripe;
 
@@ -14,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->addDbalTypes();
     }
 
     /**
@@ -25,5 +26,18 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Stripe::setApiKey(env('STRIPE_SK'));
+    }
+
+    private function addDbalTypes()
+    {
+        $map = config('database.mappings');
+
+        $connection = DB::connection();
+        $doctrineConnection = $connection->getDoctrineConnection();
+        $dbPlatform = $doctrineConnection->getSchemaManager()->getDatabasePlatform();
+
+        foreach ($map as $dbType => $doctrineType) {
+            $dbPlatform->registerDoctrineTypeMapping($dbType, $doctrineType);
+        }
     }
 }

@@ -41,6 +41,10 @@ class Vehicle extends BaseModel
         'deactivated_at'
     ];
 
+    protected $fillable = [
+        'source_name', 'source_id'
+    ];
+
     /**
      * The model of the vehicle
      *

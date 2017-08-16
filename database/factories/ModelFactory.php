@@ -276,6 +276,7 @@ $factory->define(App\Models\VehiclePhoto::class, function (Faker\Generator $fake
         'vehicle_id' => function() {
             return factory(\App\Models\Vehicle::class)->create()->id;
         },
+        'type' => $faker->randomElement(['local', 'remote']),
         'url' => $faker->imageUrl()
     ];
 });
