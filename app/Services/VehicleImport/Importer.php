@@ -16,12 +16,7 @@ class Importer
         ];
 
         foreach ($sources as $source) {
-            try {
-                $this->fetchSource(new $source);
-            } catch (\Exception $exception){
-                var_dump($exception->getFile(), $exception->getLine());
-                echo $exception->getMessage() . "\n";
-            }
+            $this->fetchSource(new $source);
         }
     }
 
@@ -31,6 +26,7 @@ class Importer
             $source->fetchVehicles();
         } catch (\Exception $exception) {
             Log::error('Could not fetch source: ' . $source->getName() . ' - ' . $exception->getMessage());
+            return false;
         }
 
         $vehicleSourceIds = $source->getSourceIds();
@@ -49,7 +45,7 @@ class Importer
             $email = $source->getVehicleEmail($vehicleData, $vehicle);
             $website = $source->getVehicleWebsite($vehicleData, $vehicle);
             $description = $source->getVehicleDescription($vehicleData, $vehicle);
-            $photos = $photos = $source->getVehiclePhotos($vehicleData, $vehicle);
+            $photos = $source->getVehiclePhotos($vehicleData, $vehicle);
 
             $missingProperties = $this->hasMissingProperties(
                 $model,
