@@ -45,6 +45,34 @@ class AdvertControllerTest extends TestCase
             ->dontSeeJson(['id' => $hide->model->category->id]);
     }
 
+    public function testDontSeeVehiclesWithoutLatLonWhenFilteringByDistance()
+    {
+        $distance100 = factory(\App\Models\Distance::class)->create(['value' => 100]);
+
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
+            'lat' => null, 'lon' => null,
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=39&lon=-76&distance=' . $distance100->id)
+            ->dontSeeJson(['id' => $vehicle->id]);
+
+    }
+
+    public function testDontSeeVehiclesWithoutLatLonWhenOrderingByDistance()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
+            'lat' => null, 'lon' => null,
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=39&lon=-76&order=distance-asc')
+            ->dontSeeJson(['id' => $vehicle->id]);
+
+    }
+
     public function testDistanceFilter()
     {
         $distance90 = factory(\App\Models\Distance::class)->create(['value' => 90]);

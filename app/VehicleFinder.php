@@ -126,13 +126,16 @@ class VehicleFinder
         if ($this->order == 'distance-asc' && !is_null($this->lat) && !is_null($this->lon)) {
             $lat = floatval($this->lat);
             $lon = floatval($this->lon);
-            $vehicles = $vehicles->selectRaw('
-                vehicles.*, (
-                     3959 * acos(cos(radians(' . $lat . ')) * cos(radians(vehicles.lat)) *
-                     cos(radians(vehicles.lon) - radians(' . $lon . ')) + sin(radians(' . $lat . ')) *
-                     sin(radians(vehicles.lat)))
-                ) AS distance
-            ');
+            $vehicles = $vehicles
+                ->selectRaw('
+                    vehicles.*, (
+                         3959 * acos(cos(radians(' . $lat . ')) * cos(radians(vehicles.lat)) *
+                         cos(radians(vehicles.lon) - radians(' . $lon . ')) + sin(radians(' . $lat . ')) *
+                         sin(radians(vehicles.lat)))
+                    ) AS distance
+                ')
+                ->whereNotNull('lat')
+                ->whereNotNull('lon');
         } elseif ($this->order == 'distance-asc') {
             throw new VehicleFinderException('Cannot order by distance without the parameters lat and lon.');
         }
