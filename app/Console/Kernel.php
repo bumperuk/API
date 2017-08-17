@@ -8,7 +8,7 @@ use App\Console\Commands\CheckPromotionsCommand;
 use App\Console\Commands\CheckSubscriptionCommand;
 use App\Console\Commands\RenewNotificationsCommand;
 use App\Console\Commands\ReportActiveVehicles;
-use App\Console\Commands\ImportVehiclesCommand;
+use App\Console\Commands\ModelImportCommand;
 use App\Console\Commands\VehicleImportCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ApiControllerCreatorCommand::class,
         RenewNotificationsCommand::class,
-        ImportVehiclesCommand::class,
+        ModelImportCommand::class,
         CheckSubscriptionCommand::class,
         CheckPromotionsCommand::class,
         BubbleDealerAdvertsCommand::class,

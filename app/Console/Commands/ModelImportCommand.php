@@ -7,21 +7,21 @@ use App\Models\Make;
 use App\Models\Model;
 use Illuminate\Console\Command;
 
-class ImportVehiclesCommand extends Command
+class ModelImportCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'import:vehicles {category_id} {image_category_id} {file}';
+    protected $signature = 'import:models {category_id} {image_category_id} {file}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Import vehicles from a CSV';
+    protected $description = 'Import models from a CSV';
 
     /**
      * Create a new command instance.
@@ -64,7 +64,7 @@ class ImportVehiclesCommand extends Command
             $model->save();
         }
 
-        $this->info(count($values) . ' vehicles imported for ' . $category->name);
+        $this->info(count($values) . ' models imported for ' . $category->name);
     }
 
     private function clearData(Category $category)

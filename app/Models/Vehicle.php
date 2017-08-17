@@ -76,13 +76,34 @@ class Vehicle extends BaseModel
     }
 
     /**
+     * Only select vehicles that were uploaded by the user
+     * @param Builder $builder
+     * @return Builder
+     */
+    public function scopeUploaded(Builder $builder)
+    {
+        return $builder->whereNotNull('user_id');
+    }
+
+    /**
+     * Only select vehicles that were imported from other source
+     * @param Builder $builder
+     * @return Builder
+     */
+    public function scopeImported(Builder $builder)
+    {
+        return $builder->whereNull('user_id');
+    }
+
+    /**
      * Only select active vehicles.
      *
      * @param Builder $builder
+     * @return Builder
      */
     public function scopeActive(Builder $builder)
     {
-        $builder->whereRaw('
+        return $builder->whereRaw('
             (
                 (
                     paid_at IS NOT NULL AND (
@@ -99,12 +120,12 @@ class Vehicle extends BaseModel
 
     /**
      * Only select inactive vehicles.
-     *
      * @param Builder $builder
+     * @return Builder
      */
     public function scopeInactive(Builder $builder)
     {
-        $builder->whereRaw('
+        return $builder->whereRaw('
             (
                 (
                     paid_at IS NULL OR (
