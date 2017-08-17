@@ -204,4 +204,16 @@ class Vehicle extends BaseModel
 
         return $name;
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleting(function ($vehicle) {
+            //Delete each photo manually to trigger deleting the image file
+            foreach ($vehicle->photos as $photo) {
+                $photo->delete();
+            }
+        });
+    }
 }

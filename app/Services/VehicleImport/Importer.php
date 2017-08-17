@@ -34,8 +34,9 @@ class Importer
         $this->deleteOldSources($source->getName(), $vehicleSourceIds);
 
         foreach ($vehicles as $vehicleData) {
-            $vehicle = $this->getVehicle($vehicleData, $source);
+            echo "Importing vehicle " . $source->getName() . " " . $source->getVehicleSourceId($vehicleData) . "\n";
 
+            $vehicle = $this->getVehicle($vehicleData, $source);
             $model = $source->getVehicleModel($vehicleData);
             $price = $source->getVehiclePrice($vehicleData, $vehicle);
             $year = $source->getVehicleYear($vehicleData, $vehicle);
@@ -94,16 +95,9 @@ class Importer
                 }
 
                 $vehicle->save();
-                $vehicle->photos()->delete();
 
-                foreach ($photos as $i => $photo) {
-                    $vehiclePhoto = new VehiclePhoto();
-                    $vehiclePhoto->vehicle()->associate($vehicle);
-                    $vehiclePhoto->index = $i;
-                    $vehiclePhoto->type = 'remote';
-                    $vehiclePhoto->url = $photo;
-                    $vehiclePhoto->save();
-                }
+                $photoUpdater = new VehiclePhotoUpdater($vehicle);
+                $photoUpdater->update($source->getVehiclePhotos($vehicleData, $vehicle));
             }
         }
     }
@@ -133,7 +127,11 @@ class Importer
         Vehicle
             ::where('source_name', $sourceName)
             ->whereNotIn('source_id', $vehicleSourceIds)
-            ->delete();
+            ->chunk(20, function ($vehicles) {
+                foreach ($vehicles as $vehicle) {
+                    $vehicle->forceDelete();
+                }
+            });
     }
 
     private function getVehicle(array $vehicleData, Source $source): Vehicle
