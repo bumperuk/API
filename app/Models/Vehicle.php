@@ -82,11 +82,19 @@ class Vehicle extends BaseModel
      */
     public function scopeActive(Builder $builder)
     {
-        $builder
-            ->whereNotNull('paid_at')
-            ->where(function(Builder $builder) {
-                $builder->whereNull('deactivated_at')->orWhere('deactivated_at', '>', Carbon::now());
-            });
+        $builder->whereRaw('
+            (
+                (
+                    paid_at IS NOT NULL AND (
+                        deactivated_at IS NULL OR deactivated_at > ?
+                    )
+                ) OR (
+                    user_id IS NULL
+                )
+            )
+        ', [
+            Carbon::now()->toDateTimeString()
+        ]);
     }
 
     /**
@@ -96,15 +104,19 @@ class Vehicle extends BaseModel
      */
     public function scopeInactive(Builder $builder)
     {
-        $builder->where(function (Builder $builder) {
-            $builder
-                ->whereNull('paid_at')
-                ->orWhere(function(Builder $builder) {
-                    $builder
-                        ->whereNotNull('deactivated_at')
-                        ->where('deactivated_at', '<=', Carbon::now());
-                });
-        });
+        $builder->whereRaw('
+            (
+                (
+                    paid_at IS NULL OR (
+                        deactivated_at IS NOT NULL AND deactivated_at <= ?
+                    )
+                ) AND (
+                    user_id IS NOT NULL
+                )
+            )
+        ', [
+            Carbon::now()->toDateTimeString()
+        ]);
     }
 
     /**

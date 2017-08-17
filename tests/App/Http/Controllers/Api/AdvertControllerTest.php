@@ -175,6 +175,40 @@ class AdvertControllerTest extends TestCase
             ->seePaginationItemsInOrder([$vehicle1, $vehicle2, $vehicle3]);
     }
 
+    public function testOrderImportedVehiclesLast()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+        $user = factory(\App\Models\User::class)->create();
+
+        $vehicle1 = factory(\App\Models\Vehicle::class)->create([
+            'user_id' => $user->id, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2014
+        ]);
+        $vehicle1->model->category()->associate($category);
+        $vehicle1->model->save();
+
+        $vehicle2 = factory(\App\Models\Vehicle::class)->create([
+            'user_id' => $user->id, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2012
+        ]);
+        $vehicle2->model->category()->associate($category);
+        $vehicle2->model->save();
+
+        $vehicle3 = factory(\App\Models\Vehicle::class)->create([
+            'user_id' => null, 'paid_at' => null, 'deactivated_at' => null, 'year' => 2013
+        ]);
+        $vehicle3->model->category()->associate($category);
+        $vehicle3->model->save();
+
+        $vehicle4 = factory(\App\Models\Vehicle::class)->create([
+            'user_id' => $user->id, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2010
+        ]);
+        $vehicle4->model->category()->associate($category);
+        $vehicle4->model->save();
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=year-asc')
+            ->seePaginationItemsInOrder([$vehicle4, $vehicle2, $vehicle1, $vehicle3]);
+    }
+
     public function testOrderByMake()
     {
         $category = factory(\App\Models\Category::class)->create();
