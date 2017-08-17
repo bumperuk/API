@@ -202,10 +202,14 @@ class VehicleFinder
     private function doDistanceFilter(Builder $builder): Builder
     {
         if ($this->distanceFilter) {
-            $builder = $builder->whereRaw('
-                (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
-                 cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
-                 sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value);
+            $builder = $builder
+                ->whereNotNull('lat')
+                ->whereNotNull('lon')
+                ->whereRaw('
+                    (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
+                     cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
+                     sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value
+                );
         }
 
         return $builder;

@@ -199,6 +199,9 @@ class CarDealer5 implements Source
     public function getVehicleDescription(array $vehicleData, Vehicle $vehicle)
     {
         $description = $vehicleData[21];
+        $description = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $description);
+        $description = str_replace(";", "\n", $description);
+
         return !empty($description) ? $description : null;
     }
 
@@ -219,7 +222,13 @@ class CarDealer5 implements Source
 
     public function getVehicleWebsite(array $vehicleData, Vehicle $vehicle)
     {
-        return $vehicleData[24];
+        $url = $vehicleData[24];
+
+        if (filter_var($url, FILTER_VALIDATE_URL)  !== false) {
+            return $url;
+        }
+
+        return null;
     }
 
     public function getVehiclePhotos(array $vehicleData, Vehicle $vehicle)
