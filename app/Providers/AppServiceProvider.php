@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->addDbalTypes();
+        //
     }
 
     /**
@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Stripe::setApiKey(env('STRIPE_SK'));
+        $this->addDbalTypes();
     }
 
     private function addDbalTypes()

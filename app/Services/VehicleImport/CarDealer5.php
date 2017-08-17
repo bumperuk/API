@@ -50,14 +50,14 @@ class CarDealer5 implements Source
 
     public function getVehicleSourceId(array $vehicleData): string
     {
-        return $vehicleData[1];
+        return trim($vehicleData[1]);
     }
 
     public function getVehicleModel(array $vehicleData)
     {
-        $makeValue = $vehicleData[9];
-        $modelValue = $vehicleData[10];
-        $variantValue = $vehicleData[11];
+        $makeValue = trim($vehicleData[9]);
+        $modelValue = trim($vehicleData[10]);
+        $variantValue = trim($vehicleData[11]);
 
         $makes = Make::where('value', $makeValue)->get();
 
@@ -92,7 +92,7 @@ class CarDealer5 implements Source
     {
         return Color
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', $vehicleData[3])
+            ->where('value', trim($vehicleData[3]))
             ->first();
     }
 
@@ -100,7 +100,7 @@ class CarDealer5 implements Source
     {
         return BodyType
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', $vehicleData[7])
+            ->where('value', trim($vehicleData[7]))
             ->first();
     }
 
@@ -108,7 +108,7 @@ class CarDealer5 implements Source
     {
         return Door
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', $vehicleData[8])
+            ->where('value', trim($vehicleData[8]))
             ->first();
     }
 
@@ -121,7 +121,7 @@ class CarDealer5 implements Source
     {
         return Fuel
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', $vehicleData[4])
+            ->where('value', trim($vehicleData[4]))
             ->first();
     }
 
@@ -129,13 +129,13 @@ class CarDealer5 implements Source
     {
         return Transmission
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', $vehicleData[14])
+            ->where('value', trim($vehicleData[14]))
             ->first();
     }
 
     public function getVehicleEngine(array $vehicleData, Vehicle $vehicle)
     {
-        $engineSize = $vehicleData[12];
+        $engineSize = trim($vehicleData[12]);
 
         if (!empty($engineSize)) {
             $engineSize = intval($engineSize) / 1000;
@@ -175,19 +175,19 @@ class CarDealer5 implements Source
 
     public function getVehiclePrice(array $vehicleData, Vehicle $vehicle)
     {
-        $price = $vehicleData[13];
+        $price = trim($vehicleData[13]);
         return !empty($price) ? $price : null;
     }
 
     public function getVehicleYear(array $vehicleData, Vehicle $vehicle)
     {
-        $year = $vehicleData[5];
+        $year = trim($vehicleData[5]);
         return !empty($year) ? $year : null;
     }
 
     public function getVehicleMileage(array $vehicleData, Vehicle $vehicle)
     {
-        $mileage = $vehicleData[6];
+        $mileage = trim($vehicleData[6]);
         return !empty($mileage) ? $mileage : null;
     }
 
@@ -198,7 +198,7 @@ class CarDealer5 implements Source
 
     public function getVehicleDescription(array $vehicleData, Vehicle $vehicle)
     {
-        $description = $vehicleData[21];
+        $description = trim($vehicleData[21]);
         $description = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $description);
         $description = str_replace(";", "\n", $description);
 
@@ -222,7 +222,7 @@ class CarDealer5 implements Source
 
     public function getVehicleWebsite(array $vehicleData, Vehicle $vehicle)
     {
-        $url = $vehicleData[24];
+        $url = trim($vehicleData[24]);
 
         if (filter_var($url, FILTER_VALIDATE_URL)  !== false) {
             return $url;
@@ -234,9 +234,12 @@ class CarDealer5 implements Source
     public function getVehiclePhotos(array $vehicleData, Vehicle $vehicle)
     {
         $photos = explode(',', $vehicleData[15]);
-        $photos = array_filter($photos, function($photo) {
+        $photos = array_filter($photos, function ($photo) {
             return !empty($photo);
         });
+        $photos = array_map(function ($photo) {
+            return trim($photo);
+        }, $photos);
 
         return $photos;
     }
