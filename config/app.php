@@ -192,7 +192,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-        Sofa\Eloquence\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         NotificationChannels\Twilio\TwilioProvider::class,
         App\Notifications\OneSignal\OneSignalServiceProvider::class,

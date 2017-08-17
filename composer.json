@@ -8,7 +8,6 @@
         "php": ">=5.6.4",
         "laravel/framework": "5.3.*",
         "tymon/jwt-auth": "0.5.*",
-        "sofa/eloquence": "~5.1@dev",
         "intervention/image": "2.*",
         "intervention/imagecache": "2.*",
         "stripe/stripe-php": "3.*",
