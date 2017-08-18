@@ -21,7 +21,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::query();
+        $users = User::query()->real();
 
         if ($request->has('q')) {
             $users = User::where('email', 'LIKE', '%' . $request->input('q') . '%');

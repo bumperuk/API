@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -112,6 +113,11 @@ class User extends Authenticatable
         $this->password = $password;
 
         return true;
+    }
+
+    public function scopeReal(Builder $builder)
+    {
+        return $builder->where('type', 'real');
     }
 
     /**
