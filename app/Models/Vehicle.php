@@ -110,7 +110,7 @@ class Vehicle extends BaseModel
                         deactivated_at IS NULL OR deactivated_at > ?
                     )
                 ) OR (
-                    user_id IS NULL
+                    source_name IS NOT NULL
                 )
             )
         ', [
@@ -132,7 +132,7 @@ class Vehicle extends BaseModel
                         deactivated_at IS NOT NULL AND deactivated_at <= ?
                     )
                 ) AND (
-                    user_id IS NOT NULL
+                    source_name IS NULL
                 )
             )
         ', [
