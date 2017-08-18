@@ -147,9 +147,12 @@ class Vehicle extends BaseModel
      */
     public function getActiveAttribute(): bool
     {
-        return $this->paid_at != null && (
-            $this->deactivated_at == null || $this->deactivated_at->gte(Carbon::now())
-        );
+        return (
+            $this->paid_at != null && (
+                $this->deactivated_at == null || $this->deactivated_at->gte(Carbon::now())
+            )
+        ) || $this->user_id == null;
+
     }
 
     /**
