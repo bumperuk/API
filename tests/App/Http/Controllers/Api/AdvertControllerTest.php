@@ -181,25 +181,25 @@ class AdvertControllerTest extends TestCase
         $user = factory(\App\Models\User::class)->create();
 
         $vehicle1 = factory(\App\Models\Vehicle::class)->create([
-            'user_id' => $user->id, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2014
+            'source_name' => null, 'source_id' => null, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2014
         ]);
         $vehicle1->model->category()->associate($category);
         $vehicle1->model->save();
 
         $vehicle2 = factory(\App\Models\Vehicle::class)->create([
-            'user_id' => $user->id, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2012
+            'source_name' => null, 'source_id' => null, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2012
         ]);
         $vehicle2->model->category()->associate($category);
         $vehicle2->model->save();
 
         $vehicle3 = factory(\App\Models\Vehicle::class)->create([
-            'user_id' => null, 'paid_at' => null, 'deactivated_at' => null, 'year' => 2013
+            'source_name' => 'dealer_source', 'source_id' => '123', 'paid_at' => null, 'deactivated_at' => null, 'year' => 2013
         ]);
         $vehicle3->model->category()->associate($category);
         $vehicle3->model->save();
 
         $vehicle4 = factory(\App\Models\Vehicle::class)->create([
-            'user_id' => $user->id, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2010
+            'source_name' => null, 'source_id' => null, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2010
         ]);
         $vehicle4->model->category()->associate($category);
         $vehicle4->model->save();
