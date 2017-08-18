@@ -149,7 +149,7 @@ class User extends Authenticatable
      */
     public function getTypeAttribute()
     {
-        return ($this->dealer_rank_id || $this->source_name !== null) ? 'dealer' : 'private';
+        return ($this->dealer_rank_id || $this->dummy_id !== null) ? 'dealer' : 'private';
     }
 
     /**

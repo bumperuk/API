@@ -323,13 +323,13 @@ class VehicleFinder
     private function doOrder(Builder $builder): Builder
     {
         switch ($this->order) {
-            case 'price-asc': return $builder->orderByRaw('user_id IS NULL ASC, price ASC');
-            case 'price-desc': return $builder->orderByRaw('user_id IS NULL ASC, price DESC');
-            case 'distance-asc': return $builder->orderByRaw('user_id IS NULL ASC, distance DESC');
-            case 'make-asc': return $builder->orderByRaw('user_id IS NULL ASC, makes.value ASC');
-            case 'year-asc': return $builder->orderByRaw('user_id IS NULL ASC, year ASC');
-            case 'year-desc': return $builder->orderByRaw('user_id IS NULL ASC, year DESC');
-            default: return $builder->orderByRaw('user_id IS NULL ASC, paid_at DESC');
+            case 'price-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, price ASC');
+            case 'price-desc': return $builder->orderByRaw('source_name IS NOT NULL ASC, price DESC');
+            case 'distance-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, distance DESC');
+            case 'make-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, makes.value ASC');
+            case 'year-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, year ASC');
+            case 'year-desc': return $builder->orderByRaw('source_name IS NOT NULL ASC, year DESC');
+            default: return $builder->orderByRaw('source_name IS NOT NULL ASC, paid_at DESC');
         }
     }
 }
