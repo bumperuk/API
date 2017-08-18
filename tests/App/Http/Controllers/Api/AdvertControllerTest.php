@@ -178,7 +178,6 @@ class AdvertControllerTest extends TestCase
     public function testOrderImportedVehiclesLast()
     {
         $category = factory(\App\Models\Category::class)->create();
-        $user = factory(\App\Models\User::class)->create();
 
         $vehicle1 = factory(\App\Models\Vehicle::class)->create([
             'source_name' => null, 'source_id' => null, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2014

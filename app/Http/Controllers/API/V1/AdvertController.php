@@ -66,7 +66,6 @@ class AdvertController extends ApiController
         $vehicles = Vehicle
             ::active()
             ->where('user_id', $request->input('id'))
-            ->whereNotNull('paid_at')
             ->orderBy('paid_at', 'desc')
             ->paginate(16);
 
