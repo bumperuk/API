@@ -48,6 +48,7 @@ class AuthController extends ApiController
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
+        $credentials['type'] = 'real';
 
         //Limit the amount of times users can login
         if ($this->hasTooManyLoginAttempts($request)) {

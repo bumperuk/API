@@ -53,6 +53,11 @@ class CarDealer5 implements Source
         return trim($vehicleData[1]);
     }
 
+    public function getVehicleVendorId(array $vehicleData): string
+    {
+        return trim($vehicleData[0]);
+    }
+
     public function getVehicleModel(array $vehicleData)
     {
         $makeValue = trim($vehicleData[9]);

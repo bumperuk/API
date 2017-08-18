@@ -38,7 +38,7 @@ class ReportActiveVehicles extends Command
      */
     public function handle()
     {
-        $active = Vehicle::active()->count();
+        $active = Vehicle::active()->uploaded()->count();
 
         $statistic = new Statistic();
         $statistic->date = Carbon::now()->startOfDay();

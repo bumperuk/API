@@ -2,6 +2,7 @@
 
 namespace App\Services\VehicleImport;
 
+use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehiclePhoto;
 use Illuminate\Support\Facades\DB;
@@ -75,6 +76,7 @@ class Importer
                 $vehicle->year = $year;
                 $vehicle->mileage = $mileage;
 
+                $vehicle->user()->associate($this->getUser($vehicleData, $source));
                 $vehicle->condition()->associate($source->getVehicleCondition($vehicleData, $vehicle));
                 $vehicle->color()->associate($source->getVehicleColor($vehicleData, $vehicle));
                 $vehicle->bodyType()->associate($source->getVehicleBodyType($vehicleData, $vehicle));
@@ -129,7 +131,12 @@ class Importer
             ->whereNotIn('source_id', $vehicleSourceIds)
             ->chunk(20, function ($vehicles) {
                 foreach ($vehicles as $vehicle) {
+                    $user = $vehicle->user;
                     $vehicle->forceDelete();
+
+                    if ($user->vehicles()->count() == 0) {
+                        $user->delete();
+                    }
                 }
             });
     }
@@ -142,5 +149,16 @@ class Importer
         ]);
 
         return $vehicle;
+    }
+
+    private function getUser(array $vehicleData, Source $source): User
+    {
+        $dummyId = $source->getName() . '_' . $source->getVehicleVendorId($vehicleData);
+        $user = User::firstOrCreate([
+            'type' => 'dummy',
+            'dummy_id' => $dummyId
+        ]);
+
+        return $user;
     }
 }

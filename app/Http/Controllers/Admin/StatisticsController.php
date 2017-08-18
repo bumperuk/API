@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers\Admin;
-
 
 use App\Models\User;
 use App\Models\Vehicle;
@@ -132,6 +130,9 @@ class StatisticsController
     public function generateTotalListings()
     {
         $factory = new GraphFactory(Vehicle::class);
+        $factory->setWhereConditions(function($builder) {
+           return $builder->whereNull('source_name');
+        });
         $graph = $factory->getMonthly(Carbon::now()->subYears(2), Carbon::now());
 
         $yVals = [];
@@ -155,6 +156,9 @@ class StatisticsController
     public function generateTotalRegistrations()
     {
         $factory = new GraphFactory(User::class);
+        $factory->setWhereConditions(function($builder) {
+            return $builder->where('type', 'real');
+        });
         $graph = $factory->getMonthly(Carbon::now()->subYears(2), Carbon::now());
 
         $yVals = [];
@@ -178,6 +182,9 @@ class StatisticsController
     public function generateDailyRegistrations()
     {
         $factory = new GraphFactory(User::class);
+        $factory->setWhereConditions(function($builder) {
+            return $builder->where('type', 'real');
+        });
         $graph = $factory->getDaily(Carbon::now()->subMonth(), Carbon::now());
         return [
             'xLabel' => 'Day',
@@ -192,6 +199,9 @@ class StatisticsController
     public function generateMonthlyRegistrations()
     {
         $factory = new GraphFactory(User::class);
+        $factory->setWhereConditions(function($builder) {
+            return $builder->where('type', 'real');
+        });
         $graph = $factory->getMonthly(Carbon::now()->subYear(), Carbon::now());
         return [
             'xLabel' => 'Month',
@@ -211,6 +221,7 @@ class StatisticsController
             JOIN models ON vehicles.model_id = models.id
             JOIN categories ON models.category_id = categories.id
             WHERE
+                vehicles.source_name IS NULL AND
 	            vehicles.paid_at IS NOT NULL AND (
 	              vehicles.deactivated_at IS NULL OR vehicles.deactivated_at > NOW()
                 )
@@ -243,6 +254,7 @@ class StatisticsController
             FROM vehicles
             JOIN models ON vehicles.model_id = models.id
             JOIN categories ON models.category_id = categories.id
+            WHERE vehicles.source_name IS NULL
             GROUP BY categories.name
             ORDER BY y DESC
        ');
@@ -274,7 +286,8 @@ class StatisticsController
 	          SELECT count(vehicles.id) as total_vehicles
 	          FROM users
 	          LEFT JOIN vehicles ON vehicles.user_id = users.id
-	          WHERE
+	          WHERE users.type = \'real\'
+	            AND
 	            vehicles.paid_at IS NOT NULL AND (
 	              vehicles.deactivated_at IS NULL OR vehicles.deactivated_at > NOW()
                 )
@@ -314,6 +327,7 @@ class StatisticsController
 	          SELECT count(vehicles.id) as total_vehicles
 	          FROM users
 	          LEFT JOIN vehicles ON vehicles.user_id = users.id
+	          WHERE `type` = \'real\'
 	          GROUP by users.id
           ) as totals
           GROUP BY totals.total_vehicles

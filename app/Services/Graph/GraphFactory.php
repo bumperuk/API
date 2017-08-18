@@ -11,6 +11,7 @@ class GraphFactory
     private $interval;
     private $yValue;
     private $formatter;
+    private $whereConditions;
 
     public function __construct($model)
     {
@@ -39,6 +40,11 @@ class GraphFactory
         return $this->fetch($from, $to);
     }
 
+    public function setWhereConditions(\Closure $whereConditions)
+    {
+        $this->whereConditions = $whereConditions;
+    }
+
     private function fetch(Carbon $from, Carbon $to): Graph
     {
         $model = new $this->model;
@@ -52,8 +58,14 @@ class GraphFactory
                 DB::raw($yValue . ' as y')
             )
             ->where('created_at', '<', $to)
-            ->where('created_at', '>=', $from)
-            ->groupBy(DB::raw($group))
+            ->where('created_at', '>=', $from);
+
+        if ($this->whereConditions !== null) {
+            $closure = $this->whereConditions;
+            $results = $closure($results);
+        }
+
+        $results = $results->groupBy(DB::raw($group))
             ->get()
             ->toArray();
 
