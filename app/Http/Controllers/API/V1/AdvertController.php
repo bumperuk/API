@@ -1,15 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Thomas
- * Date: 09/01/2017
- * Time: 16:18
- */
 
 namespace App\Http\Controllers\API\V1;
 
-
 use App\Models\Vehicle;
+use App\Transformers\VehicleTransformer;
 use App\VehicleFinder;
 use App\VehicleFinderException;
 use Illuminate\Http\Request;
@@ -49,7 +43,7 @@ class AdvertController extends ApiController
             return $this->api_response([], $ex->getMessage(), false, 400);
         }
 
-        return $this->api_response($vehicles);
+        return $this->api_response(VehicleTransformer::fromPaginator($vehicles));
     }
 
     public function getById($id)
@@ -60,7 +54,7 @@ class AdvertController extends ApiController
             return $this->api_response([], 'The vehicle doesn\'t exist or was removed.', false, 400);
         }
 
-        return $this->api_response(['vehicle' => $vehicle]);
+        return $this->api_response(['vehicle' => VehicleTransformer::fromModel($vehicle)]);
     }
 
     public function getForUser(Request $request)
@@ -76,7 +70,7 @@ class AdvertController extends ApiController
             ->orderBy('paid_at', 'desc')
             ->paginate(16);
 
-        return $this->api_response($vehicles);
+        return $this->api_response(VehicleTransformer::fromPaginator($vehicles));
     }
 
     public function addView(Request $request)
@@ -92,6 +86,6 @@ class AdvertController extends ApiController
             $vehicle->save();
         }
 
-        return $this->api_response($vehicle);
+        return $this->api_response(VehicleTransformer::fromModel($vehicle));
     }
 }

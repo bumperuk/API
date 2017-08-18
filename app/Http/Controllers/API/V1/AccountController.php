@@ -11,6 +11,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\Vehicle;
 use App\Notifications\VerifyPhone;
 use App\ReceiptValidator;
+use App\Transformers\VehicleTransformer;
 use Carbon\Carbon;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
@@ -145,7 +146,7 @@ class AccountController extends ApiController
                 $request->input('per_page', 16)
             );
 
-        return $this->api_response($vehicles);
+        return $this->api_response(VehicleTransformer::fromPaginator($vehicles));
     }
 
     /**

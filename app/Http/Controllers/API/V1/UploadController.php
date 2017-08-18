@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 use App\Models\VehiclePhoto;
 use App\Models\Year;
 use App\ReceiptValidator;
+use App\Transformers\VehicleTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -137,7 +138,7 @@ class UploadController extends ApiController
         $vehicle->save();
 
         return $this->api_response([
-            'vehicle' => $vehicle->fresh()
+            'vehicle' => VehicleTransformer::fromModel($vehicle->fresh())
         ]);
     }
 
@@ -258,7 +259,7 @@ class UploadController extends ApiController
         $vehicle->save();
 
         return $this->api_response([
-            'vehicle' => $vehicle->fresh()
+            'vehicle' => VehicleTransformer::fromModel($vehicle->fresh())
         ]);
     }
 
