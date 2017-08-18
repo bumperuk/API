@@ -36,7 +36,7 @@ class VehicleTransformer extends BaseTransformer
             'views' => $vehicle->views,
             'payment_method' => $vehicle->payment_method,
             'paid_at' => $vehicle->paid_at ? $vehicle->paid_at->toDateTimeString() : null,
-            'deactivated_at' => $vehicle->deactivated_at,
+            'deactivated_at' => $vehicle->deactivated_at ? $vehicle->deactivated_at->toDateTimeString() : null,
             'created_at' => $vehicle->created_at->toDateTimeString(),
             'updated_at' => $vehicle->updated_at->toDateTimeString(),
             'details' => $vehicle->details,
