@@ -18,7 +18,7 @@ class PromotionController extends Controller
         $promotions = Promotion::paginate(20);
 
         if ($email = $request->input('email')) {
-            $users = User::where('email', 'LIKE', '%' . $email . '%')->take(20)->get();
+            $users = User::real()->where('email', 'LIKE', '%' . $email . '%')->take(20)->get();
         } else {
             $users = null;
         }
