@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $with = [
-        'dealerRank'
+       'dealerRank'
     ];
 
     /**
@@ -171,6 +171,7 @@ class User extends Authenticatable
     {
         return $this->promotions()->active()->sum('listings');
     }
+
     /**
      * Promotions remaining.
      *
@@ -193,7 +194,7 @@ class User extends Authenticatable
     {
         $promotions = $this->total_promotions;
 
-        if ($this->type == 'private') {
+        if (!$this->dealerRank) {
             return 3 + $promotions;
         }
 
