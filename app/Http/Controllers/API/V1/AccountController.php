@@ -146,7 +146,7 @@ class AccountController extends ApiController
                 $request->input('per_page', 16)
             );
 
-        return $this->api_response(VehicleTransformer::fromPaginator($vehicles));
+        return $this->api_response($vehicles);
     }
 
     /**

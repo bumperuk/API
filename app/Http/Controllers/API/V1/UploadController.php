@@ -138,7 +138,7 @@ class UploadController extends ApiController
         $vehicle->save();
 
         return $this->api_response([
-            'vehicle' => VehicleTransformer::fromModel($vehicle->fresh())
+            'vehicle' => $vehicle->fresh()
         ]);
     }
 
@@ -259,7 +259,7 @@ class UploadController extends ApiController
         $vehicle->save();
 
         return $this->api_response([
-            'vehicle' => VehicleTransformer::fromModel($vehicle->fresh())
+            'vehicle' => $vehicle->fresh()
         ]);
     }
 

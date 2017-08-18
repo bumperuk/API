@@ -43,7 +43,7 @@ class AdvertController extends ApiController
             return $this->api_response([], $ex->getMessage(), false, 400);
         }
 
-        return $this->api_response(VehicleTransformer::fromPaginator($vehicles));
+        return $this->api_response($vehicles);
     }
 
     public function getById($id)
@@ -54,7 +54,7 @@ class AdvertController extends ApiController
             return $this->api_response([], 'The vehicle doesn\'t exist or was removed.', false, 400);
         }
 
-        return $this->api_response(['vehicle' => VehicleTransformer::fromModel($vehicle)]);
+        return $this->api_response(['vehicle' => $vehicle]);
     }
 
     public function getForUser(Request $request)
@@ -70,7 +70,7 @@ class AdvertController extends ApiController
             ->orderBy('paid_at', 'desc')
             ->paginate(16);
 
-        return $this->api_response(VehicleTransformer::fromPaginator($vehicles));
+        return $this->api_response($vehicles);
     }
 
     public function addView(Request $request)
@@ -86,6 +86,6 @@ class AdvertController extends ApiController
             $vehicle->save();
         }
 
-        return $this->api_response(VehicleTransformer::fromModel($vehicle));
+        return $this->api_response($vehicle);
     }
 }

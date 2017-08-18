@@ -82,7 +82,7 @@ class Vehicle extends BaseModel
      */
     public function scopeUploaded(Builder $builder)
     {
-        return $builder->whereNotNull('user_id');
+        return $builder->whereNull('source_name');
     }
 
     /**
@@ -92,7 +92,7 @@ class Vehicle extends BaseModel
      */
     public function scopeImported(Builder $builder)
     {
-        return $builder->whereNull('user_id');
+        return $builder->whereNotNull('source_name');
     }
 
     /**

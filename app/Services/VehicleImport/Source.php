@@ -12,6 +12,7 @@ interface Source
     public function getVehicles(): array;
 
     public function getVehicleSourceId(array $vehicleData): string;
+    public function getVehicleVendorId(array $vehicleData): string;
     public function getVehicleModel(array $vehicleData);
     public function getVehicleCondition(array $vehicleData, Vehicle $vehicle);
     public function getVehicleColor(array $vehicleData, Vehicle $vehicle);
