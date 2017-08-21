@@ -4,7 +4,10 @@ namespace App;
 
 
 use App\Models\DealerRank;
+use App\Models\Subscription;
 use App\Models\UsedReceipt;
+use App\Models\User;
+use Carbon\Carbon;
 use Google_Client;
 use Google_Service_AndroidPublisher;
 use Illuminate\Support\Facades\Log;
@@ -103,14 +106,15 @@ class ReceiptValidator
     /**
      * Validate an itunes store subscription
      *
+     * @param User $user
      * @param $receipt
      * @param null $debugMode
      * @return DealerRank|bool|null false If the user subscription is invalid
      *          false If the user subscription is invalid
-     *          null If it could't be determined
-     *          DealerRank If the user does have a subscription
+     * null If it could't be determined
+     * DealerRank If the user does have a subscription
      */
-    public function validateItunesSubscription($receipt, $debugMode = null)
+    public function validateItunesSubscription(User $user, $receipt, $debugMode = null)
     {
         if (shouldMock()) {
             return DealerRank::first();
@@ -123,8 +127,9 @@ class ReceiptValidator
         }
 
         $validator = new ItunesValidator($mode);
-        $ranks = DealerRank::all();
+        $ranks = DealerRank::where('platform', 'ios')->get();
         $bestRank = null;
+        $bestPurchase = null;
 
         try {
             $response = $validator->setSharedSecret(env('RECEIPT_ITUNES_SECRET'))->setReceiptData($receipt)->validate();
@@ -139,19 +144,25 @@ class ReceiptValidator
 
             foreach ($purchases as $purchase) {
 
-                $rank = $this->getRankForProduct($purchase['product_id'], 'itunes', $ranks);
+                $rank = $this->getRankForProduct($purchase['product_id'], $ranks);
 
                 if (
                     isset($purchase['expires_date_ms']) && //Is a subscription
-                    $purchase['expires_date_ms'] > time()*1000  && // Purchase not expired
+                    $purchase['expires_date_ms'] > time()*1000 && // Purchase not expired
                     $rank && // Product in database
                     (!$bestRank || $bestRank->limit <= $rank->limit) //If there isn't already a subscription or the new subscription has a bigger limit
                 ) {
                     $bestRank = $rank;
+                    $bestPurchase = $purchase;
                 }
             }
 
-            return $bestRank ?? false;
+            if ($bestRank) {
+                $this->saveSubscription($user, $bestRank, $bestPurchase);
+                return $bestRank;
+            }
+
+            return false;
         } catch (\Exception $e) {
             Log::error('Invalid iTunes subscription receipt: ' . $receipt . '. Error: ' . $e->getMessage());
             return null;
@@ -159,16 +170,54 @@ class ReceiptValidator
     }
 
     /**
+     * Currently the subscription record does nothing and is saved for reference only.
+     * @param User $user
+     * @param DealerRank $dealerRank
+     * @param $purchase
+     */
+    private function saveSubscription(User $user, DealerRank $dealerRank, $purchase)
+    {
+        $subscription = Subscription
+            ::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$subscription || $subscription->dealer_rank_id !== $dealerRank->id) {
+            $subscription = new Subscription();
+            $subscription->user()->associate($user);
+            $subscription->dealerRank()->associate($dealerRank);
+        }
+
+        switch ($dealerRank->platform) {
+            case 'ios':
+                $activeUntil = Carbon::createFromTimestamp($purchase['expires_date_ms'] / 1000);
+                break;
+            case 'android':
+                $activeUntil = Carbon::createFromTimestamp($purchase['expiryTimeMillis'] / 1000);
+                break;
+            default:
+                $activeUntil = Carbon::now();
+                break;
+        }
+
+        $subscription->active_until = $activeUntil;
+        $subscription->receipt = $purchase;
+
+        $subscription->save();
+    }
+
+    /**
      * Validate an play store subscription
      *
+     * @param User $user
      * @param $productId
      * @param $token
-     * @return bool|null|DealerRank
-     *          false If the user subscription is invalid
-     *          null If it could't be determined
-     *          DealerRank If the user does have a subscription
+     * @return DealerRank|bool|null false If the user subscription is invalid
+     * false If the user subscription is invalid
+     * null If it could't be determined
+     * DealerRank If the user does have a subscription
      */
-    public function validatePlaySubscription($productId, $token)
+    public function validatePlaySubscription(User $user, $productId, $token)
     {
         if (shouldMock()) {
             return DealerRank::first();
@@ -189,8 +238,8 @@ class ReceiptValidator
                 ->setPurchaseToken($token)
                 ->validateSubscription();
 
-            $ranks = DealerRank::all();
-            $rank = $this->getRankForProduct($productId, 'play', $ranks);
+            $ranks = DealerRank::where('platform', 'android')->get();
+            $rank = $this->getRankForProduct($productId, $ranks);
 
             /*
              * There is no getStartTimeMillis method on SubscriptionResponse so using this hack to get the expiry time.
@@ -201,9 +250,11 @@ class ReceiptValidator
             $expiry = $property->getValue($response)->expiryTimeMillis / 1000;
 
             if (
-                $rank  && //If the rank exists
+                $rank && //If the rank exists
                 $expiry > time() //The subscription hasn't expired
             ) {
+                $arrayResponse = (array) $property->getValue($response);
+                $this->saveSubscription($user, $rank, $arrayResponse);
                 return $rank;
             }
 
@@ -215,12 +266,10 @@ class ReceiptValidator
         }
     }
 
-    private function getRankForProduct($productId, $platform, $ranks)
+    private function getRankForProduct($productId, $ranks)
     {
-        $property = $platform . '_product';
-
         foreach ($ranks as $rank) {
-            if ($rank->$property == $productId) {
+            if ($rank->name == $productId) {
                 return $rank;
             }
         }

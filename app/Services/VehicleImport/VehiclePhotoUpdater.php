@@ -21,6 +21,7 @@ class VehiclePhotoUpdater
         $usedPhotoIds = [];
 
         foreach ($photos as $i => $photoUrl) {
+            //Limit to 5 photos
             if ($i >= 5) {
                 break;
             }

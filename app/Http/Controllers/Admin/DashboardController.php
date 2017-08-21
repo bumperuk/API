@@ -15,7 +15,7 @@ class DashboardController extends Controller
      */
     public function view()
     {
-        $users = User::orderBy('created_at', 'desc')->take(10)->get();
+        $users = User::where('type', 'real')->orderBy('created_at', 'desc')->take(10)->get();
 
         return view('admin.dashboard', [
             'users' => $users

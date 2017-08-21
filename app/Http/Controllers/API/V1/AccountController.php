@@ -207,12 +207,12 @@ class AccountController extends ApiController
         $validator = new ReceiptValidator();
 
         if ($receiptType == 'itunes') {
-            $rank = $validator->validateItunesSubscription($itunesReceipt);
+            $rank = $validator->validateItunesSubscription($user, $itunesReceipt);
             $receipt = [
                 'receipt' => $itunesReceipt
             ];
         } elseif ($receiptType == 'play') {
-            $rank = $validator->validatePlaySubscription($playProductId, $playPurchaseToken);
+            $rank = $validator->validatePlaySubscription($user, $playProductId, $playPurchaseToken);
             $receipt = [
                 'product_id' => $playProductId,
                 'token' => $playPurchaseToken
@@ -223,9 +223,7 @@ class AccountController extends ApiController
         }
 
         if ($rank) {
-            if ($rank) {
-                $user->dealerRank()->associate($rank);
-            }
+            $user->dealerRank()->associate($rank);
             $user->receipt = $receipt;
             $user->receipt_type = $receiptType;
             $user->receipt_checked_at = Carbon::now();

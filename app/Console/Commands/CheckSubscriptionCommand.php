@@ -69,9 +69,9 @@ class CheckSubscriptionCommand extends Command
         $this->info('Checking user ' . $user->id);
 
         if ($user->receipt_type == 'play') {
-            $rank = $validator->validatePlaySubscription($user->receipt['product_id'], $user->receipt['token']);
+            $rank = $validator->validatePlaySubscription($user, $user->receipt['product_id'], $user->receipt['token']);
         } else {
-            $rank = $validator->validateItunesSubscription($user->receipt['receipt']);
+            $rank = $validator->validateItunesSubscription($user, $user->receipt['receipt']);
         }
 
         if ($rank instanceof DealerRank) {
