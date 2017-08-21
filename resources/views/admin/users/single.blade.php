@@ -59,8 +59,7 @@
                     <form method="post" action="{{ url('admin/users/' . $user->id . '/password') }}">
                         {{ csrf_field() }}
                         <div class="form-group @if ($errors->has('password')) has-error @endif">
-                            <label>Password</label>
-                            <input type="text" name="password" class="form-control">
+                            <input type="text" name="password" class="form-control" placeholder="New Password">
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary" value="Change Password">
@@ -84,6 +83,7 @@
                         @else
                             <input type="submit" class="btn btn-danger" name="deactivate" value="Deactivate User">
                         @endif
+                        <input type="submit" class="btn btn-danger" name="delete" value="Delete" id="user-delete-button">
                     </form>
                 </div>
             </div>
@@ -106,3 +106,16 @@
         </div>
     </div>
 @endsection
+
+@push('inline_scripts')
+    <script>
+        $(function() {
+            $('#user-delete-button').click(function(e) {
+                var response = confirm('Are you sure you want to delete this user? This action cannot be undone.');
+                if (!response) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+@endpush

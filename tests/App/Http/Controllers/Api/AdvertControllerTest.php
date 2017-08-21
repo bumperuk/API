@@ -45,6 +45,34 @@ class AdvertControllerTest extends TestCase
             ->dontSeeJson(['id' => $hide->model->category->id]);
     }
 
+    public function testDontSeeVehiclesWithoutLatLonWhenFilteringByDistance()
+    {
+        $distance100 = factory(\App\Models\Distance::class)->create(['value' => 100]);
+
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
+            'lat' => null, 'lon' => null,
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=39&lon=-76&distance=' . $distance100->id)
+            ->dontSeeJson(['id' => $vehicle->id]);
+
+    }
+
+    public function testDontSeeVehiclesWithoutLatLonWhenOrderingByDistance()
+    {
+        $vehicle = factory(\App\Models\Vehicle::class)->create([
+            'paid_at' => Carbon::now(), 'deactivated_at' => Carbon::now()->addWeek(),
+            'lat' => null, 'lon' => null,
+        ]);
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $vehicle->model->category->id . '&lat=39&lon=-76&order=distance-asc')
+            ->dontSeeJson(['id' => $vehicle->id]);
+
+    }
+
     public function testDistanceFilter()
     {
         $distance90 = factory(\App\Models\Distance::class)->create(['value' => 90]);
@@ -145,6 +173,39 @@ class AdvertControllerTest extends TestCase
         $this
             ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=year-desc')
             ->seePaginationItemsInOrder([$vehicle1, $vehicle2, $vehicle3]);
+    }
+
+    public function testOrderImportedVehiclesLast()
+    {
+        $category = factory(\App\Models\Category::class)->create();
+
+        $vehicle1 = factory(\App\Models\Vehicle::class)->create([
+            'source_name' => null, 'source_id' => null, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2014
+        ]);
+        $vehicle1->model->category()->associate($category);
+        $vehicle1->model->save();
+
+        $vehicle2 = factory(\App\Models\Vehicle::class)->create([
+            'source_name' => null, 'source_id' => null, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2012
+        ]);
+        $vehicle2->model->category()->associate($category);
+        $vehicle2->model->save();
+
+        $vehicle3 = factory(\App\Models\Vehicle::class)->create([
+            'source_name' => 'dealer_source', 'source_id' => '123', 'paid_at' => null, 'deactivated_at' => null, 'year' => 2013
+        ]);
+        $vehicle3->model->category()->associate($category);
+        $vehicle3->model->save();
+
+        $vehicle4 = factory(\App\Models\Vehicle::class)->create([
+            'source_name' => null, 'source_id' => null, 'paid_at' => Carbon::now(), 'deactivated_at' => null, 'year' => 2010
+        ]);
+        $vehicle4->model->category()->associate($category);
+        $vehicle4->model->save();
+
+        $this
+            ->apiCall('GET', 'api/v1/adverts?category=' . $category->id . '&order=year-asc')
+            ->seePaginationItemsInOrder([$vehicle4, $vehicle2, $vehicle1, $vehicle3]);
     }
 
     public function testOrderByMake()

@@ -30,14 +30,29 @@ class VehiclePhoto extends BaseModel
 
     /**
      * Add base for url attribute
+     * @param $value
+     * @return string
      */
-    public function getUrlAttribute()
+    public function getUrlAttribute($value)
     {
-        return url('uploads/' . $this->attributes['url']);
+        return url('uploads/' . $value);
     }
 
     public function getNameAttribute()
     {
         return $this->attributes['url'];
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleted(function ($photo) {
+            //Remove file once model is deleted.
+            $path = public_path('uploads/' . $photo->url);
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        });
     }
 }

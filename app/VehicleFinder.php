@@ -126,13 +126,16 @@ class VehicleFinder
         if ($this->order == 'distance-asc' && !is_null($this->lat) && !is_null($this->lon)) {
             $lat = floatval($this->lat);
             $lon = floatval($this->lon);
-            $vehicles = $vehicles->selectRaw('
-                vehicles.*, (
-                     3959 * acos(cos(radians(' . $lat . ')) * cos(radians(vehicles.lat)) *
-                     cos(radians(vehicles.lon) - radians(' . $lon . ')) + sin(radians(' . $lat . ')) *
-                     sin(radians(vehicles.lat)))
-                ) AS distance
-            ');
+            $vehicles = $vehicles
+                ->selectRaw('
+                    vehicles.*, (
+                         3959 * acos(cos(radians(' . $lat . ')) * cos(radians(vehicles.lat)) *
+                         cos(radians(vehicles.lon) - radians(' . $lon . ')) + sin(radians(' . $lat . ')) *
+                         sin(radians(vehicles.lat)))
+                    ) AS distance
+                ')
+                ->whereNotNull('lat')
+                ->whereNotNull('lon');
         } elseif ($this->order == 'distance-asc') {
             throw new VehicleFinderException('Cannot order by distance without the parameters lat and lon.');
         }
@@ -202,10 +205,14 @@ class VehicleFinder
     private function doDistanceFilter(Builder $builder): Builder
     {
         if ($this->distanceFilter) {
-            $builder = $builder->whereRaw('
-                (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
-                 cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
-                 sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value);
+            $builder = $builder
+                ->whereNotNull('lat')
+                ->whereNotNull('lon')
+                ->whereRaw('
+                    (3959 * acos(cos(radians(' . $this->lat . ')) * cos(radians(vehicles.lat)) *
+                     cos(radians(vehicles.lon) - radians(' . $this->lon . ')) + sin(radians(' . $this->lat . ')) *
+                     sin(radians(vehicles.lat)))) <= ?', $this->distanceFilter->value
+                );
         }
 
         return $builder;
@@ -316,13 +323,13 @@ class VehicleFinder
     private function doOrder(Builder $builder): Builder
     {
         switch ($this->order) {
-            case 'price-asc': return $builder->orderBy('price', 'asc');
-            case 'price-desc': return $builder->orderBy('price', 'desc');
-            case 'distance-asc': return $builder->orderBy('distance', 'asc');
-            case 'make-asc': return $builder->orderBy('makes.value', 'asc');
-            case 'year-asc': return $builder->orderBy('year', 'asc');
-            case 'year-desc': return $builder->orderBy('year', 'desc');
-            default: return $builder->orderBy('paid_at', 'desc');
+            case 'price-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, price ASC');
+            case 'price-desc': return $builder->orderByRaw('source_name IS NOT NULL ASC, price DESC');
+            case 'distance-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, distance DESC');
+            case 'make-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, makes.value ASC');
+            case 'year-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, year ASC');
+            case 'year-desc': return $builder->orderByRaw('source_name IS NOT NULL ASC, year DESC');
+            default: return $builder->orderByRaw('source_name IS NOT NULL ASC, paid_at DESC');
         }
     }
 }

@@ -1,0 +1,302 @@
+body {
+    background: black;
+    font-family: 'URWGeometric', sans-serif;
+    font-size: 16px;
+}
+
+.template {
+    display: none !important;
+}
+
+.no-click {
+    pointer-events: none;
+}
+
+/* Fonts */
+
+@font-face {
+    font-family: URWGeometric;
+    src: url(fonts/URW-URWGeometric-Medium.otf);
+}
+
+@font-face {
+    font-family: URWGeometric;
+    font-weight: bold;
+    src: url(fonts/URW-URWGeometric-Bold.otf);
+}
+
+/* Header */
+
+.header {
+    background: #232323;
+    height: 6rem;
+    padding: 1.5rem 2rem;
+    line-height: 3rem;
+}
+
+.header img {
+    height: 3rem;
+}
+
+.header a {
+    color: #559AFF;
+}
+
+.header span {
+    color: #C5C5C5;
+    display: inline-block;
+    margin-right: 2rem;
+}
+
+/* Content */
+
+.loading {
+    margin: 10rem 0;
+    text-align: center;
+}
+
+.content-container {
+    background: white;
+    border-radius: 1.5rem;
+    margin: 2rem;
+}
+
+.content-container-header {
+    clear: both;
+    height: 6rem;
+    line-height: 6rem;
+    padding: 2rem;
+}
+
+.content-container-body {
+    display: none;
+}
+
+.content-container-grid {
+    padding: 2rem 0;
+}
+
+.login-container {
+    background: white;
+    max-width: 40rem;
+    border-radius: 1.5rem;
+    margin: 4rem auto;
+    padding: 2rem;
+}
+
+/* Buttons */
+
+.btn {
+    border: none;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 11px -5px rgba(0, 0, 0, .41);
+}
+
+.btn.btn-sm {
+    padding: 0.5rem 1rem;
+}
+
+.btn-primary {
+    background: #2261D1;
+    border-radius: 2rem;
+}
+
+.btn-primary:hover {
+    background: #1454B2;
+}
+
+.btn-disabled {
+    border-radius: 2rem;
+    background: #f7f7f7;
+    pointer-events: none;
+}
+
+.btn-danger {
+    border-radius: 2rem;
+}
+
+.btn-save {
+    width: 100%;
+    width: calc(100% - 1rem);
+    margin: 0.75rem 1rem;
+}
+
+/* Login */
+
+.login-error-message {
+    color: white;
+    background: #E02757;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+/* Grid */
+
+.vehicle {
+    border-bottom: 1px solid #C5C5C5;
+    margin: 1rem 2rem;
+    padding-bottom: 1rem;
+}
+
+.vehicle:last-child {
+    border-bottom: none;
+}
+
+.vehicle .col-no-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.vehicle .vehicle-input {
+    border: 1px solid #C5C5C5;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+    width: 90%;
+    width: calc(100% - 1rem);
+}
+
+.vehicle .description-input {
+    height: 15rem;
+}
+
+.vehicle-input-with-placeholder.empty {
+    color: #b6b6b6;
+}
+
+.vehicle-input-with-placeholder.empty:focus {
+    color: black;
+}
+
+::-webkit-input-placeholder {
+    color: #b6b6b6;
+}
+
+::-moz-placeholder {
+    color: #b6b6b6;
+}
+
+:-ms-input-placeholder {
+    color: #b6b6b6
+}
+
+::-ms-input-placeholder {
+    color: #b6b6b6;
+}
+
+#vehicle-stats {
+    font-size: 1.3rem;
+}
+
+.vehicle-info {
+    border-radius: 0.25rem;
+    background: #f7f7f7;
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    text-align: center;
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.vehicle-info div {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.vehicle-info strong
+{
+    display: block;
+}
+
+.add-image-input {
+    cursor: pointer;
+    height: 3rem;
+    background: #111111;
+    line-height: 2rem;
+    text-align: center;
+    color: white;
+    border: none !important;
+    font-weight: bold;
+}
+
+.existing-image-input {
+    background: black no-repeat center;
+    background-size: contain;
+    height: 4rem;
+    border: none !important;
+    padding: 0 !important;
+}
+
+@keyframes loading-animation {
+    0% {opacity: 0.5;}
+    100% {opacity: 1;}
+}
+
+.existing-image-input .existing-image-delete, .existing-image-input .existing-image-loading {
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    line-height: 4rem;
+    text-shadow: 0 0 3px #343434;
+}
+.existing-image-input .existing-image-loading {
+    animation: loading-animation 0.7s alternate infinite;
+}
+
+.existing-image-input:hover .existing-image-delete {
+    display: block;
+}
+
+.existing-image-input:hover .existing-image-loading {
+    display: none !important;
+}
+
+.location-popover {
+    width: 20rem;
+}
+
+.location-popover a {
+    margin-top: 1rem;
+}
+
+.location-postcode-input {
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
+.details-input-1, .details-input-2 {
+    display: none;
+}
+
+.details-hidden p {
+    color: gray;
+    width: 50%;
+    text-align: center;
+    margin: 0.5rem auto;
+}
+
+.popup-error {
+    position: fixed;
+    width: 40rem;
+    top: 3rem;
+    left: 50%;
+    margin-left: -20rem;
+    background: #d9534f;
+    padding: 1rem;
+    color: white;
+    border-radius: 0.25rem;
+    text-align: center;
+}
+
+.no-vehicles {
+    color: gray;
+    margin: 5rem;
+    font-size: 2rem;
+    text-align: center;
+}

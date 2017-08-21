@@ -126,6 +126,11 @@ trait VehicleAttributes
         return $this->belongsTo(Berth::class);
     }
 
+    public function yearRelation()
+    {
+        return $this->belongsTo(Year::class, 'year', 'value')->where('category_id', $this->model->category_id);
+    }
+
     /**
      * Put all vehicle attributes in a single array.
      */
@@ -143,6 +148,30 @@ trait VehicleAttributes
             $newKey = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $key));
             if ($this->$key) {
                 $details[$newKey] = $this->$key->value;
+            } else {
+                $details[$newKey] = null;
+            }
+        }
+
+        return $details;
+    }
+
+    /**
+     * Put all vehicle attributes ids in a single array.
+     */
+    public function getDetailIdsAttribute()
+    {
+        $details = [
+            'year' => $this->yearRelation ? $this->yearRelation->id : null,
+        ];
+
+        $keys = ['condition', 'color', 'bodyType', 'door', 'size', 'seatCount',
+            'fuel', 'transmission', 'engine', 'taxBand', 'ownership', 'berth'];
+
+        foreach ($keys as $key) {
+            $newKey = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $key));
+            if ($this->$key) {
+                $details[$newKey] = $this->$key->id;
             } else {
                 $details[$newKey] = null;
             }

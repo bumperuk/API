@@ -11,6 +11,7 @@
 Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], function () {
 
     Route::get('/app-data/{id}', 'V1\AppDataController@get');
+    Route::get('/app-data', 'V1\AppDataController@getAll');
     Route::get('/force-update', 'V1\AppDataController@update');
 
     Route::group(['prefix' => 'auth'], function () {
@@ -52,6 +53,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
             Route::post('/', 'V1\UploadController@upload');
             Route::post('/edit', 'V1\UploadController@edit');
             Route::post('/renew', 'V1\UploadController@renew');
+            Route::post('/photo', 'V1\UploadController@photo');
         });
 
         Route::group(['prefix' => 'favourites'], function () {
@@ -61,6 +63,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
 
         Route::group(['prefix' => 'reports'], function () {
             Route::post('/', 'V1\ReportController@create');
+        });
+
+        Route::group(['prefix' => 'postcodes'], function () {
+            Route::get('/', 'V1\PostcodeController@get');
         });
 
         Route::group(['prefix' => 'account'], function () {

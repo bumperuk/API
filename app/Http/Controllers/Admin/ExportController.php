@@ -17,7 +17,7 @@ class ExportController
 
         file_put_contents($path, "Email,Phone,Rank,Total Vehicles,Active Vehicles,Registration Date\n");
 
-        User::chunk(30, function ($users) use ($path) {
+        User::real()->chunk(30, function ($users) use ($path) {
             $chunk = '';
 
             foreach ($users as $user) {

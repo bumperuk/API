@@ -26,7 +26,7 @@ class Vehicle extends BaseModel
     ];
 
     protected $appends = [
-        'details', 'has_reported', 'has_favourited', 'active'
+        'details', 'detail_ids', 'has_reported', 'has_favourited', 'active'
     ];
 
     protected $casts = [
@@ -39,6 +39,10 @@ class Vehicle extends BaseModel
     protected $dates = [
         'paid_at',
         'deactivated_at'
+    ];
+
+    protected $fillable = [
+        'source_name', 'source_id'
     ];
 
     /**
@@ -72,35 +76,68 @@ class Vehicle extends BaseModel
     }
 
     /**
+     * Only select vehicles that were uploaded by the user
+     * @param Builder $builder
+     * @return Builder
+     */
+    public function scopeUploaded(Builder $builder)
+    {
+        return $builder->whereNull('source_name');
+    }
+
+    /**
+     * Only select vehicles that were imported from other source
+     * @param Builder $builder
+     * @return Builder
+     */
+    public function scopeImported(Builder $builder)
+    {
+        return $builder->whereNotNull('source_name');
+    }
+
+    /**
      * Only select active vehicles.
      *
      * @param Builder $builder
+     * @return Builder
      */
     public function scopeActive(Builder $builder)
     {
-        $builder
-            ->whereNotNull('paid_at')
-            ->where(function(Builder $builder) {
-                $builder->whereNull('deactivated_at')->orWhere('deactivated_at', '>', Carbon::now());
-            });
+        return $builder->whereRaw('
+            (
+                (
+                    paid_at IS NOT NULL AND (
+                        deactivated_at IS NULL OR deactivated_at > ?
+                    )
+                ) OR (
+                    source_name IS NOT NULL
+                )
+            )
+        ', [
+            Carbon::now()->toDateTimeString()
+        ]);
     }
 
     /**
      * Only select inactive vehicles.
-     *
      * @param Builder $builder
+     * @return Builder
      */
     public function scopeInactive(Builder $builder)
     {
-        $builder->where(function (Builder $builder) {
-            $builder
-                ->whereNull('paid_at')
-                ->orWhere(function(Builder $builder) {
-                    $builder
-                        ->whereNotNull('deactivated_at')
-                        ->where('deactivated_at', '<=', Carbon::now());
-                });
-        });
+        return $builder->whereRaw('
+            (
+                (
+                    paid_at IS NULL OR (
+                        deactivated_at IS NOT NULL AND deactivated_at <= ?
+                    )
+                ) AND (
+                    source_name IS NULL
+                )
+            )
+        ', [
+            Carbon::now()->toDateTimeString()
+        ]);
     }
 
     /**
@@ -110,9 +147,12 @@ class Vehicle extends BaseModel
      */
     public function getActiveAttribute(): bool
     {
-        return $this->paid_at != null && (
-            $this->deactivated_at == null || $this->deactivated_at->gte(Carbon::now())
-        );
+        return (
+            $this->paid_at != null && (
+                $this->deactivated_at == null || $this->deactivated_at->gte(Carbon::now())
+            )
+        ) || $this->user_id == null;
+
     }
 
     /**
@@ -166,5 +206,17 @@ class Vehicle extends BaseModel
         }
 
         return $name;
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleting(function ($vehicle) {
+            //Delete each photo manually to trigger deleting the image file
+            foreach ($vehicle->photos as $photo) {
+                $photo->delete();
+            }
+        });
     }
 }

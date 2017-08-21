@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $with = [
-        'dealerRank'
+       'dealerRank'
     ];
 
     /**
@@ -27,7 +28,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password',
+        'email', 'password', 'type', 'dummy_id'
     ];
 
     /**
@@ -114,6 +115,11 @@ class User extends Authenticatable
         return true;
     }
 
+    public function scopeReal(Builder $builder)
+    {
+        return $builder->where('type', 'real');
+    }
+
     /**
      * Route OneSignal notifications to the user
      */
@@ -149,7 +155,7 @@ class User extends Authenticatable
      */
     public function getTypeAttribute()
     {
-        return $this->dealer_rank_id ? 'dealer' : 'private';
+        return ($this->dealer_rank_id || $this->dummy_id !== null) ? 'dealer' : 'private';
     }
 
     /**
@@ -171,6 +177,7 @@ class User extends Authenticatable
     {
         return $this->promotions()->active()->sum('listings');
     }
+
     /**
      * Promotions remaining.
      *
@@ -193,7 +200,7 @@ class User extends Authenticatable
     {
         $promotions = $this->total_promotions;
 
-        if ($this->type == 'private') {
+        if (!$this->dealerRank) {
             return 3 + $promotions;
         }
 

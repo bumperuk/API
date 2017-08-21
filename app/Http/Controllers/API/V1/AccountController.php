@@ -11,6 +11,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\Vehicle;
 use App\Notifications\VerifyPhone;
 use App\ReceiptValidator;
+use App\Transformers\VehicleTransformer;
 use Carbon\Carbon;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
@@ -140,8 +141,10 @@ class AccountController extends ApiController
 
         $vehicles = Vehicle
             ::where('user_id', $user->id)
-            ->orderBy('paid_at', 'desc')
-            ->paginate(16);
+            ->orderBy('created_at', 'desc')
+            ->paginate(
+                $request->input('per_page', 16)
+            );
 
         return $this->api_response($vehicles);
     }
