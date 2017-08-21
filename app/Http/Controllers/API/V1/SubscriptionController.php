@@ -14,7 +14,11 @@ class SubscriptionController extends ApiController
         ]);
 
         $user = $request->user();
-        $dealerRanks = DealerRank::where('platform', $request->input('platform'))->get();
+        $dealerRanks = DealerRank
+            ::where('platform', $request->input('platform'))
+            ->where('active', true)
+            ->orderBy('limit', 'asc')
+            ->get();
         $subscriptions = [];
 
         foreach ($dealerRanks as $dealerRank) {
