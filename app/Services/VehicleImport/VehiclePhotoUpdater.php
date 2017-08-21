@@ -21,6 +21,10 @@ class VehiclePhotoUpdater
         $usedPhotoIds = [];
 
         foreach ($photos as $i => $photoUrl) {
+            if ($i >= 5) {
+                break;
+            }
+
             $existing = $this->vehicle->photos->where('cached_from_url', $photoUrl)->first();
 
             if ($existing) {
