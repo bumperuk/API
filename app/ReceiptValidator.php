@@ -261,7 +261,6 @@ class ReceiptValidator
             return false;
 
         } catch (\Exception $e) {
-            dd($e);
             Log::error('Invalid Play token: ' . $token . '. Error: ' . $e->getMessage());
             return null;
         }
