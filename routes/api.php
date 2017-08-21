@@ -49,6 +49,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
             Route::delete('/', 'V1\UploadController@delete');
         });
 
+        Route::group(['prefix' => 'subscriptions'], function () {
+            Route::get('/', 'V1\SubscriptionController@get');
+        });
+
         Route::group(['prefix' => 'upload'], function () {
             Route::post('/', 'V1\UploadController@upload');
             Route::post('/edit', 'V1\UploadController@edit');

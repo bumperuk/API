@@ -14,9 +14,9 @@ $factory->define(App\Models\DealerRank::class, function (Faker\Generator $faker)
     $vehicleLimit = $faker->randomNumber(2);
     return [
         'limit' => $vehicleLimit,
-        'name' => 'Dealer ' . $vehicleLimit . ' vehicles',
-        'itunes_product' => 'com.app.' . $faker->word,
-        'play_product' => 'com.app.' . $faker->word
+        'name' => 'com.product.' . $vehicleLimit,
+        'platform' => $faker->randomElement(['ios', 'android']),
+        'active' => $faker->boolean()
     ];
 });
 
