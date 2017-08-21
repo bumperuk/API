@@ -36,7 +36,7 @@ class VehiclePhotoUpdater
                 echo "Creating image\n";
                 $this->createPhoto($i, $photoUrl);
                 //Avoid making requests too frequently
-                sleep(2);
+                sleep(1);
             }
         }
 
