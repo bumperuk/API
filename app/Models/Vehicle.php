@@ -151,7 +151,7 @@ class Vehicle extends BaseModel
             $this->paid_at != null && (
                 $this->deactivated_at == null || $this->deactivated_at->gte(Carbon::now())
             )
-        ) || $this->user_id == null;
+        ) || $this->source_name !== null;
 
     }
 
