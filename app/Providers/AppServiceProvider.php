@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Services\BranchIO;
 use App\Services\VehiclePostings\Twitter;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Stripe\Stripe;
@@ -30,22 +32,23 @@ class AppServiceProvider extends ServiceProvider
         Stripe::setApiKey(env('STRIPE_SK'));
         $this->registerDbalTypes();
         $this->registerTwitterOAuth();
+        $this->registerBranchIO();
     }
 
     private function registerTwitterOAuth()
     {
-        $this->app->singleton(TwitterOAuth::class, function($app) {
+        $this->app->singleton(TwitterOAuth::class, function () {
             $config = config('services.twitter');
 
             if (
-                isset(
+                !isset(
                     $config['consumer_key'],
                     $config['consumer_secret'],
                     $config['access_token'],
                     $config['access_token_secret']
                 )
             ) {
-                throw new \Exception('Missing Twitter env variable.');
+                throw new Exception('Missing Twitter env variable.');
             }
 
             return new TwitterOAuth(
@@ -54,6 +57,19 @@ class AppServiceProvider extends ServiceProvider
                 $config['access_token'],
                 $config['access_token_secret']
             );
+        });
+    }
+
+    private function registerBranchIO()
+    {
+        $this->app->singleton(BranchIO::class, function () {
+            $config = config('services.branch');
+
+            if (!isset($config['key'], $config['secret'])) {
+                throw new Exception('Missing either BRANCH_KEY or BRANCH_SECRET env.');
+            }
+
+            return new BranchIO($config['key'], $config['secret']);
         });
     }
 
