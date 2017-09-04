@@ -58,7 +58,7 @@ class PostVehicleToTwitter implements ShouldQueue
             'media' => $this->vehicle->photos[0]->path
         ]);
 
-        $vehicleName = $this->vehicle->model->value . ' ' . $this->vehicle->model->make->value;
+        $vehicleName = $this->vehicle->model->make->value . ' ' . $this->vehicle->model->value;
         $text = 'For sale a ' . $vehicleName . ' has been added to Bumper. ' . $link;
 
         $twitterOAuth->post('statuses/update', [
