@@ -38,6 +38,11 @@ class VehiclePhoto extends BaseModel
         return url('uploads/' . $value);
     }
 
+    public function getPathAttribute()
+    {
+        return public_path('uploads/' . $this->attributes['url']);
+    }
+
     public function getNameAttribute()
     {
         return $this->attributes['url'];

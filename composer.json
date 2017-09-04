@@ -16,7 +16,8 @@
         "paragonie/random_compat": "~1.4",
         "cboden/ratchet": "*",
         "doctrine/dbal": "*",
-        "aporat/store-receipt-validator": "*"
+        "aporat/store-receipt-validator": "*",
+        "abraham/twitteroauth": "^0.7.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -10,6 +10,7 @@ use App\Console\Commands\RenewNotificationsCommand;
 use App\Console\Commands\ReportActiveVehicles;
 use App\Console\Commands\ModelImportCommand;
 use App\Console\Commands\VehicleImportCommand;
+use App\Console\Commands\VehiclesToTwitterCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -29,6 +30,7 @@ class Kernel extends ConsoleKernel
         BubbleDealerAdvertsCommand::class,
         ReportActiveVehicles::class,
         VehicleImportCommand::class,
+        VehiclesToTwitterCommand::class,
     ];
 
     /**
@@ -40,11 +42,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('notifications:renew')->hourly();
+        $schedule->command('vehicles:import')->hourly()->withoutOverlapping();
         $schedule->command('subscriptions:check')->everyMinute()->withoutOverlapping();
         $schedule->command('promotions:check')->twiceDaily()->withoutOverlapping();
         $schedule->command('vehicles:bubble')->everyMinute()->withoutOverlapping();
         $schedule->command('statistics:active-vehicles')->dailyAt('01:00');
-        $schedule->command('vehicles:import')->dailyAt(1)->withoutOverlapping();
+        $schedule->command('vehicles:import')->everyMinute()->withoutOverlapping();
     }
 
     /**
