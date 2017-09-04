@@ -39,8 +39,9 @@ class PostVehicleToTwitter implements ShouldQueue
         if ($this->vehicle->active && !$this->vehicle->posted_to_twitter) {
             try {
                 $this->postToTwitter($twitterOAuth, $branchIO);
+                $this->vehicle->posted_to_twitter = true;
+                $this->vehicle->save();
             } catch (Exception $exception) {
-                dd($exception->getMessage());
                 Log::error('Unable to post vehicle to twitter. ' . $exception->getMessage() . ' - ' .
                     $exception->getFile() . '@' . $exception->getLine());
             }
@@ -53,16 +54,15 @@ class PostVehicleToTwitter implements ShouldQueue
             'advert_id' => $this->vehicle->id
         ]);
 
-        dd($link);
         $image = $twitterOAuth->upload('media/upload', [
             'media' => $this->vehicle->photos[0]->path
         ]);
 
         $vehicleName = $this->vehicle->model->value . ' ' . $this->vehicle->model->make->value;
-        dd($vehicleName);
+        $text = 'For sale a ' . $vehicleName . ' has been added to Bumper. ' . $link;
 
         $twitterOAuth->post('statuses/update', [
-            'status' => 'A new vehicle ' . $link,
+            'status' => $text,
             'media_ids' => $image->media_id_string
         ]);
     }
