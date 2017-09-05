@@ -39,8 +39,6 @@ class PostVehicleToTwitter implements ShouldQueue
         if ($this->vehicle->active && !$this->vehicle->posted_to_twitter) {
             try {
                 $this->postToTwitter($twitterOAuth, $branchIO);
-                $this->vehicle->posted_to_twitter = true;
-                $this->vehicle->save();
             } catch (Exception $exception) {
                 Log::error('Unable to post vehicle to twitter. ' . $exception->getMessage() . ' - ' .
                     $exception->getFile() . '@' . $exception->getLine());

@@ -47,6 +47,8 @@ class VehiclesToTwitterCommand extends Command
                 $job->delay(clone $postAt);
                 $this->dispatch($job);
                 $postAt->addMinute();
+                $vehicle->posted_to_twitter = true;
+                $vehicle->save();
             }
         });
     }

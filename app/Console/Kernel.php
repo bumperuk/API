@@ -47,7 +47,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('promotions:check')->twiceDaily()->withoutOverlapping();
         $schedule->command('vehicles:bubble')->everyMinute()->withoutOverlapping();
         $schedule->command('statistics:active-vehicles')->dailyAt('01:00');
-        $schedule->command('vehicles:twitter')->everyMinute()->withoutOverlapping();
+
+        if (config('services.twitter.enabled')) {
+            $schedule->command('vehicles:twitter')->everyMinute()->withoutOverlapping();
+        }
     }
 
     /**

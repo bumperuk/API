@@ -47,6 +47,7 @@ return [
     ],
 
     'twitter' => [
+        'enabled' => env('TWITTER_ENABLED'),
         'consumer_key' => env('TWITTER_CONSUMER_KEY'),
         'consumer_secret' => env('TWITTER_CONSUMER_SECRET'),
         'access_token' => env('TWITTER_ACCESS_TOKEN'),
