@@ -36,7 +36,7 @@ class PostVehicleToTwitter implements ShouldQueue
      */
     public function handle(TwitterOAuth $twitterOAuth, BranchIO $branchIO)
     {
-        if ($this->vehicle->active && !$this->vehicle->posted_to_twitter) {
+        if ($this->vehicle->active) {
             try {
                 $this->postToTwitter($twitterOAuth, $branchIO);
             } catch (Exception $exception) {
