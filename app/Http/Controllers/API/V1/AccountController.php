@@ -141,6 +141,7 @@ class AccountController extends ApiController
 
         $vehicles = Vehicle
             ::where('user_id', $user->id)
+            ->whereNotNull('paid_at')
             ->orderBy('created_at', 'desc')
             ->paginate(
                 $request->input('per_page', 16)
