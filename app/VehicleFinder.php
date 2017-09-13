@@ -184,12 +184,11 @@ class VehicleFinder
 
     private function checkRequirements()
     {
-        if ($this->order == 'distance' && ($this->lat === null || $this->lon === null)) {
-            throw new VehicleFinderException("Lat and lon are required to order by distance.");
-        }
-
-        if ($this->distanceFilter !== null && ($this->lat === null || $this->lon === null)) {
-            throw new VehicleFinderException("Lat and lon are required to filter by distance.");
+        if (
+            ($this->order == 'distance' && ($this->lat === null || $this->lon === null)) ||
+            ($this->distanceFilter !== null && ($this->lat === null || $this->lon === null))
+        ) {
+            throw new VehicleFinderException('Set your location or a post code to sort by distance');
         }
     }
 
