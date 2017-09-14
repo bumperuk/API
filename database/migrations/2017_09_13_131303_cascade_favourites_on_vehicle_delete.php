@@ -15,7 +15,7 @@ class CascadeFavouritesOnVehicleDelete extends Migration
     {
         Schema::table('favourites', function (Blueprint $table) {
             $table->dropForeign(['vehicle_id']);
-            $table->foreign('vehicle_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onUpdate('cascade')->onDelete('cascade');
             $table->dropForeign(['user_id']);
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
