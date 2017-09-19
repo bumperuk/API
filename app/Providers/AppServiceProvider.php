@@ -5,8 +5,10 @@ namespace App\Providers;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Services\BranchIO;
 use App\Services\VehiclePostings\Twitter;
+use Doctrine\DBAL\Driver\PDOException;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Stripe\Stripe;
 
@@ -75,14 +77,18 @@ class AppServiceProvider extends ServiceProvider
 
     private function registerDbalTypes()
     {
-        $map = config('database.mappings');
+        try {
+            $map = config('database.mappings');
 
-        $connection = DB::connection();
-        $doctrineConnection = $connection->getDoctrineConnection();
-        $dbPlatform = $doctrineConnection->getSchemaManager()->getDatabasePlatform();
+            $connection = DB::connection();
+            $doctrineConnection = $connection->getDoctrineConnection();
+            $dbPlatform = $doctrineConnection->getSchemaManager()->getDatabasePlatform();
 
-        foreach ($map as $dbType => $doctrineType) {
-            $dbPlatform->registerDoctrineTypeMapping($dbType, $doctrineType);
+            foreach ($map as $dbType => $doctrineType) {
+                $dbPlatform->registerDoctrineTypeMapping($dbType, $doctrineType);
+            }
+        } catch (PDOException $exception) {
+            Log::error('Could not create database mappings.');
         }
     }
 }

@@ -128,8 +128,8 @@ class ReceiptValidator
 
         $validator = new ItunesValidator($mode);
         $ranks = DealerRank::where('platform', 'ios')->get();
-        $bestRank = null;
-        $bestPurchase = null;
+        $mostRecentRank = null;
+        $mostRecentPurchase = null;
 
         try {
             $response = $validator->setSharedSecret(env('RECEIPT_ITUNES_SECRET'))->setReceiptData($receipt)->validate();
@@ -150,16 +150,16 @@ class ReceiptValidator
                     isset($purchase['expires_date_ms']) && //Is a subscription
                     $purchase['expires_date_ms'] > time()*1000 && // Purchase not expired
                     $rank && // Product in database
-                    (!$bestRank || $bestRank->limit <= $rank->limit) //If there isn't already a subscription or the new subscription has a bigger limit
+                    (!$mostRecentRank || $purchase['purchase_date_ms'] > $mostRecentPurchase['purchase_date_ms']) //If there isn't already a subscription or the new subscription has a bigger limit
                 ) {
-                    $bestRank = $rank;
-                    $bestPurchase = $purchase;
+                    $mostRecentRank = $rank;
+                    $mostRecentPurchase = $purchase;
                 }
             }
 
-            if ($bestRank) {
-                $this->saveSubscription($user, $bestRank, $bestPurchase);
-                return $bestRank;
+            if ($mostRecentRank) {
+                $this->saveSubscription($user, $mostRecentRank, $mostRecentPurchase);
+                return $mostRecentRank;
             }
 
             return false;

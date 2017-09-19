@@ -184,12 +184,11 @@ class VehicleFinder
 
     private function checkRequirements()
     {
-        if ($this->order == 'distance' && ($this->lat === null || $this->lon === null)) {
-            throw new VehicleFinderException("Lat and lon are required to order by distance.");
-        }
-
-        if ($this->distanceFilter !== null && ($this->lat === null || $this->lon === null)) {
-            throw new VehicleFinderException("Lat and lon are required to filter by distance.");
+        if (
+            ($this->order == 'distance' && ($this->lat === null || $this->lon === null)) ||
+            ($this->distanceFilter !== null && ($this->lat === null || $this->lon === null))
+        ) {
+            throw new VehicleFinderException('Set your location or a post code to sort by distance');
         }
     }
 
@@ -323,12 +322,12 @@ class VehicleFinder
     private function doOrder(Builder $builder): Builder
     {
         switch ($this->order) {
-            case 'price-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, price ASC');
-            case 'price-desc': return $builder->orderByRaw('source_name IS NOT NULL ASC, price DESC');
-            case 'distance-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, distance DESC');
-            case 'make-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, makes.value ASC');
-            case 'year-asc': return $builder->orderByRaw('source_name IS NOT NULL ASC, year ASC');
-            case 'year-desc': return $builder->orderByRaw('source_name IS NOT NULL ASC, year DESC');
+            case 'price-asc': return $builder->orderBy('price', 'ASC');
+            case 'price-desc': return $builder->orderBy('price', 'DESC');
+            case 'distance-asc': return $builder->orderBy('distance', 'DESC');
+            case 'make-asc': return $builder->orderBy('makes.value', 'ASC');
+            case 'year-asc': return $builder->orderBy('year', 'ASC');
+            case 'year-desc': return $builder->orderBy('year', 'DESC');
             default: return $builder->orderByRaw('source_name IS NOT NULL ASC, paid_at DESC');
         }
     }
