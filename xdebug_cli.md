@@ -1,0 +1,1 @@
+PHP_IDE_CONFIG="serverName=648c619b8fdd" php artisan
