@@ -17,6 +17,29 @@ use GuzzleHttp\Client;
 class CarDealer5 implements Source
 {
     private $csv;
+    
+    private function _findVehicleEmail($dealerId): string
+    {
+        try {
+        $dealerArrayId = array_search($dealerId, array_column($this->dealerCSV, 10));
+        $email = $this->dealerCSV[$dealerArrayId + 1][8];
+        return $this->dealerCSV[$dealerArrayId + 1][8];
+        } catch (Exception $e){
+            return null;
+        }
+    }
+    
+    private function _findVehicleCallNumber($dealerId): string
+    {
+        try {
+        $dealerArrayId = array_search($dealerId, array_column($this->dealerCSV, 10));
+        $callNumber = $this->dealerCSV[$dealerArrayId + 1][6];
+        return $this->dealerCSV[$dealerArrayId + 1][6];
+        } catch (Exception $e){
+            return null;
+        }
+        
+    }
 
     public function getName(): string
     {
@@ -38,9 +61,13 @@ class CarDealer5 implements Source
         $response = $client->get('https://www.cardealer5.co.uk/carcliq/export_cars.csv');
         $csv = trim($response->getBody()->getContents());
         $csv = array_map('str_getcsv', explode("\n", $csv));
+        $dealerResponse = $client->get('https://www.cardealer5.co.uk/carcliq/export_dealers.csv');
+        $dealerCSV = trim($dealerResponse->getBody()->getContents());
+        $dealerCSV = array_map('str_getcsv', explode("\n", $dealerCSV));
         unset($csv[0]);
-
+        unset($dealerCSV[0]);
         $this->csv = $csv;
+        $this->dealerCSV = $dealerCSV;
     }
 
     public function getVehicles(): array
@@ -212,7 +239,7 @@ class CarDealer5 implements Source
 
     public function getVehicleCallNumber(array $vehicleData, Vehicle $vehicle)
     {
-        return null;
+        return $this->_findVehicleCallNumber($vehicleData[0]);
     }
 
     public function getVehicleSmsNumber(array $vehicleData, Vehicle $vehicle)
@@ -221,8 +248,9 @@ class CarDealer5 implements Source
     }
 
     public function getVehicleEmail(array $vehicleData, Vehicle $vehicle)
-    {
-        return null;
+    {        
+        return $this->_findVehicleEmail($vehicleData[0]);
+
     }
 
     public function getVehicleWebsite(array $vehicleData, Vehicle $vehicle)
