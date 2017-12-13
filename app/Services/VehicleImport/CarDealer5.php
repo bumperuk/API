@@ -17,6 +17,7 @@ use GuzzleHttp\Client;
 class CarDealer5 implements Source
 {
     private $csv;
+    private $dealerCSV;
     
     private function _findVehicleEmail($dealerId): string
     {
