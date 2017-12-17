@@ -21,22 +21,26 @@ class CarDealer5 implements Source
     
     private function _findVehicleEmail($dealerId): string
     {
-        try {
-        $dealerArrayId = array_search($dealerId, array_column($this->dealerCSV, 10));
-        $email = $this->dealerCSV[$dealerArrayId + 1][8];
-        return $this->dealerCSV[$dealerArrayId + 1][8];
-        } catch (Exception $e){
+        try
+        {
+            $dealerArrayId = array_search($dealerId, array_column($this->dealerCSV, 10));
+            return $this->dealerCSV[$dealerArrayId + 1][8];
+        }
+        catch (Exception $e)
+        {
             return null;
         }
     }
     
     private function _findVehicleCallNumber($dealerId): string
     {
-        try {
-        $dealerArrayId = array_search($dealerId, array_column($this->dealerCSV, 10));
-        $callNumber = $this->dealerCSV[$dealerArrayId + 1][6];
-        return $this->dealerCSV[$dealerArrayId + 1][6];
-        } catch (Exception $e){
+        try
+        {
+            $dealerArrayId = array_search($dealerId, array_column($this->dealerCSV, 10));
+            return $this->dealerCSV[$dealerArrayId + 1][6];
+        }
+        catch (Exception $e)
+        {
             return null;
         }
         
@@ -240,11 +244,17 @@ class CarDealer5 implements Source
 
     public function getVehicleCallNumber(array $vehicleData, Vehicle $vehicle)
     {
-        return $this->_findVehicleCallNumber($vehicleData[0]);
+        $number = preg_replace('/\s+/', '', $this->_findVehicleCallNumber($vehicleData[0]));
+        return $number;
     }
 
     public function getVehicleSmsNumber(array $vehicleData, Vehicle $vehicle)
     {
+        // No dedicated field for this in dealer source so will have to test the phone number if its a mobile number
+        $number = preg_replace('/\s+/', '', $this->_findVehicleCallNumber($vehicleData[0]));
+        if (preg_match('#^(07[0-9]{9}|447[0-9]{9}|\+447[0-9]{9})$#', $number) === 1) {
+            return $number;
+        }
         return null;
     }
 
