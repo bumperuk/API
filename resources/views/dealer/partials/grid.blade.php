@@ -30,8 +30,12 @@
         </div>
         <div class="col-xs-2 col-no-padding details-input-2">
         </div>
-        <div class="col-xs-4 col-no-padding details-hidden">
+        <div class="col-xs-4 col-no-padding">
             <p>Select a category, make and model to set the vehicle properties.</p>
+            <div class="well">  
+                <input type="text" placeholder="Vehicle Registration" class="vehicle-input reg-input form-control">
+                <button class="reg-submit">Search DVLA</button>
+            </div>
         </div>
         <div class="col-xs-1 col-no-padding">
             <a class="btn btn-save btn-primary vehicle-save-input">Save</a>

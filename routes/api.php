@@ -49,6 +49,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
             Route::delete('/', 'V1\UploadController@delete');
         });
 
+        Route::group(['prefix' => 'dvla-lookup'], function () {
+            Route::get('/', 'V1\DvlaLookupController@get');
+        });
+
         Route::group(['prefix' => 'subscriptions'], function () {
             Route::get('/', 'V1\SubscriptionController@get');
         });

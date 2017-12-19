@@ -519,6 +519,45 @@ function refreshVehicle(vehicle, el)
     el.find('.mileage-input').keyup(function() {
         updateVehicle(vehicle.id, 'details.mileage', $(this).val());
     });
+    
+    const apiUrl = "https://dvlasearch.appspot.com";
+    const dvlaEndpoint = "/DvlaSearch";
+    const typeEndpoint = "/Insurance"
+    const apiKey = "?apikey=DvlaSearchDemoAccount";
+    var regNumber = "&licencePlate=mt09nks";
+    el.find('.reg-submit').click(function() {
+        var prevHtml = $(this).html();
+        var dvlaSearchButton = $(this);
+        console.log('searching dvla...');
+        $(this).html('Searching...');
+        var vehicleData;
+        $.getJSON( apiUrl + dvlaEndpoint + apiKey + regNumber, function() {
+
+        })
+        .done(function(data){
+            vehicleData = data
+            // need to do a second request to get vehicle type
+            $.getJSON( apiUrl + typeEndpoint + apiKey + regNumber, function() {
+
+            })
+            .done(function(data){
+                // we got insurance details back
+                console.log(data);
+                vehicleData['bodyType'] = data.bodytype;
+            });
+            console.log(vehicleData)
+            dvlaSearchButton.html('Search DVLA');
+            el.find('.description-input').text(data.vin).safariFocusBlur();
+            updateVehicle(vehicle.id, 'description', data.vin);
+        })
+        .fail(function() {
+            dvlaSearchButton.html('Error, try again');
+            console.log( "error" );
+        })
+        
+            
+        
+    });
 
     var locationInput = el.find('.location-input');
 
