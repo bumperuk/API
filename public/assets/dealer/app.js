@@ -520,32 +520,23 @@ function refreshVehicle(vehicle, el)
         updateVehicle(vehicle.id, 'details.mileage', $(this).val());
     });
     
-    const apiUrl = "https://dvlasearch.appspot.com";
-    const dvlaEndpoint = "/DvlaSearch";
-    const typeEndpoint = "/Insurance"
-    const apiKey = "?apikey=DvlaSearchDemoAccount";
-    var regNumber = "&licencePlate=mt09nks";
+    const apiUrl = "http://127.0.0.1:8082";
+    const dvlaEndpoint = "/api/v1/dvla-lookup";
+    const token = "?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6XC9cL2FwaS5idW1wZXJ1ay5jby51ayIsImlhdCI6MTUxNDcxOTExNywiZXhwIjoxNTQ2Mjc1OTk3LCJuYmYiOjE1MTQ3MTkxMTcsImp0aSI6ImU0ZmM0YzdhNDYzMDhlMmQ1ODYyMjRhMWE2N2FkMzAyIn0.UbDfhI5QsmJ6qu2aWdm51Yr4hO0sg1vxIkJVJDoe5pc";
+    var regNumber = "&reg=mt09nks";
+
     el.find('.reg-submit').click(function() {
         var prevHtml = $(this).html();
         var dvlaSearchButton = $(this);
         console.log('searching dvla...');
         $(this).html('Searching...');
         var vehicleData;
-        $.getJSON( apiUrl + dvlaEndpoint + apiKey + regNumber, function() {
+        $.getJSON( apiUrl + dvlaEndpoint + token + regNumber, function() {
 
         })
         .done(function(data){
-            vehicleData = data
-            // need to do a second request to get vehicle type
-            $.getJSON( apiUrl + typeEndpoint + apiKey + regNumber, function() {
 
-            })
-            .done(function(data){
-                // we got insurance details back
-                console.log(data);
-                vehicleData['bodyType'] = data.bodytype;
-            });
-            console.log(vehicleData)
+            console.log(data['response_payload']['data']);
             dvlaSearchButton.html('Search DVLA');
             el.find('.description-input').text(data.vin).safariFocusBlur();
             updateVehicle(vehicle.id, 'description', data.vin);

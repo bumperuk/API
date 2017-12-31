@@ -22,6 +22,20 @@ class Lookup
         $this->dvlaSearchJson = json_decode($json,true);
     }
 
+    private function _resolveDvlaCatergoriesToBumper($dvlaCategory)
+    // maps dvlasearch.co.uk bodytype to bumper vehicle type
+    {
+        if ($dvlaCategory != null){}
+        {
+            try {
+                return $this->dvlaSearchJson[$dvlaCategory];
+            } catch (\Exception $exception) {
+                return null;
+            }
+        }
+        return null;
+    }
+
     public function fetch()
     // retrieves vehicle information dvlasearch.co.uk
     {
@@ -45,7 +59,7 @@ class Lookup
 
             $insuranceResponse = $client->get($insuranceUrl);
             $insuranceBody = json_decode($insuranceResponse->getBody()->getContents(), true);
-            $dvlaBody['bodyType'] = $insuranceBody['bodytype'];
+            $dvlaBody['bodyType'] = $this->_resolveDvlaCatergoriesToBumper($insuranceBody['bodytype']);
 
 
             return $dvlaBody;
