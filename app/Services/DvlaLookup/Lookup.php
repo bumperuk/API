@@ -3,6 +3,7 @@
 namespace App\Services\DvlaLookup;
 
 use GuzzleHttp\Client;
+use App\Models\Category;
 
 class Lookup
 {
@@ -22,16 +23,22 @@ class Lookup
         $this->dvlaSearchJson = json_decode($json,true);
     }
 
-    private function _resolveDvlaCatergoriesToBumper($dvlaCategory)
-    // maps dvlasearch.co.uk bodytype to bumper vehicle type
+    private function _resolveDvlaToBumper($bumperType, $dvlaValue)
+    // maps dvlasearch.co.uk values to bumper values
     {
-        if ($dvlaCategory != null){}
+        if ($dvlaValue != null){}
         {
-            try {
-                return $this->dvlaSearchJson[$dvlaCategory];
-            } catch (\Exception $exception) {
-                return null;
+            switch($bumperType)
+            {
+                case 'category':
+                    $mapped = $this->dvlaSearchJson[$bumperType][$dvlaValue];
+                    $value = Category
+                    ::where('name', $mapped)
+                    ->first();
+                    return $value;
+                    
             }
+
         }
         return null;
     }
@@ -59,10 +66,12 @@ class Lookup
 
             $insuranceResponse = $client->get($insuranceUrl);
             $insuranceBody = json_decode($insuranceResponse->getBody()->getContents(), true);
-            $dvlaBody['bodyType'] = $this->_resolveDvlaCatergoriesToBumper($insuranceBody['bodytype']);
 
+            $bumperData = [
+            "category" => $this->_resolveDvlaToBumper('category', $insuranceBody['bodytype'])
+            ];
 
-            return $dvlaBody;
+            return $bumperData;
                 
 
             return false;
