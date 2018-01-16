@@ -522,24 +522,43 @@ function refreshVehicle(vehicle, el)
     
     const apiUrl = "http://127.0.0.1:8082";
     const dvlaEndpoint = "/api/v1/dvla-lookup";
-    const token = "?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6XC9cL2FwaS5idW1wZXJ1ay5jby51ayIsImlhdCI6MTUxNDcxOTExNywiZXhwIjoxNTQ2Mjc1OTk3LCJuYmYiOjE1MTQ3MTkxMTcsImp0aSI6ImU0ZmM0YzdhNDYzMDhlMmQ1ODYyMjRhMWE2N2FkMzAyIn0.UbDfhI5QsmJ6qu2aWdm51Yr4hO0sg1vxIkJVJDoe5pc";
-    var regNumber = "&reg=mt09nks";
+    const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6XC9cL2FwaS5idW1wZXJ1ay5jby51ayIsImlhdCI6MTUxNDcxOTExNywiZXhwIjoxNTQ2Mjc1OTk3LCJuYmYiOjE1MTQ3MTkxMTcsImp0aSI6ImU0ZmM0YzdhNDYzMDhlMmQ1ODYyMjRhMWE2N2FkMzAyIn0.UbDfhI5QsmJ6qu2aWdm51Yr4hO0sg1vxIkJVJDoe5pc";
+    //var regNumber = "mt09xee";
+    //var regNumber = "mt09nks";
 
     el.find('.reg-submit').click(function() {
+
+        var regInput = $(el).find('.reg-input').val();
+
+        console.log(regInput.replace(/ /g,''));
+
         var prevHtml = $(this).html();
         var dvlaSearchButton = $(this);
         console.log('searching dvla...');
         $(this).html('Searching...');
         var vehicleData;
-        $.getJSON( apiUrl + dvlaEndpoint + token + regNumber, function() {
+        $.getJSON( apiUrl + dvlaEndpoint + '?token=' + token + '&reg=' + regInput, function() {
 
         })
         .done(function(data){
-
+        
             console.log(data['response_payload']['data']);
-            dvlaSearchButton.html('Search DVLA');
-            el.find('.description-input').text(data.vin).safariFocusBlur();
-            updateVehicle(vehicle.id, 'description', data.vin);
+            var category = data['response_payload']['data']['category'];
+            var make = data['response_payload']['data']['make'];            
+            var model = data['response_payload']['data']['model'];
+
+            if (category.bumperCatergoryID || make.bumperMakeID || model.bumperModelID){
+                dvlaSearchButton.html('Search DVLA');
+                vehicle.category_id = category.bumperCatergoryID;
+                vehicle.make_id = make.bumperMakeID;
+                vehicle.model_id = model.bumperModelID;
+                refresh();
+            }
+            else {
+                dvlaSearchButton.html('No results for this reg.');
+            }
+
+
         })
         .fail(function() {
             dvlaSearchButton.html('Error, try again');
