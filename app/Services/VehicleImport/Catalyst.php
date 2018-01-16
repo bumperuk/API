@@ -14,13 +14,12 @@ use App\Models\Transmission;
 use App\Models\Vehicle;
 use GuzzleHttp\Client;
 
-class CarDealer5 implements Source
+class Catalyst implements Source
 {
-    private $csv;
 
     public function getName(): string
     {
-        return 'car_dealer_5';
+        return 'catalyst';
     }
 
     public function getSourceIds(): array
