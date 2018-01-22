@@ -2,7 +2,10 @@
 
 namespace App\Services\VehicleImport;
 
+use Illuminate\Support\Facades\DB;
+
 use App\Models\BodyType;
+use App\Models\Category;
 use App\Models\Color;
 use App\Models\Condition;
 use App\Models\Door;
@@ -12,10 +15,12 @@ use App\Models\Make;
 use App\Models\Model;
 use App\Models\Transmission;
 use App\Models\Vehicle;
-use GuzzleHttp\Client;
+use GuzzleHttp;
+
 
 class Catalyst implements Source
 {
+    private $xml;
 
     public function getName(): string
     {
@@ -24,56 +29,105 @@ class Catalyst implements Source
 
     public function getSourceIds(): array
     {
-        $sourceIds = array_map(function($vehicle) {
-            return $vehicle[1];
-        }, $this->csv);
+        $sourceIds = [];
+        foreach( $this->xml->account->sites->site->vehicles->vehicle as $vehicle){
+            $sourceIds[] = $vehicle['code'];
+        }
 
         return $sourceIds;
     }
 
     public function fetchVehicles()
     {
-        $client = new Client();
-        $response = $client->get('https://www.cardealer5.co.uk/carcliq/export_cars.csv');
-        $csv = trim($response->getBody()->getContents());
-        $csv = array_map('str_getcsv', explode("\n", $csv));
-        unset($csv[0]);
-
-        $this->csv = $csv;
+        $xmlstr  = '<?xml version="1.0" encoding="iso8859-1"?><download dealer="njR852cK7p" account="AUT012" password="FnCrsxDevw" version="16" request="EXP"  vehicles="y"  />';
+        $client = new GuzzleHttp\Client();
+        $uri = "https://www.catalyst-data.co.uk/download.php";
+        $res  = $client->request('POST',$uri,[
+            'Content-Type' => 'text/xml; charset=UTF8',
+            'verify' => false,
+            'body' => $xmlstr
+            ]
+        );
+        $this->xml = simplexml_load_string($res->getBody());
     }
 
     public function getVehicles(): array
     {
-        return $this->csv;
+        $vehicles = [];
+        foreach( $this->xml->account->sites->site->vehicles->vehicle as $vehicle){
+
+            $thisPhotos = [];
+            if(isset($vehicle->images->image)){
+            foreach ( $vehicle->images->image as $photo){
+                $thisPhotos[] = (string)$photo['url'];
+                }
+            }
+
+            $vehicles[] = [
+                "bodyType" => (string)$vehicle->category[0],
+                "callNumber" => (string)$this->xml->account->sites->site->phone[0],
+                "colour" => (string)$vehicle->colour[0],                
+                "description" => (string)$vehicle->description[0],
+                "email" => (string)$this->xml->account->sites->site->email[0],
+                "engineSize" => (int)$vehicle['engineSize'],
+                "fuel" => (string)$vehicle->fuel[0],
+                "sourceId" => (int)$vehicle['code'],
+                "make" => (string)$vehicle->manufacturer[0],
+                "mileage" => (int)$vehicle['mileage'],
+                "model" => (string)$vehicle->model[0],
+                "new" => (string)$vehicle['new'],
+                "photos" => $thisPhotos,
+                "price" => (string)$vehicle['price'],
+                "regDate" => (int)$vehicle['regDate'],                
+                "vendorId" => (string)$this->xml->account->sites->site['code'],
+                "website" => null,
+                "year" => (int)$vehicle['year'],
+            ];
+        }
+        return $vehicles;
     }
 
     public function getVehicleSourceId(array $vehicleData): string
     {
-        return trim($vehicleData[1]);
+        return trim($vehicleData['sourceId']);
     }
 
     public function getVehicleVendorId(array $vehicleData): string
     {
-        return trim($vehicleData[0]);
+        return trim($vehicleData['vendorId']);
     }
 
     public function getVehicleModel(array $vehicleData)
     {
-        $makeValue = trim($vehicleData[9]);
-        $modelValue = trim($vehicleData[10]);
-        $variantValue = trim($vehicleData[11]);
-
-        $makes = Make::where('value', $makeValue)->get();
-
-        foreach ($makes as $make) {
-            $model = Model::where('make_id', $make->id)->where('value', $modelValue)->first();
-            if ($model) {
-                return $model;
-            }
-            $model = Model::where('make_id', $make->id)->where('value', $modelValue . ' ' . $variantValue)->first();
-            if ($model) {
-                return $model;
-            }
+        $makeValue = trim($vehicleData['make']);
+        $modelValue = trim($vehicleData['model']);
+        //@todo variant?
+        //$variantValue = trim($vehicleData[11]);
+        $mbikeCat = Category::where('name', 'Motorbikes')->first();
+        $make = DB::table('makes')->where([
+            ['value','=', $makeValue],
+            ['category_id', '=', $mbikeCat->id]
+        ]
+            )->first();
+        if(!$make){
+            $make = new Make;
+            $make->value = $makeValue;
+            $make->category_id = $mbikeCat->id;
+            $make->save();
+        }
+        $model = null;
+        $model = Model::where('make_id', $make->id)->where('value', $modelValue)->first();
+    
+        if ($model) {
+            return $model;
+        }
+        else{
+            $model = new Model;
+            $model->value = $modelValue;
+            $model->make_id = $make->id;
+            $model->category_id = $mbikeCat->id;
+            $model->save();
+            return $model;
         }
 
         return  null;
@@ -81,13 +135,12 @@ class Catalyst implements Source
 
     public function getVehicleCondition(array $vehicleData, Vehicle $vehicle)
     {
-        if ($vehicleData[22] == 'Yes' || $vehicleData[23] == 'Yes') {
-            $condition = $vehicleData[22] == 'Yes' ? 'New' : 'Used';
-            return Condition
-                ::where('category_id', $vehicle->model->category->id)
-                ->where('value', $condition)
-                ->first();
-        }
+        $condition = $vehicleData['new'] == 'Y' ? 'New' : 'Used';
+        return Condition
+            ::where('category_id', $vehicle->model->category->id)
+            ->where('value', $condition)
+            ->first();
+        
 
         return null;
     }
@@ -96,24 +149,24 @@ class Catalyst implements Source
     {
         return Color
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', trim($vehicleData[3]))
+            ->where('value', trim($vehicleData['colour']))
             ->first();
     }
 
     public function getVehicleBodyType(array $vehicleData, Vehicle $vehicle)
     {
-        return BodyType
+        //@todo will need to allow user to map category to bumper body type
+        $bodyType =  BodyType
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', trim($vehicleData[7]))
+            ->where('value', trim($vehicleData['bodyType']))
             ->first();
+
+        return $bodyType;
     }
 
     public function getVehicleDoor(array $vehicleData, Vehicle $vehicle)
     {
-        return Door
-            ::where('category_id', $vehicle->model->category->id)
-            ->where('value', trim($vehicleData[8]))
-            ->first();
+        return null;
     }
 
     public function getVehicleSize(array $vehicleData, Vehicle $vehicle)
@@ -125,21 +178,22 @@ class Catalyst implements Source
     {
         return Fuel
             ::where('category_id', $vehicle->model->category->id)
-            ->where('value', trim($vehicleData[4]))
+            ->where('value', trim($vehicleData['fuel']))
             ->first();
     }
 
     public function getVehicleTransmission(array $vehicleData, Vehicle $vehicle)
     {
-        return Transmission
-            ::where('category_id', $vehicle->model->category->id)
-            ->where('value', trim($vehicleData[14]))
-            ->first();
+        // return Transmission
+        //     ::where('category_id', $vehicle->model->category->id)
+        //     ->where('value', trim($vehicleData[14]))
+        //     ->first();
+        return null;
     }
 
     public function getVehicleEngine(array $vehicleData, Vehicle $vehicle)
     {
-        $engineSize = trim($vehicleData[12]);
+        $engineSize = trim($vehicleData['engineSize']);
 
         if (!empty($engineSize)) {
             $engineSize = intval($engineSize) / 1000;
@@ -179,20 +233,30 @@ class Catalyst implements Source
 
     public function getVehiclePrice(array $vehicleData, Vehicle $vehicle)
     {
-        $price = trim($vehicleData[13]);
+        $price = trim($vehicleData['price']);
         return !empty($price) ? $price : null;
     }
 
     public function getVehicleYear(array $vehicleData, Vehicle $vehicle)
     {
-        $year = trim($vehicleData[5]);
-        return !empty($year) ? $year : null;
+        $year = $vehicleData['year'] != null ? $vehicleData['year'] : $vehicleData['regDate'];
+        if(is_int($year)){
+            $year = substr($year,0,4);
+            return !empty($year) ? $year : null;
+        }
+        else{
+            return null;
+        }
+        
     }
 
     public function getVehicleMileage(array $vehicleData, Vehicle $vehicle)
     {
-        $mileage = trim($vehicleData[6]);
-        return !empty($mileage) ? $mileage : null;
+        if (is_int($vehicleData['mileage'])){
+            return !empty($vehicleData['mileage']) ? $vehicleData['mileage'] : 0;
+        }
+        return 0;
+        
     }
 
     public function getVehicleLocation(array $vehicleData, Vehicle $vehicle)
@@ -202,7 +266,7 @@ class Catalyst implements Source
 
     public function getVehicleDescription(array $vehicleData, Vehicle $vehicle)
     {
-        $description = trim($vehicleData[21]);
+        $description = trim($vehicleData['description']);
         $description = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $description);
         $description = str_replace(";", "\n", $description);
 
@@ -211,40 +275,34 @@ class Catalyst implements Source
 
     public function getVehicleCallNumber(array $vehicleData, Vehicle $vehicle)
     {
-        return null;
+        return $vehicleData['callNumber'];
     }
 
     public function getVehicleSmsNumber(array $vehicleData, Vehicle $vehicle)
     {
-        return null;
+        return $vehicleData['callNumber'];
     }
 
     public function getVehicleEmail(array $vehicleData, Vehicle $vehicle)
     {
-        return null;
+        return $vehicleData['email'];
     }
 
     public function getVehicleWebsite(array $vehicleData, Vehicle $vehicle)
     {
-        $url = trim($vehicleData[24]);
-
-        if (filter_var($url, FILTER_VALIDATE_URL)  !== false) {
-            return $url;
+        if ($vehicleData['website'] != null){
+            return $vehicleData['website'];
         }
+        else{
+            if ($vehicleData['email']!= null)
+                return substr(strrchr($vehicleData['email'], "@"), 1);
 
+        }
         return null;
     }
 
     public function getVehiclePhotos(array $vehicleData, Vehicle $vehicle)
     {
-        $photos = explode(',', $vehicleData[15]);
-        $photos = array_filter($photos, function ($photo) {
-            return !empty($photo);
-        });
-        $photos = array_map(function ($photo) {
-            return trim($photo);
-        }, $photos);
-
-        return $photos;
+        return $vehicleData['photos'];
     }
 }

@@ -14,6 +14,7 @@ class Importer
     {
         $sources = [
             CarDealer5::class,
+            Catalyst::class,
         ];
 
         foreach ($sources as $source) {
@@ -101,6 +102,21 @@ class Importer
                 $photoUpdater = new VehiclePhotoUpdater($vehicle);
                 $photoUpdater->update($source->getVehiclePhotos($vehicleData, $vehicle));
             }
+            else{
+                echo "has missing properties\n";
+                echo $this->hasMissingProperties(
+                    $model,
+                    $price,
+                    $year,
+                    $mileage,
+                    $callNumber,
+                    $smsNumber,
+                    $email,
+                    $website,
+                    $description,
+                    $photos
+                );
+            }
         }
     }
 
@@ -116,6 +132,7 @@ class Importer
         $description,
         $photos
     ): bool {
+        
         return (
             is_null($model) || is_null($price) || is_null($year) || is_null($mileage)
             || (is_null($callNumber) && is_null($smsNumber) && is_null($email) && is_null($website))
