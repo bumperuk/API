@@ -104,14 +104,14 @@ class Lookup
                 $category = $this->resolveDvlaToBumperCategory($insuranceBody['bodytype']);
                 if ($category != null) {
                     $this->dataBumperCatergoryId = $category->id;
-                    $this->dataBumperCatergoryValue = $category->value;
+                    $this->dataBumperCatergoryValue = $category->name;
                 }
                 else{
                     // lets assume its a car
                     $category = $this->resolveDvlaToBumperCategory('2 DOOR SALOON');
                     if ($category != null) {
                         $this->dataBumperCatergoryId = $category->id;
-                        $this->dataBumperCatergoryValue = $category->value;
+                        $this->dataBumperCatergoryValue = $category->name;
                     }
                 }
             }
