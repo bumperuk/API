@@ -520,7 +520,7 @@ function refreshVehicle(vehicle, el)
         updateVehicle(vehicle.id, 'details.mileage', $(this).val());
     });
     
-    const apiUrl = "http://127.0.0.1:8082";
+    const apiUrl = "https://api.bumperuk.co.uk";
     const dvlaEndpoint = "/api/v1/dvla-lookup";
     const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6XC9cL2FwaS5idW1wZXJ1ay5jby51ayIsImlhdCI6MTUxNDcxOTExNywiZXhwIjoxNTQ2Mjc1OTk3LCJuYmYiOjE1MTQ3MTkxMTcsImp0aSI6ImU0ZmM0YzdhNDYzMDhlMmQ1ODYyMjRhMWE2N2FkMzAyIn0.UbDfhI5QsmJ6qu2aWdm51Yr4hO0sg1vxIkJVJDoe5pc";
     //var regNumber = "mt09xee";
