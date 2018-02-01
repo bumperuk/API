@@ -280,7 +280,11 @@ class Catalyst implements Source
 
     public function getVehicleSmsNumber(array $vehicleData, Vehicle $vehicle)
     {
-        return $vehicleData['callNumber'];
+        $number = preg_replace('/\s+/', '', $vehicleData['callNumber']);
+        if (preg_match('#^(07[0-9]{9}|447[0-9]{9}|\+447[0-9]{9})$#', $number) === 1) {
+            return $number;
+        }
+        return null;
     }
 
     public function getVehicleEmail(array $vehicleData, Vehicle $vehicle)
@@ -295,7 +299,7 @@ class Catalyst implements Source
         }
         else{
             if ($vehicleData['email']!= null)
-                return substr(strrchr($vehicleData['email'], "@"), 1);
+                return "http://".strtolower(substr(strrchr($vehicleData['email'], "@"), 1));
 
         }
         return null;
