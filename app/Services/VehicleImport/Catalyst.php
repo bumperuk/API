@@ -299,7 +299,7 @@ class Catalyst implements Source
         }
         else{
             if ($vehicleData['email']!= null)
-                return "http://".strtolower(substr(strrchr($vehicleData['email'], "@"), 1));
+                return "https://".strtolower(substr(strrchr($vehicleData['email'], "@"), 1));
 
         }
         return null;
