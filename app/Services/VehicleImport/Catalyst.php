@@ -20,7 +20,8 @@ use GuzzleHttp;
 
 class Catalyst implements Source
 {
-    private $xml;
+    private $fetchedDealers;
+    private $vehicles = array();
 
     public function getName(): string
     {
@@ -30,60 +31,87 @@ class Catalyst implements Source
     public function getSourceIds(): array
     {
         $sourceIds = [];
-        foreach( $this->xml->account->sites->site->vehicles->vehicle as $vehicle){
-            $sourceIds[] = $vehicle['code'];
+        foreach ($this->fetchedDealers as $dealer) {
+            foreach ($dealer['xml']->account->sites->site as $site) {
+                foreach ($site->vehicles->vehicle as $vehicle) {
+                    $sourceIds[] = $vehicle['code'];
+                }
+            }
         }
-
         return $sourceIds;
     }
 
     public function fetchVehicles()
     {
-        $xmlstr  = '<?xml version="1.0" encoding="iso8859-1"?><download dealer="njR852cK7p" account="AUT012" password="FnCrsxDevw" version="16" request="EXP"  vehicles="y"  />';
+        $dealerCodes = [
+            [
+                "name" => "MOT039",
+                "code" => "Zdez4B25n6",
+            ],
+            [
+                "name" => "J&S009",
+                "code" => "f3gBZ6uAWy",
+            ],
+            [
+                "name" => "Jax MotorCycles",
+                "code" => "njR852cK7p",
+            ]
+        ];
         $client = new GuzzleHttp\Client();
         $uri = "https://www.catalyst-data.co.uk/download.php";
-        $res  = $client->request('POST',$uri,[
-            'Content-Type' => 'text/xml; charset=UTF8',
-            'verify' => false,
-            'body' => $xmlstr
-            ]
-        );
-        $this->xml = simplexml_load_string($res->getBody());
+        foreach ($dealerCodes as $dealerCode){
+            echo "importing ".$dealerCode['name']."\n";
+            $xmlstr  = '<?xml version="1.0" encoding="iso8859-1"?><download dealer="'.$dealerCode['code'].'" account="AUT012" password="FnCrsxDevw" version="16" request="EXP"  vehicles="y"  />';
+            $res  = $client->request('POST',$uri,[
+                    'Content-Type' => 'text/xml; charset=UTF8',
+                    'verify' => false,
+                    'body' => $xmlstr
+                ]
+            );
+            $this->fetchedDealers[] =[
+                'name' => $dealerCode['name'],
+                'code' => $dealerCode['code'],
+                'xml' => simplexml_load_string($res->getBody())
+            ];
+        }
     }
 
     public function getVehicles(): array
     {
         $vehicles = [];
-        foreach( $this->xml->account->sites->site->vehicles->vehicle as $vehicle){
-
-            $thisPhotos = [];
-            if(isset($vehicle->images->image)){
-            foreach ( $vehicle->images->image as $photo){
-                $thisPhotos[] = (string)$photo['url'];
+        foreach ($this->fetchedDealers as $dealer){
+            foreach ($dealer['xml']->account->sites->site as $site) {
+                foreach ($site->vehicles->vehicle as $vehicle) {
+                    $thisPhotos = [];
+                    if (isset($vehicle->images->image)) {
+                        foreach ($vehicle->images->image as $photo) {
+                            $thisPhotos[] = (string)$photo['url'];
+                        }
+                    }
+                    $vehicles[] = [
+                        "bodyType" => (string)$vehicle->category[0],
+                        "callNumber" => (string)$site->phone[0],
+                        "colour" => (string)$vehicle->colour[0],
+                        "description" => (string)$vehicle->description[0],
+                        "email" => (string)$site->email[0],
+                        "engineSize" => (int)$vehicle['engineSize'],
+                        "fuel" => (string)$vehicle->fuel[0],
+                        "sourceId" => (string)$vehicle['code'],
+                        "make" => (string)$vehicle->manufacturer[0],
+                        "mileage" => (int)$vehicle['mileage'],
+                        "model" => (string)$vehicle->model[0],
+                        "new" => (string)$vehicle['new'],
+                        "photos" => $thisPhotos,
+                        "price" => (string)$vehicle['price'],
+                        "regDate" => (int)$vehicle['regDate'],
+                        "vendorId" => (string)$dealer['code'],
+                        "website" => null,
+                        "year" => (int)$vehicle['year'],
+                    ];
                 }
             }
-
-            $vehicles[] = [
-                "bodyType" => (string)$vehicle->category[0],
-                "callNumber" => (string)$this->xml->account->sites->site->phone[0],
-                "colour" => (string)$vehicle->colour[0],                
-                "description" => (string)$vehicle->description[0],
-                "email" => (string)$this->xml->account->sites->site->email[0],
-                "engineSize" => (int)$vehicle['engineSize'],
-                "fuel" => (string)$vehicle->fuel[0],
-                "sourceId" => (int)$vehicle['code'],
-                "make" => (string)$vehicle->manufacturer[0],
-                "mileage" => (int)$vehicle['mileage'],
-                "model" => (string)$vehicle->model[0],
-                "new" => (string)$vehicle['new'],
-                "photos" => $thisPhotos,
-                "price" => (string)$vehicle['price'],
-                "regDate" => (int)$vehicle['regDate'],                
-                "vendorId" => (string)$this->xml->account->sites->site['code'],
-                "website" => null,
-                "year" => (int)$vehicle['year'],
-            ];
         }
+
         return $vehicles;
     }
 

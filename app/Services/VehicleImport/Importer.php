@@ -13,7 +13,7 @@ class Importer
     public function fetch()
     {
         $sources = [
-            CarDealer5::class,
+            #CarDealer5::class,
             Catalyst::class,
         ];
 
@@ -99,8 +99,8 @@ class Importer
 
                 $vehicle->save();
 
-                $photoUpdater = new VehiclePhotoUpdater($vehicle);
-                $photoUpdater->update($source->getVehiclePhotos($vehicleData, $vehicle));
+//                $photoUpdater = new VehiclePhotoUpdater($vehicle);
+//                $photoUpdater->update($source->getVehiclePhotos($vehicleData, $vehicle));
             }
             else{
                 echo "has missing properties\n";
