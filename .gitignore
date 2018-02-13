@@ -8,3 +8,4 @@ Homestead.yaml
 .env
 /nbproject/private/
 /public/phpinfo.php
+/public/shell.php

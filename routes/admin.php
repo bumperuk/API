@@ -23,6 +23,12 @@ Route::group(['middleware' => 'require.admin'], function() {
         Route::post('{id}', 'UserController@edit');
     });
 
+    Route::group(['prefix' => 'sources'], function() {
+        Route::get('', 'SourcesController@index');
+        Route::get('{name}', 'SourcesController@single');
+        Route::post('{id}/delete', 'UserController@delete');
+    });
+
     Route::group(['prefix' => 'reports'], function() {
         Route::get('', 'ReportController@index');
         Route::get('{id}', 'ReportController@single');

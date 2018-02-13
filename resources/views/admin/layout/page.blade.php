@@ -33,6 +33,9 @@
                     <li @if (Request::is('admin/users*')) class="active" @endif>
                         <a href="{{ url('admin/users') }}"><i class="fa fa-user"></i> <span>Users</span></a>
                     </li>
+                    <li @if (Request::is('admin/sources*')) class="active" @endif>
+                        <a href="{{ url('admin/sources') }}"><i class="fa fa-rss-square"></i> <span>Dealer Sources</span></a>
+                    </li>
                     <li @if (Request::is('admin/promotions*')) class="active" @endif>
                         <a href="{{ url('admin/promotions') }}"><i class="fa fa-ticket"></i> <span>Promotions</span></a>
                     </li>
