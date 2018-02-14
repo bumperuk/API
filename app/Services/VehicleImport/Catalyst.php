@@ -5,6 +5,7 @@ namespace App\Services\VehicleImport;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\BodyType;
+use App\Models\CatalystDealerCode;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Condition;
@@ -43,36 +44,25 @@ class Catalyst implements Source
 
     public function fetchVehicles()
     {
-        $dealerCodes = [
-            [
-                "name" => "MOT039",
-                "code" => "Zdez4B25n6",
-            ],
-            [
-                "name" => "J&S009",
-                "code" => "f3gBZ6uAWy",
-            ],
-            [
-                "name" => "Jax MotorCycles",
-                "code" => "njR852cK7p",
-            ]
-        ];
-        $client = new GuzzleHttp\Client();
-        $uri = "https://www.catalyst-data.co.uk/download.php";
-        foreach ($dealerCodes as $dealerCode){
-            echo "importing ".$dealerCode['name']."\n";
-            $xmlstr  = '<?xml version="1.0" encoding="iso8859-1"?><download dealer="'.$dealerCode['code'].'" account="AUT012" password="FnCrsxDevw" version="16" request="EXP"  vehicles="y"  />';
-            $res  = $client->request('POST',$uri,[
-                    'Content-Type' => 'text/xml; charset=UTF8',
-                    'verify' => false,
-                    'body' => $xmlstr
-                ]
-            );
-            $this->fetchedDealers[] =[
-                'name' => $dealerCode['name'],
-                'code' => $dealerCode['code'],
-                'xml' => simplexml_load_string($res->getBody())
-            ];
+        $dealerCodes = CatalystDealerCode::all();
+        if (!$dealerCodes->isEmpty()){
+            $client = new GuzzleHttp\Client();
+            $uri = "https://www.catalyst-data.co.uk/download.php";
+            foreach ($dealerCodes as $dealerCode){
+                echo "importing ".$dealerCode['name']."\n";
+                $xmlstr  = '<?xml version="1.0" encoding="iso8859-1"?><download dealer="'.$dealerCode['code'].'" account="AUT012" password="FnCrsxDevw" version="16" request="EXP"  vehicles="y"  />';
+                $res  = $client->request('POST',$uri,[
+                        'Content-Type' => 'text/xml; charset=UTF8',
+                        'verify' => false,
+                        'body' => $xmlstr
+                    ]
+                );
+                $this->fetchedDealers[] =[
+                    'name' => $dealerCode['name'],
+                    'code' => $dealerCode['code'],
+                    'xml' => simplexml_load_string($res->getBody())
+                ];
+            }
         }
     }
 
@@ -270,10 +260,10 @@ class Catalyst implements Source
         $year = $vehicleData['year'] != null ? $vehicleData['year'] : $vehicleData['regDate'];
         if(is_int($year)){
             $year = substr($year,0,4);
-            return !empty($year) ? $year : null;
+            return !empty($year) ? $year : 0;
         }
         else{
-            return null;
+            return 0;
         }
         
     }
