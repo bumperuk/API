@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\CatalystDealerCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -33,12 +34,58 @@ class SourcesController extends Controller
     }
 
     /**
+     * Add a Catalyst dealer code
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function catalystAddCode(Request $request){
+        $name = $request->input('name');
+        $code = $request->input('code');
+
+        $dealerCode = CatalystDealerCode::firstOrCreate(
+            ['code' => $code], ['name' => $name]
+        );
+       
+        $dealerCode->save();
+
+        Session::put('success_message', 'The code details were saved.');
+
+        return back();
+    }
+
+    /**
+     * Delete a Catalyst dealer code
+     * @param Request $request
+     * @param string $code
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function catalystDeleteCode(Request $request, $code){
+        if($dealerCode = CatalystDealerCode::where('code', $code)->delete())
+            Session::put('success_message', 'The code was deleted.');
+        else
+            Session::put('error_message', 'The code was mot deleted.');
+
+        return back();
+    }
+
+
+    /**
      * Display single user by id
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function single($name)
     {
+        if($name =='catalyst'){
+            // get the dealercodes
+            $dealerCodes = CatalystDealerCode::all();
+            return view('admin.sources.catalyst', [
+                'source' => $name,
+                'dealerCodes' => $dealerCodes
+            ]);
+
+        }
+
         return view('admin.sources.single', [
             'source' => $name,
         ]);

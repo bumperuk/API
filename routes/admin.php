@@ -27,6 +27,8 @@ Route::group(['middleware' => 'require.admin'], function() {
         Route::get('', 'SourcesController@index');
         Route::get('{name}', 'SourcesController@single');
         Route::post('{id}/delete', 'UserController@delete');
+        Route::post('catalyst/codes', 'SourcesController@catalystAddCode');
+        Route::get('catalyst/codes/delete/{code}', 'SourcesController@catalystDeleteCode');
     });
 
     Route::group(['prefix' => 'reports'], function() {
