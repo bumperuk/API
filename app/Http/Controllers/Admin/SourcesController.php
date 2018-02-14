@@ -61,7 +61,7 @@ class SourcesController extends Controller
      */
     public function catalystDeleteCode(Request $request, $code){
         if($dealerCode = CatalystDealerCode::where('code', $code)->delete())
-            Session::put('success_message', 'The code was deleted.');
+            Session::put('success_message', 'The code '.$code.' was deleted.');
         else
             Session::put('error_message', 'The code was mot deleted.');
 
