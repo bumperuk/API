@@ -71,6 +71,7 @@ class Catalyst implements Source
         $vehicles = [];
         foreach ($this->fetchedDealers as $dealer){
             foreach ($dealer['xml']->account->sites->site as $site) {
+                $location = array("lat"=>null,"lon"=>null,"location"=>$site->county);
                 foreach ($site->vehicles->vehicle as $vehicle) {
                     $thisPhotos = [];
                     if (isset($vehicle->images->image)) {
@@ -97,6 +98,7 @@ class Catalyst implements Source
                         "vendorId" => (string)$dealer['code'],
                         "website" => null,
                         "year" => (int)$vehicle['year'],
+                        "location" => (array)$location,
                     ];
                 }
             }
@@ -279,7 +281,7 @@ class Catalyst implements Source
 
     public function getVehicleLocation(array $vehicleData, Vehicle $vehicle)
     {
-        return null;
+        return array($vehicleData['location']);
     }
 
     public function getVehicleDescription(array $vehicleData, Vehicle $vehicle)
