@@ -46,6 +46,24 @@ class CarDealer5 implements Source
         
     }
 
+    private function _findVehicleDealerLocation($dealerId): array
+    {
+        $location = [
+            "lat" => null,
+            "lon" => null,
+            "location" => null,
+        ];
+        try {
+            $dealerArrayId = array_search($dealerId,array_column($this->dealerCSV, 10));
+            $location["location"] = $this->dealerCSV[$dealerArrayId + 1][4];
+            return $location;
+        }
+        catch (Exception $e)
+        {
+            return $location;
+        }
+    }
+
     public function getName(): string
     {
         return 'car_dealer_5';
@@ -69,8 +87,8 @@ class CarDealer5 implements Source
         $dealerResponse = $client->get('https://www.cardealer5.co.uk/carcliq/export_dealers.csv');
         $dealerCSV = trim($dealerResponse->getBody()->getContents());
         $dealerCSV = array_map('str_getcsv', explode("\n", $dealerCSV));
-        unset($csv[0]);
-        unset($dealerCSV[0]);
+        /*unset($csv[0]);
+        unset($dealerCSV[0]);*/
         $this->csv = $csv;
         $this->dealerCSV = $dealerCSV;
     }
@@ -230,7 +248,7 @@ class CarDealer5 implements Source
 
     public function getVehicleLocation(array $vehicleData, Vehicle $vehicle)
     {
-        return null;
+        return $this->_findVehicleDealerLocation($vehicleData[0]);
     }
 
     public function getVehicleDescription(array $vehicleData, Vehicle $vehicle)
