@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Vehicle;
+use App\Models\DealerRank;
 use App\Notifications\VerifyPhone;
 use App\ReceiptValidator;
 use App\Transformers\VehicleTransformer;
@@ -256,5 +257,57 @@ class AccountController extends ApiController
         $user->save();
 
         return $this->api_response(['user' => $user]);
+    }
+
+    # Fee tier subscription
+
+    # Change the subscription of user to free tier
+    # Free tier subscribers will have a vehicle limit of 10000
+
+    public function freeTierSubscription(Request $request)
+    {
+        $this->validate($request, [
+            'platform' => 'required|in:ios,android'
+        ]);
+
+        $user = $request->user();
+        $platform = $request->input('platform');
+
+        if($platform == "android"){
+            $rank = DealerRank::find(11);
+        }
+        else{
+            $rank = DealerRank::where('name', '=' , "uk.co.bumper.Bumper.DealerTierFree")->first();
+        }
+
+        if($rank){
+            $user->dealerRank()->associate($rank);
+            $limit = $rank->limit - $user->vehicles()->active()->where('payment_method', 'dealer')->count();
+            if ($limit > 0) {
+                $vehicles = $user
+                    ->vehicles()
+                    ->inactive()
+                    ->orderBy('paid_at', 'desc')
+                    ->take($rank->limit)
+                    ->get();
+
+                foreach ($vehicles as $vehicle) {
+                    $vehicle->payment_method = 'dealer';
+                    $vehicle->paid_at = Carbon::now();
+                    $vehicle->deactivated_at = null;
+                    $vehicle->save();
+                }
+            }
+        } else {
+            $user->dealerRank()->dissociate();
+            $user->receipt = null;
+            $user->receipt_type = null;
+            $user->receipt_checked_at = null;
+        }
+
+        $user->save();
+
+        return $this->api_response(['user' => $user]);
+        
     }
 }

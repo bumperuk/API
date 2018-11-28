@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
+use App\Models\Promotion;
 use App\Notifications\ResetPassword;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Carbon\Carbon;
 
 class AuthController extends ApiController
 {
@@ -35,6 +37,15 @@ class AuthController extends ApiController
         $user->email = $request->input('email');
         $user->password = $request->input('password');
         $user->save();
+
+
+        # Every new user will get a promotional limit of 10000 valid for 10 years
+        $validUntil = Carbon::now()->addYears(10);
+        $promotion = new Promotion();
+        $promotion->user()->associate($user);
+        $promotion->listings = 10000;
+        $promotion->valid_until = $validUntil;
+        $promotion->save();
 
         return $this->login($request);
     }

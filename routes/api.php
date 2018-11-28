@@ -85,6 +85,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['disallow-deactivated']], funct
             Route::delete('/push-notifications', 'V1\AccountController@disablePushNotifications');
             Route::get('/adverts', 'V1\AccountController@getAdverts');
             Route::post('/subscription', 'V1\AccountController@updateSubscription');
+            Route::post('/free-tier', 'V1\AccountController@freeTierSubscription');
         });
 
         Route::group(['prefix' => 'users'], function () {
