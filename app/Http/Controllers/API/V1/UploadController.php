@@ -288,13 +288,25 @@ class UploadController extends ApiController
      */
     public function renew(Request $request)
     {
-        $this->validate($request, [
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'receipt_type' => 'required|in:itunes,play',
-            'receipt' => 'required_if:receipt_type,itunes',
-            'receipt_id' => 'required_if:receipt_type,itunes',
-            'purchase_token' => 'required_if:receipt_type,play',
-        ]);
+        // Make freeTier to byepass the receipt validation
+        // too remove freeTier set bool to false 
+        // need to make respective changes in android/iOS platform side
+        $isFreeTierEnabled = true;
+        if($isFreeTierEnabled){
+            $this->validate($request, [
+                'vehicle_id' => 'required|exists:vehicles,id',
+            ]);
+        }
+        else {
+            $this->validate($request, [
+                'vehicle_id' => 'required|exists:vehicles,id',
+                'receipt_type' => 'required|in:itunes,play',
+                'receipt' => 'required_if:receipt_type,itunes',
+                'receipt_id' => 'required_if:receipt_type,itunes',
+                'purchase_token' => 'required_if:receipt_type,play',
+            ]);        
+        }
+        
 
         $vehicle = Vehicle::find($request->input('vehicle_id'));
         $receiptType = $request->input('receipt_type');
@@ -303,16 +315,21 @@ class UploadController extends ApiController
         $itunesReceiptId = $request->input('receipt_id');
         $playPurchaseToken = $request->input('purchase_token');
 
-        $validator = new ReceiptValidator();
+        if($isFreeTierEnabled){
+            //don't validate the receipts
+        } else {
+            //validate
+            $validator = new ReceiptValidator();
 
-        if (
-            (
-                ($receiptType == 'itunes' && !$validator->validateItunesConsumable($itunesReceipt, $itunesReceiptId)) ||
-                ($receiptType == 'play' && !$validator->validatePlayConsumable($playPurchaseToken))
-            ) && !shouldMock()
-        ) {
-            return $this->api_response([], 'Invalid IAP receipt.', false, 400);
-        }
+            if (
+                (
+                    ($receiptType == 'itunes' && !$validator->validateItunesConsumable($itunesReceipt, $itunesReceiptId)) ||
+                    ($receiptType == 'play' && !$validator->validatePlayConsumable($playPurchaseToken))
+                ) && !shouldMock()
+            ) {
+                return $this->api_response([], 'Invalid IAP receipt.', false, 400);
+            }
+        } 
 
         $vehicle->payment_method = 'private';
         $vehicle->paid_at = Carbon::now();
