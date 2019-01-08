@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\GeoEncode;
 use App\Models\VehiclePhoto;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class Importer
@@ -50,6 +50,10 @@ class Importer
             $website = $source->getVehicleWebsite($vehicleData, $vehicle);
             $description = $source->getVehicleDescription($vehicleData, $vehicle);
             $photos = $source->getVehiclePhotos($vehicleData, $vehicle);
+
+            if(is_null($description) || strlen($description) <= 1) {
+                $description = "No Description Available";
+            }
 
             $missingProperties = $this->hasMissingProperties(
                 $model,
@@ -109,8 +113,10 @@ class Importer
 
                 $vehicle->save();
 
-                $photoUpdater = new VehiclePhotoUpdater($vehicle);
-                $photoUpdater->update($source->getVehiclePhotos($vehicleData, $vehicle));
+                if(count($photos) > 0){
+                    $photoUpdater = new VehiclePhotoUpdater($vehicle);
+                    $photoUpdater->update($source->getVehiclePhotos($vehicleData, $vehicle));
+                }
             }
             else{
                 echo "has missing properties\n";
@@ -141,12 +147,9 @@ class Importer
         $website,
         $description,
         $photos
-    ): bool {        
+    ): bool {
         return (
-            is_null($model) || is_null($price) || is_null($year) || is_null($mileage)
-            || (is_null($callNumber) && is_null($email))
-            || is_null($description) || strlen($description) == 0
-            || count($photos) == 0
+            is_null($model) || is_null($price) || (is_null($year) || ($year >= 1900 && $year <= (int)(Carbon::now()->year))) || (is_null($callNumber) && is_null($email))
         );
     }
 
