@@ -4,6 +4,7 @@ namespace App\Services\VehicleImport;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\GeoEncode;
 use App\Models\VehiclePhoto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -91,9 +92,18 @@ class Importer
                 $vehicle->seatCount()->associate($source->getVehicleSeatCount($vehicleData, $vehicle));
                 $vehicle->berth()->associate($source->getVehicleBerth($vehicleData, $vehicle));
 
+                $postcode = $source->getVehicleZipCode($vehicleData, $vehicle);
+
                 if ($location = $source->getVehicleLocation($vehicleData, $vehicle)) {
-                    $vehicle->lat = $location['lat'];
-                    $vehicle->lon = $location['lon'];
+                    if(is_null($location['lat']) || is_null($location['lon'])){
+                        $geocode = $this->getLatitudeLongitude($postcode);
+                        $vehicle->lat = $geocode[0]->latitude;
+                        $vehicle->lon = $geocode[0]->longitude;
+                    }
+                    else {
+                        $vehicle->lat = $location['lat'];
+                        $vehicle->lon = $location['lon'];
+                    }
                     $vehicle->location = $location['location'];
                 }
 
@@ -176,5 +186,11 @@ class Importer
         ]);
 
         return $user;
+    }
+
+    private function getLatitudeLongitude(string $postcode)
+    {
+        $geocode = GeoEncode::where('postcode',$postcode)->orWhere('postcode_trimmed',$postcode)->get();
+        return $geocode;
     }
 }

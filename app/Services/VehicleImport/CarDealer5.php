@@ -64,6 +64,21 @@ class CarDealer5 implements Source
         }
     }
 
+    private function _findVehicleDealerZipcode($dealerId): array
+    {
+        $postcode = null;
+        try {
+            $dealerArrayId = array_search($dealerId,array_column($this->dealerCSV, 10));
+            $postcode = $this->dealerCSV[$dealerArrayId + 1][5];
+            return $postcode;
+        }
+        catch (Exception $e)
+        {
+            return $postcode;
+        }
+    }
+
+
     public function getName(): string
     {
         return 'car_dealer_5';
@@ -249,6 +264,10 @@ class CarDealer5 implements Source
     public function getVehicleLocation(array $vehicleData, Vehicle $vehicle)
     {
         return $this->_findVehicleDealerLocation($vehicleData[0]);
+    }
+    public function getVehicleZipCode(array $vehicleData, Vehicle $vehicle)
+    {
+        return $this->_findVehicleDealerZipcode($vehicleData[0]);
     }
 
     public function getVehicleDescription(array $vehicleData, Vehicle $vehicle)
